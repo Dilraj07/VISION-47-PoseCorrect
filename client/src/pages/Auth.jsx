@@ -95,7 +95,7 @@ const Auth = () => {
             >
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.5rem', letterSpacing: '-1px' }}>
-                        {isLogin ? 'Welcome Back' : 'Join GymBro'}
+                        {isLogin ? 'Welcome Back' : 'Become a BRO'}
                     </h2>
                     <p style={{ color: '#888' }}>
                         {isLogin ? 'Enter your details to access your account' : 'Start your fitness journey today'}
@@ -176,7 +176,7 @@ const Auth = () => {
                             marginTop: '1rem',
                             padding: '1.25rem',
                             backgroundColor: isLogin ? 'var(--color-neon-blue)' : 'var(--color-neon-green)',
-                            color: '#000',
+                            color: isLogin ? '#fff' : '#000',
                             border: 'none',
                             borderRadius: '1rem',
                             fontSize: '1.1rem',

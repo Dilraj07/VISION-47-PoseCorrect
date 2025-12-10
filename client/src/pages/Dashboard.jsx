@@ -165,6 +165,7 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
     const [hoveredId, setHoveredId] = useState(null);
     const [selectedExercise, setSelectedExercise] = useState(null);
 
@@ -172,6 +173,10 @@ const Dashboard = () => {
         const targetPath = mode === 'upload' ? '/upload' : '/coach';
         navigate(targetPath, { state: { selectedExercise: selectedExercise.id } });
     };
+
+    const filteredExercises = exercises.filter(ex =>
+        ex.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <div style={{
@@ -182,22 +187,44 @@ const Dashboard = () => {
             flexDirection: 'column'
         }}>
             {/* Header */}
-            <header style={{ padding: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222' }}>
-                <button
-                    onClick={() => navigate('/')}
+            <header style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid #222' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                    <button
+                        onClick={() => navigate('/')}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666', fontSize: '0.9rem',
+                            background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold'
+                        }}
+                    >
+                        <ArrowLeft size={16} /> BACK
+                    </button>
+                    <div style={{ fontSize: '0.9rem', color: '#444', letterSpacing: '0.1em' }}>SELECT EXERCISE</div>
+                </div>
+
+                {/* Search Bar */}
+                <input
+                    type="text"
+                    placeholder="Search exercises..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     style={{
-                        display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666', fontSize: '0.9rem',
-                        background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold'
+                        width: '100%',
+                        padding: '1rem',
+                        backgroundColor: '#111',
+                        border: '1px solid #333',
+                        borderRadius: '0.5rem',
+                        color: '#fff',
+                        fontSize: '1rem',
+                        outline: 'none'
                     }}
-                >
-                    <ArrowLeft size={16} /> BACK
-                </button>
-                <div style={{ fontSize: '0.9rem', color: '#444', letterSpacing: '0.1em' }}>SELECT EXERCISE</div>
+                    onFocus={(e) => e.target.style.borderColor = '#666'}
+                    onBlur={(e) => e.target.style.borderColor = '#333'}
+                />
             </header>
 
             {/* List */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                {exercises.map((exercise) => (
+                {filteredExercises.map((exercise) => (
                     <ExerciseStrip
                         key={exercise.id}
                         exercise={exercise}
@@ -206,6 +233,11 @@ const Dashboard = () => {
                         onSelect={setSelectedExercise}
                     />
                 ))}
+                {filteredExercises.length === 0 && (
+                    <div style={{ padding: '4rem', textAlign: 'center', color: '#666' }}>
+                        No exercises found matching "{searchTerm}"
+                    </div>
+                )}
             </div>
 
             {/* Mode Selection Modal */}

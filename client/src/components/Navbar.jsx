@@ -21,6 +21,8 @@ const Navbar = () => {
             {user ? (
                 <>
                     <Link to="/history" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>History</Link>
+                    <Link to="/profile" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>Profile</Link>
+                    <Link to="/leaderboard" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>Leaderboard</Link>
                     {!mobile && <span style={{ color: '#888', marginRight: '1rem', fontSize: '0.9rem' }}>{user.email}</span>}
                     <button
                         onClick={() => { signOut(); closeMenu(); }}

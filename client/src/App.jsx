@@ -13,6 +13,8 @@ import Privacy from './pages/Privacy';
 import Navbar from './components/Navbar';
 import Auth from './pages/Auth';
 import History from './pages/History';
+import Profile from './pages/Profile';
+import Leaderboard from './pages/Leaderboard';
 import { AuthProvider } from './context/AuthContext';
 
 const AppContent = () => {
@@ -76,6 +78,8 @@ const AppContent = () => {
           <Route path="/upload" element={<VideoAnalysis />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/history" element={<><Navbar /><History /></>} />
+          <Route path="/profile" element={<><Navbar /><Profile /></>} />
+          <Route path="/leaderboard" element={<><Navbar /><Leaderboard /></>} />
         </Routes>
       )}
 
