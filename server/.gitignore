@@ -1,0 +1,10 @@
+# Ignore analyzed outputs and temporary uploads
+uploads/
+outputs/
+__pycache__/
+*.mp4
+*.webm
+*.mov
+*.avi
+venv/
+.env
