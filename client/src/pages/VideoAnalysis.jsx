@@ -240,7 +240,7 @@ const VideoAnalysis = () => {
                                 </div>
 
                                 <div style={{ backgroundColor: '#222', padding: '2rem', borderRadius: '1rem', marginBottom: '1rem' }}>
-                                    <h4 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.2rem' }}>AI FEEDBACK</h4>
+                                    <h4 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.2rem' }}>COACH FEEDBACK</h4>
                                     <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
                                         {result.analysis_data.feedback.map((item, index) => (
                                             <div key={index} style={{

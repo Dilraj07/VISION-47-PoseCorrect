@@ -96,6 +96,14 @@ async def analyze_video(
             print("DEBUG: Starting BenchPress Analysis...")
             from core.bench_press_analyzer import analyze_bench_press_video
             analysis_result = analyze_bench_press_video(file_path, output_path)
+        elif exercise_type == "lunge":
+            print("DEBUG: Starting Lunge Analysis...")
+            from core.lunge_analyzer import analyze_lunge_video
+            analysis_result = analyze_lunge_video(file_path, output_path)
+        elif exercise_type == "bicep_curl":
+            print("DEBUG: Starting Bicep Curl Analysis...")
+            from core.bicep_curl_analyzer import analyze_bicep_curl_video
+            analysis_result = analyze_bicep_curl_video(file_path, output_path)
         else:
             # Fallback to squat if unknown
             print(f"Unknown exercise type: {exercise_type}, defaulting to squat")

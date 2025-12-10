@@ -24,7 +24,7 @@ const LandingPage = ({ onStart }) => {
                         transition={{ delay: 0.3, duration: 0.8 }}
                         style={{ fontSize: '1.5rem', maxWidth: '600px', margin: '0 auto 3rem', color: '#888' }}
                     >
-                        Your personal AI coach. Real-time corrections. Professional analysis.
+                        Your personal coach. Real-time corrections. Professional analysis.
                     </motion.p>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -59,7 +59,7 @@ const LandingPage = ({ onStart }) => {
                         <Camera size={48} color="var(--color-neon-purple)" style={{ marginBottom: '1.5rem' }} />
                         <h3 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Real-time Coach</h3>
                         <p style={{ color: '#aaa', lineHeight: 1.6 }}>
-                            Use your webcam for instant feedback. Our AI analyzes your form 30 times per second to prevent injuries.
+                            Use your webcam for instant feedback. Our system analyzes your form 30 times per second to prevent injuries.
                         </p>
                     </motion.div>
 

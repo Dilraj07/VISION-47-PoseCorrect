@@ -58,7 +58,7 @@ const IntroAnimation = ({ onComplete, onStart }) => {
             <AnimatePresence mode="wait">
                 {step === -1 && (
                     <motion.div key="start" variants={variants} initial="initial" animate="animate" exit="exit" style={{ textAlign: 'center' }}>
-                        <h1 style={{ fontSize: '2rem', color: '#fff', marginBottom: '1rem', letterSpacing: '4px' }}>GYMBRO AI</h1>
+                        <h1 style={{ fontSize: '2rem', color: '#fff', marginBottom: '1rem', letterSpacing: '4px' }}>GYMBRO</h1>
                         <p style={{ color: 'var(--color-neon-green)', fontSize: '1.2rem', animation: 'pulse 1.5s infinite' }}>CLICK TO START</p>
                     </motion.div>
                 )}

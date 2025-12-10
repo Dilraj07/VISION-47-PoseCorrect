@@ -43,6 +43,22 @@ const exercises = [
         gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
         accentColor: '#ff6600',
         image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80',
+    },
+    {
+        id: 'lunge',
+        name: 'LUNGE',
+        targetMuscles: ['Quads', 'Glutes', 'Hamstrings'],
+        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+        accentColor: '#ffbf00',
+        image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&q=80',
+    },
+    {
+        id: 'bicep_curl',
+        name: 'BICEP CURL',
+        targetMuscles: ['Biceps', 'Forearms'],
+        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+        accentColor: '#00ccff',
+        image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=80',
     }
 ];
 
