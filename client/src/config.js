@@ -7,7 +7,7 @@ const getApiUrl = () => {
     // This allows the phone to connect to http://192.168.x.x:10000 automatically
     if (!url) {
         const hostname = window.location.hostname;
-        return `http://${hostname}:10000`;
+        return `http://${hostname}:8000`;
     }
 
     // If protocol is missing (Render provided just the host), prepend https://
