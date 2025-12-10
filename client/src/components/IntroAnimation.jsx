@@ -80,7 +80,7 @@ const IntroAnimation = ({ onComplete, onStart }) => {
                 {step === 3 && (
                     <motion.div key="step4" variants={variants} initial="initial" animate="animate" style={{ textAlign: 'center' }}>
                         <h1 style={{ fontSize: '4rem', color: 'var(--color-white)', marginBottom: '2rem' }}>READY?</h1>
-                        <p style={{ fontFamily: 'var(--font-primary)', fontSize: '1.2rem' }}>Click to enter</p>
+                        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: '#fff', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase' }}>Click to enter</p>
                     </motion.div>
                 )}
             </AnimatePresence>

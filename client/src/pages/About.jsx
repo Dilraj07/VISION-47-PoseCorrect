@@ -30,7 +30,7 @@ const About = () => {
                         marginBottom: '1.5rem',
                         background: 'linear-gradient(to right, #fff, var(--color-neon-blue))',
                         WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
+                        WebkitTextFillColor: '#ccff00',
                         textTransform: 'uppercase',
                         letterSpacing: '-2px'
                     }}>

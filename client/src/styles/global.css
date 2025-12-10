@@ -21,6 +21,7 @@ h6 {
     text-transform: uppercase;
     margin: 0;
     font-weight: 900;
+    color: var(--color-white);
 }
 
 button {
