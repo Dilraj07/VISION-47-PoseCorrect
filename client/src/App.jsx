@@ -12,6 +12,7 @@ import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import Navbar from './components/Navbar';
 import Auth from './pages/Auth';
+import History from './pages/History';
 import { AuthProvider } from './context/AuthContext';
 
 const AppContent = () => {
@@ -74,6 +75,7 @@ const AppContent = () => {
           <Route path="/coach" element={<RealTimeCoach />} />
           <Route path="/upload" element={<VideoAnalysis />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/history" element={<><Navbar /><History /></>} />
         </Routes>
       )}
 

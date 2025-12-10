@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Upload, FileVideo, CheckCircle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { API_URL } from '../config';
+import { supabase } from '../supabaseClient';
+import { useAuth } from '../context/AuthContext';
 
 const VideoAnalysis = () => {
     const navigate = useNavigate();
@@ -48,6 +50,8 @@ const VideoAnalysis = () => {
         fileInputRef.current.click();
     };
 
+    const { user } = useAuth(); // Get user to save results
+
     const uploadAndAnalyze = async (videoFile) => {
         setAnalyzing(true);
         setError(null);
@@ -69,6 +73,19 @@ const VideoAnalysis = () => {
 
             const data = await response.json();
             setResult(data);
+
+            // SAVE TO DATABASE
+            if (user && data.analysis_data) {
+                const { error: dbError } = await supabase.from('workouts').insert({
+                    user_id: user.id,
+                    exercise_type: selectedExercise,
+                    reps: data.analysis_data.reps_count,
+                    feedback: data.analysis_data.feedback
+                });
+                if (dbError) console.error("Auto-save failed:", dbError);
+                else console.log("Workout saved!");
+            }
+
         } catch (err) {
             console.error(err);
             setError("Failed to analyze video. Please try again.");

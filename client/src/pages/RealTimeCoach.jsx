@@ -5,6 +5,8 @@ import { ArrowLeft, Activity, CheckCircle, Video, Loader } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useReactMediaRecorder } from "react-media-recorder";
 import { API_URL } from '../config';
+import { supabase } from '../supabaseClient';
+import { useAuth } from '../context/AuthContext';
 
 // Component to render the preview stream
 const VideoPreview = ({ stream }) => {
@@ -93,6 +95,8 @@ const RealTimeCoach = () => {
         analyzeVideo();
     }, [step, mediaBlobUrl]);
 
+    const { user } = useAuth(); // Get user to save results
+
     const uploadAndAnalyze = async (videoFile) => {
         setError(null);
         setResult(null);
@@ -113,6 +117,19 @@ const RealTimeCoach = () => {
 
             const data = await response.json();
             setResult(data);
+
+            // SAVE TO DATABASE
+            if (user && data.analysis_data) {
+                const { error: dbError } = await supabase.from('workouts').insert({
+                    user_id: user.id,
+                    exercise_type: selectedExercise,
+                    reps: data.analysis_data.reps_count,
+                    feedback: data.analysis_data.feedback
+                });
+                if (dbError) console.error("Auto-save failed:", dbError);
+                else console.log("Workout saved!");
+            }
+
         } catch (err) {
             console.error(err);
             setError("Failed to analyze video. Please try again.");
