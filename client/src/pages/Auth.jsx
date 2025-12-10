@@ -195,7 +195,7 @@ const Auth = () => {
 
                 <div style={{ marginTop: '2.5rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
                     <p style={{ color: '#888', marginBottom: '1rem' }}>
-                        {isLogin ? "New to GymBro?" : "Already fit?"}
+                        {isLogin ? "Need a GymBro?" : "Already fit?"}
                     </p>
                     <button
                         onClick={() => setIsLogin(!isLogin)}
