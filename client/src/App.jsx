@@ -108,11 +108,6 @@ const AppContent = () => {
   );
 };
 
-import Auth from './pages/Auth';
-import { AuthProvider } from './context/AuthContext';
-
-// ... existing imports ...
-
 const App = () => {
   return (
     <Router>
@@ -123,5 +118,4 @@ const App = () => {
   );
 };
 
-// ... inside AppContent Routes ...
-// <Route path="/auth" element={<Auth />} />
+export default App;

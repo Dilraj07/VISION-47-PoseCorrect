@@ -29,7 +29,7 @@ const Navbar = () => {
                         </button>
                     </>
                 ) : (
-                    <Link to="/auth" className="nav-link">Sign In</Link>
+                    <Link to="/auth" className="nav-link" style={{ color: '#fff' }}>Sign In</Link>
                 )}
 
                 <button
