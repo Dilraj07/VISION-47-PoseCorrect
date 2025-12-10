@@ -90,7 +90,7 @@ const About = () => {
                                     <Linkedin size={48} color="var(--color-neon-purple)" />
                                 </div>
 
-                                <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: '700' }}>{member.name}</h3>
+                                <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: '700', color: '#fff' }}>{member.name}</h3>
                                 <p style={{ color: 'var(--color-neon-blue)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>{member.role}</p>
 
                                 <div style={{
