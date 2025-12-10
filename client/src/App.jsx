@@ -11,6 +11,8 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import Navbar from './components/Navbar';
+import Auth from './pages/Auth';
+import { AuthProvider } from './context/AuthContext';
 
 const AppContent = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -71,6 +73,7 @@ const AppContent = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/coach" element={<RealTimeCoach />} />
           <Route path="/upload" element={<VideoAnalysis />} />
+          <Route path="/auth" element={<Auth />} />
         </Routes>
       )}
 
@@ -103,12 +106,20 @@ const AppContent = () => {
   );
 };
 
+import Auth from './pages/Auth';
+import { AuthProvider } from './context/AuthContext';
+
+// ... existing imports ...
+
 const App = () => {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 };
 
-export default App;
+// ... inside AppContent Routes ...
+// <Route path="/auth" element={<Auth />} />

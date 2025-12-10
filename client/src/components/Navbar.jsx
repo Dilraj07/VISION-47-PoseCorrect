@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const { user, signOut } = useAuth(); // Get user and signOut from context
 
     return (
         <nav className="navbar">
@@ -13,6 +15,22 @@ const Navbar = () => {
                 <Link to="/about" className="nav-link">About Us</Link>
                 <Link to="/contact" className="nav-link">Contact Us</Link>
                 <Link to="/privacy" className="nav-link">Privacy</Link>
+
+                {user ? (
+                    <>
+                        <span style={{ color: '#888', marginRight: '1rem', fontSize: '0.9rem' }}>{user.email}</span>
+                        <button
+                            onClick={() => signOut()}
+                            className="nav-link"
+                            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                        >
+                            Log Out
+                        </button>
+                    </>
+                ) : (
+                    <Link to="/auth" className="nav-link">Sign In</Link>
+                )}
+
                 <button
                     onClick={() => navigate('/dashboard')}
                     className="btn-launch"
