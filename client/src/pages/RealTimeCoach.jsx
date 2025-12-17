@@ -119,7 +119,7 @@ const RealTimeCoach = () => {
             setResult(data);
 
             // SAVE TO DATABASE
-            if (user && data.analysis_data) {
+            if (user && !user.isDemo && data.analysis_data) {
                 const { error: dbError } = await supabase.from('workouts').insert({
                     user_id: user.id,
                     exercise_type: selectedExercise,
@@ -157,41 +157,63 @@ const RealTimeCoach = () => {
     };
 
     return (
-        <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--color-black)' }}>
+        <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--color-black)', fontFamily: "'Outfit', sans-serif" }}>
             {/* Header */}
             <header style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333' }}>
-                <button onClick={() => navigate('/dashboard')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', background: 'none', border: 'none', cursor: 'pointer' }}>
-                    <ArrowLeft size={20} /> Exit Session
+                <button
+                    onClick={() => navigate('/dashboard')}
+                    style={{
+                        display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',
+                        background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 'bold'
+                    }}
+                >
+                    <ArrowLeft size={20} /> EXIT
                 </button>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     {step === 'recording' && (
-                        <span style={{ color: 'var(--color-neon-pink)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', border: '1px solid var(--color-neon-pink)', borderRadius: '2rem' }}>
-                            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--color-neon-pink)', boxShadow: '0 0 10px var(--color-neon-pink)' }}></div>
-                            RECORDING
-                        </span>
+                        <div style={{
+                            color: 'var(--color-neon-pink)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            padding: '0.5rem 1rem', border: '1px solid var(--color-neon-pink)', backgroundColor: 'rgba(255, 0, 153, 0.1)'
+                        }}>
+                            <motion.div
+                                animate={{ opacity: [1, 0.5, 1] }}
+                                transition={{ duration: 1, repeat: Infinity }}
+                                style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--color-neon-pink)' }}
+                            />
+                            REC
+                        </div>
                     )}
-                    <span style={{ color: 'var(--color-neon-green)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        LIVE COACH: {selectedExercise.toUpperCase()}
-                    </span>
+                    <div style={{
+                        color: 'var(--color-neon-green)', fontWeight: '900', fontSize: '1.2rem', fontFamily: "'Anton', sans-serif", letterSpacing: '1px', textTransform: 'uppercase'
+                    }}>
+                        {selectedExercise}
+                    </div>
                 </div>
             </header>
 
             {/* Main Content */}
-            <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+            <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
 
                 {/* Result View */}
                 {step === 'result' ? (
                     <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
                         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                                <h2 style={{ fontSize: '2rem', color: '#fff' }}>Analysis Results</h2>
-                                <button onClick={handleRetry} style={{ padding: '0.75rem 1.5rem', backgroundColor: 'var(--color-neon-blue)', color: '#000', borderRadius: '0.5rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>
-                                    Evaluate Again
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+                                <h2 style={{ fontSize: '3rem', color: '#fff', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', margin: 0 }}>SESSION REPORT</h2>
+                                <button
+                                    onClick={handleRetry}
+                                    style={{
+                                        padding: '1rem 2rem', backgroundColor: 'transparent', color: 'var(--color-neon-green)',
+                                        border: '1px solid var(--color-neon-green)', fontWeight: 'bold', cursor: 'pointer',
+                                        fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', letterSpacing: '1px', fontSize: '1.1rem'
+                                    }}
+                                >
+                                    EVALUATE AGAIN
                                 </button>
                             </div>
 
                             {error && (
-                                <div style={{ padding: '1rem', backgroundColor: 'rgba(255, 0, 0, 0.1)', color: 'red', borderRadius: '0.5rem', marginBottom: '2rem' }}>
+                                <div style={{ padding: '1rem', backgroundColor: 'rgba(255, 0, 0, 0.1)', color: 'red', border: '1px solid red', marginBottom: '2rem' }}>
                                     {error}
                                 </div>
                             )}
@@ -200,61 +222,55 @@ const RealTimeCoach = () => {
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    style={{ backgroundColor: 'var(--color-dark-gray)', borderRadius: '2rem', padding: '2rem' }}
                                 >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                                        <CheckCircle size={32} color="var(--color-neon-green)" />
-                                        <div>
-                                            <h3 style={{ fontSize: '1.2rem', color: '#fff' }}>Analysis Complete</h3>
-                                            <p style={{ color: '#888' }}>Recorded Session</p>
-                                        </div>
-                                    </div>
-
                                     {/* Video Result Player */}
                                     {result.download_url && (
-                                        <div style={{ backgroundColor: '#000', borderRadius: '1rem', overflow: 'hidden', marginBottom: '2rem' }}>
+                                        <div style={{ backgroundColor: '#111', border: '1px solid #333', marginBottom: '3rem' }}>
                                             <video controls src={result.download_url} style={{ width: '100%', display: 'block' }} />
                                         </div>
                                     )}
 
-                                    {/* Analysis Feedback Section - Reused Logic */}
+                                    {/* Analysis Feedback Section */}
                                     {result.analysis_data && (
-                                        <div style={{ marginBottom: '2rem' }}>
-                                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-                                                <div style={{ flex: 1, backgroundColor: '#222', padding: '1.5rem', borderRadius: '1rem', textAlign: 'center' }}>
-                                                    <h4 style={{ color: '#888', marginBottom: '0.5rem' }}>TOTAL REPS</h4>
-                                                    <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#fff' }}>{result.analysis_data.reps_count}</p>
+                                        <div>
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
+                                                <div style={{ border: '1px solid #333', padding: '2rem', textAlign: 'center' }}>
+                                                    <h4 style={{ color: '#888', marginBottom: '0.5rem', fontFamily: "'Outfit', sans-serif", fontSize: '0.9rem', letterSpacing: '1px' }}>TOTAL REPS</h4>
+                                                    <p style={{ fontSize: '5rem', fontWeight: 'bold', color: '#fff', fontFamily: "'Anton', sans-serif", margin: 0, lineHeight: 1 }}>{result.analysis_data.reps_count}</p>
                                                 </div>
                                                 {result.analysis_data.avg_depth > 0 && (
-                                                    <div style={{ flex: 1, backgroundColor: '#222', padding: '1.5rem', borderRadius: '1rem', textAlign: 'center' }}>
-                                                        <h4 style={{ color: '#888', marginBottom: '0.5rem' }}>
+                                                    <div style={{ border: '1px solid #333', padding: '2rem', textAlign: 'center' }}>
+                                                        <h4 style={{ color: '#888', marginBottom: '0.5rem', fontFamily: "'Outfit', sans-serif", fontSize: '0.9rem', letterSpacing: '1px' }}>
                                                             {selectedExercise === 'pullup' ? 'AVG EXTENSION' : selectedExercise === 'deadlift' ? 'HIP EXTENSION' : 'AVG DEPTH'}
                                                         </h4>
-                                                        <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: result.analysis_data.avg_depth <= 135 ? 'var(--color-neon-green)' : 'var(--color-neon-pink)' }}>
+                                                        <p style={{
+                                                            fontSize: '5rem', fontWeight: 'bold', fontFamily: "'Anton', sans-serif", margin: 0, lineHeight: 1,
+                                                            color: result.analysis_data.avg_depth <= 135 ? 'var(--color-neon-green)' : 'var(--color-neon-pink)'
+                                                        }}>
                                                             {result.analysis_data.avg_depth}°
                                                         </p>
                                                     </div>
                                                 )}
                                             </div>
 
-                                            <div style={{ backgroundColor: '#222', padding: '2rem', borderRadius: '1rem', marginBottom: '1rem' }}>
-                                                <h4 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.2rem' }}>COACH FEEDBACK</h4>
+                                            <div style={{ marginBottom: '3rem' }}>
+                                                <h4 style={{ color: 'var(--color-neon-green)', marginBottom: '1.5rem', fontSize: '1.5rem', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase' }}>COACH FEEDBACK</h4>
                                                 <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
                                                     {result.analysis_data.feedback.map((item, index) => (
-                                                        <div key={index} style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1rem', borderRadius: '0.5rem', borderLeft: '4px solid var(--color-neon-blue)' }}>
-                                                            <p style={{ color: '#eee', margin: 0 }}>{item}</p>
+                                                        <div key={index} style={{ backgroundColor: '#111', padding: '1.5rem', borderLeft: '4px solid var(--color-neon-blue)' }}>
+                                                            <p style={{ color: '#fff', margin: 0, fontSize: '1.1rem' }}>"{item}"</p>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
 
                                             {result.analysis_data.corrections.length > 0 && (
-                                                <div style={{ backgroundColor: '#222', padding: '2rem', borderRadius: '1rem' }}>
-                                                    <h4 style={{ color: 'var(--color-neon-green)', marginBottom: '1rem', fontSize: '1.2rem' }}>CORRECTIONS</h4>
+                                                <div style={{ border: '1px solid var(--color-neon-pink)', padding: '2rem' }}>
+                                                    <h4 style={{ color: 'var(--color-neon-pink)', marginBottom: '1.5rem', fontSize: '1.5rem', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase' }}>CORRECTIONS NEEDED</h4>
                                                     <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                                                         {result.analysis_data.corrections.map((item, index) => (
-                                                            <li key={index} style={{ marginBottom: '1rem', color: '#ccc', display: 'flex', gap: '1rem' }}>
-                                                                <span style={{ color: 'var(--color-neon-green)' }}>•</span>
+                                                            <li key={index} style={{ marginBottom: '1rem', color: '#ccc', display: 'flex', gap: '1rem', fontSize: '1.1rem' }}>
+                                                                <span style={{ color: 'var(--color-neon-pink)' }}>⚠</span>
                                                                 {item}
                                                             </li>
                                                         ))}
@@ -275,12 +291,11 @@ const RealTimeCoach = () => {
                                 <motion.div
                                     animate={{ rotate: 360 }}
                                     transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                                    style={{ width: '64px', height: '64px', border: '4px solid #333', borderTopColor: 'var(--color-neon-pink)', borderRadius: '50%', margin: '0 auto 2rem' }}
+                                    style={{ width: '80px', height: '80px', border: '8px solid #333', borderTopColor: 'var(--color-neon-green)', borderRadius: '50%', margin: '0 auto 2rem' }}
                                 />
-                                <h3 style={{ fontSize: '1.5rem', color: '#fff' }}>Analyzing Performance...</h3>
+                                <h3 style={{ fontSize: '3rem', color: '#fff', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', letterSpacing: '2px' }}>ANALYZING...</h3>
                             </div>
                         ) : (
-                            // Use VideoPreview component for stream
                             <div style={{ width: '100%', height: '100%', position: 'relative' }}>
                                 <VideoPreview stream={previewStream} />
 
@@ -294,20 +309,24 @@ const RealTimeCoach = () => {
                                                 animate={{ scale: 1.5, opacity: 1 }}
                                                 exit={{ scale: 2, opacity: 0 }}
                                                 transition={{ duration: 0.5 }}
-                                                style={{ fontSize: '10rem', fontWeight: 'bold', color: 'var(--color-neon-pink)', textShadow: '0 0 20px rgba(0,0,0,0.5)' }}
+                                                style={{
+                                                    fontSize: 'min(25vw, 15rem)', lineHeight: 1, fontWeight: '900', color: 'transparent',
+                                                    fontFamily: "'Anton', sans-serif", WebkitTextStroke: '4px var(--color-neon-pink)'
+                                                }}
                                             >
                                                 {countdown}
                                             </motion.div>
                                             <button
                                                 onClick={handleCancel}
                                                 style={{
-                                                    padding: '0.75rem 2rem',
-                                                    backgroundColor: 'rgba(50, 50, 50, 0.8)',
+                                                    padding: '1rem 3rem',
+                                                    backgroundColor: 'black',
                                                     color: '#fff',
                                                     border: '1px solid #666',
-                                                    borderRadius: '2rem',
+                                                    fontSize: '1.2rem',
+                                                    fontFamily: "'Outfit', sans-serif",
+                                                    textTransform: 'uppercase',
                                                     cursor: 'pointer',
-                                                    backdropFilter: 'blur(5px)',
                                                     pointerEvents: 'auto'
                                                 }}
                                             >
@@ -317,35 +336,36 @@ const RealTimeCoach = () => {
                                     )}
 
                                     {step === 'recording' && (
-                                        <div style={{ textAlign: 'center' }}>
-                                            <div style={{ fontSize: '2rem', color: '#fff', marginBottom: '1rem', backgroundColor: 'rgba(0,0,0,0.5)', padding: '0.5rem 1rem', borderRadius: '1rem' }}>
-                                                Performing {selectedExercise}
-                                            </div>
-                                            <div style={{ fontSize: '5rem', fontWeight: 'bold', color: 'var(--color-neon-green)', textShadow: '0 0 20px rgba(0,0,0,0.5)' }}>
+                                        <div style={{ position: 'absolute', bottom: '10%', width: '100%', textAlign: 'center' }}>
+                                            <div style={{
+                                                fontSize: 'min(15vw, 8rem)', fontWeight: '900', color: 'var(--color-neon-green)',
+                                                fontFamily: "'Anton', sans-serif", lineHeight: 1, textShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                                            }}>
                                                 {recordTime}s
                                             </div>
-                                            <button
-                                                onClick={handleManualStop}
-                                                style={{
-                                                    marginTop: '2rem',
-                                                    padding: '1rem 3rem',
-                                                    fontSize: '1.2rem',
-                                                    backgroundColor: 'var(--color-neon-pink)',
-                                                    color: '#fff',
-                                                    border: 'none',
-                                                    borderRadius: '3rem',
-                                                    fontWeight: 'bold',
-                                                    cursor: 'pointer',
-                                                    boxShadow: '0 0 20px rgba(255, 0, 153, 0.5)',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '0.5rem',
-                                                    pointerEvents: 'auto'
-                                                }}
-                                            >
-                                                <div style={{ width: '12px', height: '12px', backgroundColor: '#fff', borderRadius: '2px' }}></div>
-                                                STOP & ANALYZE
-                                            </button>
+                                            <div style={{ marginTop: '2rem', pointerEvents: 'auto' }}>
+                                                <button
+                                                    onClick={handleManualStop}
+                                                    style={{
+                                                        padding: '1.5rem 3rem',
+                                                        fontSize: '1.5rem',
+                                                        backgroundColor: 'var(--color-neon-pink)',
+                                                        color: '#fff',
+                                                        border: '4px solid #fff',
+                                                        fontFamily: "'Anton', sans-serif",
+                                                        textTransform: 'uppercase',
+                                                        letterSpacing: '1px',
+                                                        cursor: 'pointer',
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        gap: '1rem',
+                                                        boxShadow: '0 8px 30px rgba(255, 0, 153, 0.5)'
+                                                    }}
+                                                >
+                                                    <div style={{ width: '16px', height: '16px', backgroundColor: '#fff' }}></div>
+                                                    STOP & ANALYZE
+                                                </button>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
