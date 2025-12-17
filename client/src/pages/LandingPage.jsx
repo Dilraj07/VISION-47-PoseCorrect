@@ -1,8 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Activity, Video } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage = ({ onStart }) => {
+    const { loginDemo } = useAuth();
+    const navigate = useNavigate();
+
+    const handleDemo = async () => {
+        await loginDemo();
+        navigate('/dashboard');
+    };
     return (
         <div style={{
             minHeight: '100vh',
@@ -75,16 +84,18 @@ const LandingPage = ({ onStart }) => {
                     </motion.h1>
                 </div>
 
-                {/* Action Button */}
+                {/* Action Buttons */}
                 <div style={{
-                    marginTop: '3rem', // Changed from absolute position to relative flow
+                    marginTop: '3rem',
                     position: 'relative',
-                    zIndex: 20
+                    zIndex: 20,
+                    display: 'flex',
+                    gap: '1.5rem'
                 }}>
                     <motion.button
                         onClick={onStart}
-                        whileHover={{ scale: 1.1, backgroundColor: 'var(--color-neon-green)', color: 'black' }}
-                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.05, backgroundColor: 'var(--color-neon-green)', color: 'black' }}
+                        whileTap={{ scale: 0.95 }}
                         style={{
                             backgroundColor: 'transparent',
                             color: 'var(--color-neon-green)',
@@ -101,6 +112,25 @@ const LandingPage = ({ onStart }) => {
                         }}
                     >
                         Start Training <ArrowRight />
+                    </motion.button>
+
+                    <motion.button
+                        onClick={handleDemo}
+                        whileHover={{ scale: 1.05, borderColor: 'var(--color-neon-pink)', color: 'var(--color-neon-pink)' }}
+                        whileTap={{ scale: 0.95 }}
+                        style={{
+                            backgroundColor: 'transparent',
+                            color: 'white',
+                            border: '2px solid #333',
+                            padding: '1rem 3rem',
+                            fontSize: '1.5rem',
+                            fontFamily: "'Anton', sans-serif",
+                            textTransform: 'uppercase',
+                            cursor: 'pointer',
+                            letterSpacing: '1px'
+                        }}
+                    >
+                        Try Demo
                     </motion.button>
                 </div>
             </main>

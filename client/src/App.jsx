@@ -22,8 +22,8 @@ const AppContent = () => {
   const [showIntro, setShowIntro] = useState(true);
   /* Audio Playlist */
   const SONGS = [
-    '/Pump It Up with GymBro.mp3',
-    '/We Are GYMBRO.mp3'
+    '/pump-it-up.mp3',
+    '/we-are-gymbro.mp3'
   ];
 
   /* Select random song on mount */
@@ -32,7 +32,7 @@ const AppContent = () => {
     return SONGS[randomIndex];
   });
 
-  const { play, toggleMute, isMuted } = useAudioContext(currentSong);
+  const { play, toggleMute, isMuted, isLoading } = useAudioContext(currentSong);
   const navigate = useNavigate();
 
   const handleStartAudio = async () => {
@@ -50,7 +50,7 @@ const AppContent = () => {
   return (
     <>
       <AnimatePresence mode="wait">
-        {showIntro && <IntroAnimation onComplete={handleIntroComplete} onStart={handleStartAudio} />}
+        {showIntro && <IntroAnimation onComplete={handleIntroComplete} onStart={handleStartAudio} isLoading={isLoading} />}
       </AnimatePresence>
 
       {!showIntro && (

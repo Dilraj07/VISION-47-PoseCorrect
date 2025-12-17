@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const IntroAnimation = ({ onComplete, onStart }) => {
+const IntroAnimation = ({ onComplete, onStart, isLoading }) => {
     const [step, setStep] = useState(-1); // Start at -1 (Click to Start)
 
     useEffect(() => {
@@ -28,6 +28,8 @@ const IntroAnimation = ({ onComplete, onStart }) => {
     ];
 
     const handleInteraction = () => {
+        if (isLoading) return; // Prevent interaction if loading
+
         if (step === -1) {
             if (onStart) onStart();
             setStep(0);
@@ -51,7 +53,7 @@ const IntroAnimation = ({ onComplete, onStart }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 zIndex: 9999,
-                cursor: 'pointer'
+                cursor: isLoading ? 'wait' : 'pointer'
             }}
             onClick={handleInteraction}
         >
@@ -59,7 +61,9 @@ const IntroAnimation = ({ onComplete, onStart }) => {
                 {step === -1 && (
                     <motion.div key="start" variants={variants} initial="initial" animate="animate" exit="exit" style={{ textAlign: 'center' }}>
                         <h1 style={{ fontSize: '2rem', color: '#fff', marginBottom: '1rem', letterSpacing: '4px' }}>GYMBRO</h1>
-                        <p style={{ color: 'var(--color-neon-green)', fontSize: '1.2rem', animation: 'pulse 1.5s infinite' }}>CLICK TO START</p>
+                        <p style={{ color: isLoading ? '#666' : 'var(--color-neon-green)', fontSize: '1.2rem', animation: 'pulse 1.5s infinite' }}>
+                            {isLoading ? 'LOADING MUSIC...' : 'CLICK TO START'}
+                        </p>
                     </motion.div>
                 )}
                 {step === 0 && (

@@ -28,7 +28,23 @@ export const AuthProvider = ({ children }) => {
     const value = {
         signUp: (data) => supabase.auth.signUp(data),
         signIn: (data) => supabase.auth.signInWithPassword(data),
-        signOut: () => supabase.auth.signOut(),
+        signOut: () => {
+            if (user?.isDemo) {
+                setUser(null);
+            } else {
+                supabase.auth.signOut();
+            }
+        },
+        loginDemo: () => {
+            setUser({
+                id: 'demo-user-123',
+                email: 'demo@gymbro.ai',
+                isDemo: true,
+                user_metadata: {
+                    full_name: 'Demo Bro'
+                }
+            });
+        },
         user,
     };
 
