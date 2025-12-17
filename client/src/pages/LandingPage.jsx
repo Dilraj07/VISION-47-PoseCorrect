@@ -152,7 +152,8 @@ const LandingPage = ({ onStart }) => {
                             border: '2px solid var(--color-neon-green)',
                             padding: '1rem 3rem',
                             fontSize: '1.5rem',
-                            fontFamily: "'Anton', sans-serif",
+                            fontFamily: "'Outfit', sans-serif",
+                            fontWeight: '900',
                             textTransform: 'uppercase',
                             cursor: 'pointer',
                             display: 'flex',
@@ -174,7 +175,8 @@ const LandingPage = ({ onStart }) => {
                             border: '2px solid #333',
                             padding: '1rem 3rem',
                             fontSize: '1.5rem',
-                            fontFamily: "'Anton', sans-serif",
+                            fontFamily: "'Outfit', sans-serif",
+                            fontWeight: '900',
                             textTransform: 'uppercase',
                             cursor: 'pointer',
                             letterSpacing: '1px'
@@ -194,12 +196,12 @@ const LandingPage = ({ onStart }) => {
                 <div style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505' }}>
                     <Activity color="var(--color-neon-green)" size={32} style={{ marginBottom: '1rem' }} />
                     <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Real-time Analysis</h3>
-                    <p style={{ fontFamily: "'Anton', sans-serif", fontSize: '1.5rem', margin: 0 }}>30 FPS TRACKING</p>
+                    <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: '900', fontSize: '1.5rem', margin: 0 }}>30 FPS TRACKING</p>
                 </div>
                 <div style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505' }}>
                     <Video color="var(--color-neon-pink)" size={32} style={{ marginBottom: '1rem' }} />
                     <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Video Upload</h3>
-                    <p style={{ fontFamily: "'Anton', sans-serif", fontSize: '1.5rem', margin: 0 }}>INSTANT FEEDBACK</p>
+                    <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: '900', fontSize: '1.5rem', margin: 0 }}>INSTANT FEEDBACK</p>
                 </div>
                 {/* [NEW] Smart Schedule Footer Item */}
                 <div
@@ -208,13 +210,13 @@ const LandingPage = ({ onStart }) => {
                 >
                     <Calendar color="var(--color-neon-blue)" size={32} style={{ marginBottom: '1rem' }} />
                     <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Smart Schedule</h3>
-                    <p style={{ fontFamily: "'Anton', sans-serif", fontSize: '1.5rem', margin: 0 }}>PLAN & TRACK</p>
+                    <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: '900', fontSize: '1.5rem', margin: 0 }}>PLAN & TRACK</p>
                 </div>
             </div>
 
             {/* Full Width Footer Bar */}
             <div style={{ padding: '2rem', backgroundColor: 'var(--color-neon-green)', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                <span style={{ fontSize: '2rem', fontFamily: "'Anton', sans-serif" }}>JOIN THE FUTURE</span>
+                <span style={{ fontSize: '2rem', fontFamily: "'Outfit', sans-serif", fontWeight: '900' }}>JOIN THE FUTURE</span>
             </div>
         </div>
     );
