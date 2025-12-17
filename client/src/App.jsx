@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import { AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import IntroAnimation from './components/IntroAnimation';
+import { useAudioContext } from './hooks/useAudioContext';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import RealTimeCoach from './pages/RealTimeCoach';
@@ -19,38 +20,11 @@ import { AuthProvider } from './context/AuthContext';
 
 const AppContent = () => {
   const [showIntro, setShowIntro] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
-  const audioRef = useRef(null);
+  const { play, toggleMute, isMuted } = useAudioContext('/Pump It Up with GymBro.mp3');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    audioRef.current = new Audio('/intro.mp3');
-    audioRef.current.volume = 0.2;
-    audioRef.current.loop = true;
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  const startAudio = async () => {
-    try {
-      if (audioRef.current && audioRef.current.paused) {
-        await audioRef.current.play();
-      }
-    } catch (err) {
-      console.log("Audio play failed:", err);
-    }
-  };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
+  const handleStartAudio = async () => {
+    await play();
   };
 
   const handleIntroComplete = () => {
@@ -64,7 +38,7 @@ const AppContent = () => {
   return (
     <>
       <AnimatePresence mode="wait">
-        {showIntro && <IntroAnimation onComplete={handleIntroComplete} onStart={startAudio} />}
+        {showIntro && <IntroAnimation onComplete={handleIntroComplete} onStart={handleStartAudio} />}
       </AnimatePresence>
 
       {!showIntro && (
