@@ -20,7 +20,19 @@ import { AuthProvider } from './context/AuthContext';
 
 const AppContent = () => {
   const [showIntro, setShowIntro] = useState(true);
-  const { play, toggleMute, isMuted } = useAudioContext('/Pump It Up with GymBro.mp3');
+  /* Audio Playlist */
+  const SONGS = [
+    '/Pump It Up with GymBro.mp3',
+    '/We Are GYMBRO.mp3'
+  ];
+
+  /* Select random song on mount */
+  const [currentSong] = useState(() => {
+    const randomIndex = Math.floor(Math.random() * SONGS.length);
+    return SONGS[randomIndex];
+  });
+
+  const { play, toggleMute, isMuted } = useAudioContext(currentSong);
   const navigate = useNavigate();
 
   const handleStartAudio = async () => {

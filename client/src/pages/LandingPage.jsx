@@ -1,85 +1,132 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Camera, Video } from 'lucide-react';
+import { ArrowRight, Activity, Video } from 'lucide-react';
 
 const LandingPage = ({ onStart }) => {
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-black)', color: 'var(--color-white)' }}>
+        <div style={{
+            minHeight: '100vh',
+            backgroundColor: 'var(--color-black)',
+            color: 'var(--color-white)',
+            fontFamily: "'Anton', sans-serif",
+            overflowX: 'hidden',
+            display: 'flex',
+            flexDirection: 'column'
+        }}>
 
+            {/* Main Content */}
+            <main style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column', // Stack vertically
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                padding: '2rem',
+                marginTop: '1rem'
+            }}>
+                {/* Version Tag */}
+                <div style={{
+                    position: 'absolute',
+                    top: '0',
+                    right: '2rem',
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: '0.9rem',
+                    color: '#666',
+                    fontWeight: 600,
+                    letterSpacing: '1px'
+                }}>
+                    BETA v1.4
+                </div>
 
-            <main style={{ padding: '4rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
-                <section style={{ textAlign: 'center', marginBottom: '8rem' }}>
+                {/* Giant Text */}
+                <div style={{
+                    textAlign: 'center',
+                    position: 'relative',
+                    zIndex: 1,
+                    mixBlendMode: 'normal', // Changed from difference to avoid readability issues
+                    width: '100%',
+                    padding: '0 1rem'
+                }}>
                     <motion.h1
-                        initial={{ y: 50, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.8 }}
-                        style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', lineHeight: 0.9, marginBottom: '2rem' }}
-                    >
-                        PERFECT FORM<br />
-                        <span style={{ color: 'var(--color-neon-pink)' }}>EVERY REP</span>
-                    </motion.h1>
-                    <motion.p
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
-                        style={{ fontSize: '1.5rem', maxWidth: '600px', margin: '0 auto 3rem', color: '#888' }}
-                    >
-                        Your personal coach. Real-time corrections. Professional analysis.
-                    </motion.p>
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={onStart}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.8, ease: "circOut" }}
                         style={{
-                            padding: '1.5rem 3rem',
-                            backgroundColor: 'var(--color-neon-green)',
-                            color: 'var(--color-black)',
-                            borderRadius: '3rem',
-                            fontSize: '1.5rem',
+                            fontSize: 'clamp(3rem, 15vw, 12rem)', // Reduced max size scaling
+                            lineHeight: 0.9,
+                            margin: 0,
+                            textTransform: 'uppercase',
+                            color: 'var(--color-white)',
+                            fontFamily: "'Outfit', sans-serif",
                             fontWeight: '900',
-                            display: 'inline-flex',
+                            wordBreak: 'break-word', // Ensure wrapping
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <span style={{ display: 'block' }}>WELCOME</span>
+                        <span style={{
+                            color: 'transparent',
+                            WebkitTextStroke: '2px var(--color-neon-pink)',
+                            display: 'block'
+                        }}>BRO</span>
+                    </motion.h1>
+                </div>
+
+                {/* Action Button */}
+                <div style={{
+                    marginTop: '3rem', // Changed from absolute position to relative flow
+                    position: 'relative',
+                    zIndex: 20
+                }}>
+                    <motion.button
+                        onClick={onStart}
+                        whileHover={{ scale: 1.1, backgroundColor: 'var(--color-neon-green)', color: 'black' }}
+                        whileTap={{ scale: 0.9 }}
+                        style={{
+                            backgroundColor: 'transparent',
+                            color: 'var(--color-neon-green)',
+                            border: '2px solid var(--color-neon-green)',
+                            padding: '1rem 3rem',
+                            fontSize: '1.5rem',
+                            fontFamily: "'Anton', sans-serif",
+                            textTransform: 'uppercase',
+                            cursor: 'pointer',
+                            display: 'flex',
                             alignItems: 'center',
-                            gap: '1rem'
+                            gap: '1rem',
+                            letterSpacing: '1px'
                         }}
                     >
-                        START TRAINING <ArrowRight size={24} />
+                        Start Training <ArrowRight />
                     </motion.button>
-                </section>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                    <motion.div
-                        whileHover={{ y: -10 }}
-                        style={{
-                            padding: '3rem',
-                            backgroundColor: 'var(--color-dark-gray)',
-                            borderRadius: '2rem',
-                            border: '1px solid #333'
-                        }}
-                    >
-                        <Camera size={48} color="var(--color-neon-purple)" style={{ marginBottom: '1.5rem' }} />
-                        <h3 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Real-time Coach</h3>
-                        <p style={{ color: '#aaa', lineHeight: 1.6 }}>
-                            Use your webcam for instant feedback. Our system analyzes your form 30 times per second to prevent injuries.
-                        </p>
-                    </motion.div>
-
-                    <motion.div
-                        whileHover={{ y: -10 }}
-                        style={{
-                            padding: '3rem',
-                            backgroundColor: 'var(--color-dark-gray)',
-                            borderRadius: '2rem',
-                            border: '1px solid #333'
-                        }}
-                    >
-                        <Video size={48} color="var(--color-neon-pink)" style={{ marginBottom: '1.5rem' }} />
-                        <h3 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Video Analysis</h3>
-                        <p style={{ color: '#aaa', lineHeight: 1.6 }}>
-                            Upload workout videos for detailed breakdown. Compare your form against professional athletes side-by-side.
-                        </p>
-                    </motion.div>
                 </div>
             </main>
+
+            {/* Bottom Bar */}
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                borderTop: '1px solid #333'
+            }}>
+                <div style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505' }}>
+                    <Activity color="var(--color-neon-green)" size={32} style={{ marginBottom: '1rem' }} />
+                    <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Real-time Analysis</h3>
+                    <p style={{ fontFamily: "'Anton', sans-serif", fontSize: '1.5rem', margin: 0 }}>30 FPS TRACKING</p>
+                </div>
+                <div style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505' }}>
+                    <Video color="var(--color-neon-pink)" size={32} style={{ marginBottom: '1rem' }} />
+                    <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Video Upload</h3>
+                    <p style={{ fontFamily: "'Anton', sans-serif", fontSize: '1.5rem', margin: 0 }}>INSTANT FEEDBACK</p>
+                </div>
+            </div>
+
+            {/* Full Width Footer Bar */}
+            <div style={{ padding: '2rem', backgroundColor: 'var(--color-neon-green)', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                <span style={{ fontSize: '2rem', fontFamily: "'Anton', sans-serif" }}>JOIN THE FUTURE</span>
+            </div>
         </div>
     );
 };
