@@ -4,33 +4,58 @@ import { Linkedin, Zap, Target, Users, Shield } from 'lucide-react';
 
 const values = [
     {
-        icon: <Zap size={32} color="#FDE047" />, // Yellow
-        title: "AI Innovation",
-        desc: "Pushing the boundaries of what's possible with AI in fitness, bringing elite-level analysis to everyone.",
+        icon: <Users size={32} color="#FDE047" />, // Yellow
+        title: "BROCODE",
+        desc: (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <p style={{ margin: 0 }}>Lift honest. Lift hard. Lift together.</p>
+                <p style={{ margin: 0, fontWeight: 600 }}>
+                    • No fake reps &nbsp; • No dangerous form &nbsp; • No excuses
+                </p>
+                <p style={{ margin: 0 }}>
+                    We respect effort, discipline, and improvement. Whether you’re a beginner or a beast — we hold you to the same standard.
+                </p>
+            </div>
+        ),
         span: "col-span-2",
         color: "rgba(253, 224, 71, 0.1)",
         borderColor: "rgba(253, 224, 71, 0.3)"
     },
     {
-        icon: <Target size={32} color="#A78BFA" />, // Purple
-        title: "Surgical Precision",
-        desc: "Accuracy is our obsession. Every degree of movement matters for safety and gains.",
+        icon: <Shield size={32} color="#A78BFA" />, // Purple
+        title: "DATA YOU CAN TRUST",
+        desc: (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <p style={{ margin: 0 }}>No fluff. No fake feedback.</p>
+                <p style={{ margin: 0 }}>Your posture analysis, performance reviews, and progress tracking are transparent, accurate, and built for real-world lifting — not vanity metrics.</p>
+            </div>
+        ),
         span: "col-span-1",
         color: "rgba(167, 139, 250, 0.1)",
         borderColor: "rgba(167, 139, 250, 0.3)"
     },
     {
-        icon: <Users size={32} color="#4ADE80" />, // Green
-        title: "Brotherhood",
-        desc: "Built for bros, by bros. We lift each other up and grow stronger together.",
+        icon: <Target size={32} color="#4ADE80" />, // Green
+        title: "FORM OVER EGO",
+        desc: (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <p style={{ margin: 0 }}>Weight doesn’t matter. Execution does.</p>
+                <p style={{ margin: 0 }}>We prioritize biomechanics, joint safety, and muscle activation. If your form breaks, we call it out — because gains come from precision, not shortcuts.</p>
+            </div>
+        ),
         span: "col-span-1",
         color: "rgba(74, 222, 128, 0.1)",
         borderColor: "rgba(74, 222, 128, 0.3)"
     },
     {
-        icon: <Shield size={32} color="#FB7185" />, // Red
-        title: "Data Integrity",
-        desc: "Honest feedback, transparent code, and real results you can trust.",
+        icon: <Zap size={32} color="#FB7185" />, // Red
+        title: "PROGRESS, MEASURED",
+        desc: (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <p style={{ margin: 0 }}>If it’s not measured, it’s not improved.</p>
+                <p style={{ margin: 0 }}>Every rep, angle, and correction feeds real feedback. Track posture accuracy, form improvement, and consistency over weeks — so your progress is visible, earned, and undeniable.</p>
+            </div>
+        ),
         span: "col-span-2",
         color: "rgba(251, 113, 133, 0.1)",
         borderColor: "rgba(251, 113, 133, 0.3)"
@@ -84,7 +109,7 @@ const About = () => {
     return (
         <div style={{
             minHeight: '100vh',
-            backgroundColor: '#050505',
+            backgroundColor: '#000000',
             color: '#fff',
             fontFamily: "'Outfit', sans-serif",
             padding: '4rem 2rem',
@@ -139,10 +164,10 @@ const About = () => {
                         maxWidth: '800px',
                         margin: '2rem auto 0'
                     }}>
-                        Born from a passion for biomechanics and code, GymBro started as a project at 
-                        <span style={{ color: '#fff', fontWeight: 'bold' }}> RV College of Engineering</span>. 
-                        We noticed a gap between professional athlete analysis and what's available to 
-                        the everyday gym-goer. Our mission is to democratize perfection in form, using 
+                        Born from a passion for biomechanics and code, GymBro started as a project at
+                        <span style={{ color: '#fff', fontWeight: 'bold' }}> RV College of Engineering</span>.
+                        We noticed a gap between professional athlete analysis and what's available to
+                        the everyday gym-goer. Our mission is to democratize perfection in form, using
                         advanced computer vision to keep you safe and strong.
                     </p>
                 </motion.div>
@@ -150,13 +175,13 @@ const About = () => {
 
             {/* Our Values - Colored Bento Grid */}
             <div style={{ maxWidth: '1000px', margin: '0 auto 8rem' }}>
-                <motion.h2 
+                <motion.h2
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    style={{ 
-                        fontSize: '2rem', 
-                        marginBottom: '3rem', 
+                    style={{
+                        fontSize: '2rem',
+                        marginBottom: '3rem',
                         textAlign: 'left',
                         fontWeight: '700',
                         paddingLeft: '0.5rem'
@@ -179,49 +204,50 @@ const About = () => {
                                 backgroundColor: value.color,
                                 border: `1px solid ${value.borderColor}`,
                                 borderRadius: '1.5rem',
-                                padding: '2.5rem',
+                                padding: '2rem',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 justifyContent: 'space-between',
-                                height: '280px',
+                                height: 'auto',
+                                minHeight: '340px',
                                 position: 'relative',
                                 overflow: 'hidden',
                                 backdropFilter: 'blur(10px)'
                             }}
                         >
-                            <div style={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: '0.75rem', 
-                                marginBottom: '1rem' 
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                marginBottom: '1rem'
                             }}>
-                                <div style={{ 
-                                    padding: '0.75rem', 
-                                    backgroundColor: 'rgba(0,0,0,0.2)', 
+                                <div style={{
+                                    padding: '0.75rem',
+                                    backgroundColor: 'rgba(0,0,0,0.2)',
                                     borderRadius: '0.75rem',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center'
                                 }}>
-                                    {value.icon} 
+                                    {value.icon}
                                 </div>
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: '700', margin: 0 }}>{value.title}</h3>
                             </div>
-                            
+
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                <p style={{ 
-                                    fontSize: '1.1rem', 
+                                <div style={{
+                                    fontSize: '1.1rem',
                                     fontWeight: '500',
-                                    color: 'rgba(255,255,255,0.9)', 
-                                    margin: 0, 
-                                    lineHeight: 1.5 
+                                    color: 'rgba(255,255,255,0.9)',
+                                    margin: 0,
+                                    lineHeight: 1.5
                                 }}>
                                     {value.desc}
-                                </p>
+                                </div>
                             </div>
 
                             {/* Decorative element: Subtle glow at bottom right */}
-                             <div style={{
+                            <div style={{
                                 position: 'absolute',
                                 bottom: '-20%',
                                 right: '-10%',
@@ -240,25 +266,25 @@ const About = () => {
 
             {/* The Team */}
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                <motion.h2 
+                <motion.h2
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    style={{ 
+                    style={{
                         fontSize: 'clamp(2.5rem, 4vw, 4rem)',
-                        fontWeight: '800', 
-                        textAlign: 'center', 
+                        fontWeight: '800',
+                        textAlign: 'center',
                         marginBottom: '1rem',
                         letterSpacing: '-2px'
                     }}
                 >
                     The Team
                 </motion.h2>
-                <p style={{ 
-                    textAlign: 'center', 
-                    color: '#888', 
+                <p style={{
+                    textAlign: 'center',
+                    color: '#888',
                     marginBottom: '3rem',
-                    fontSize: '1.1rem' 
+                    fontSize: '1.1rem'
                 }}>
                     The engineers behind the algorithms.
                 </p>
@@ -311,10 +337,10 @@ const About = () => {
                                 }}>
                                     {member.role}
                                 </p>
-                                
-                                <a 
+
+                                <a
                                     href={member.linkedin}
-                                    target="_blank" 
+                                    target="_blank"
                                     rel="noreferrer"
                                     style={{
                                         display: 'inline-block',
