@@ -1,12 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Activity, Video } from 'lucide-react';
+import { ArrowRight, Activity, Video, Calendar } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+
+const WORKOUT_TYPES = {
+    'rest': { label: 'REST DAY', color: '#666' },
+    'push': { label: 'PUSH DAY', color: '#ff0099' },
+    'pull': { label: 'PULL DAY', color: '#9900ff' },
+    'legs': { label: 'LEG DAY', color: '#ccff00' },
+    'cardio': { label: 'CARDIO', color: '#00ccff' },
+    'full': { label: 'FULL BODY', color: '#ff6600' },
+};
 
 const LandingPage = ({ onStart }) => {
     const { loginDemo } = useAuth();
     const navigate = useNavigate();
+    const [todayFocus, setTodayFocus] = useState(null);
+
+    useEffect(() => {
+        try {
+            const schedule = JSON.parse(localStorage.getItem('gymbro_schedule') || '{}');
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const todayIndex = (new Date().getDay() + 6) % 7; // 0 = Mon
+            const focusId = schedule[days[todayIndex]];
+
+            if (focusId && WORKOUT_TYPES[focusId]) {
+                setTodayFocus(WORKOUT_TYPES[focusId]);
+            }
+        } catch (e) {
+            console.error("Schedule error", e);
+        }
+    }, []);
 
     const handleDemo = async () => {
         await loginDemo();
@@ -27,7 +52,7 @@ const LandingPage = ({ onStart }) => {
             <main style={{
                 flex: 1,
                 display: 'flex',
-                flexDirection: 'column', // Stack vertically
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
@@ -53,23 +78,46 @@ const LandingPage = ({ onStart }) => {
                     textAlign: 'center',
                     position: 'relative',
                     zIndex: 1,
-                    mixBlendMode: 'normal', // Changed from difference to avoid readability issues
+                    mixBlendMode: 'normal',
                     width: '100%',
                     padding: '0 1rem'
                 }}>
+                    {/* Today's Focus Banner */}
+                    {todayFocus && (
+                        <motion.div
+                            initial={{ y: -50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            style={{
+                                display: 'inline-block',
+                                padding: '0.5rem 1.5rem',
+                                borderRadius: '2rem',
+                                backgroundColor: 'rgba(255,255,255,0.1)',
+                                border: `1px solid ${todayFocus.color}`,
+                                color: todayFocus.color,
+                                fontFamily: "'Outfit', sans-serif",
+                                fontWeight: 'bold',
+                                marginBottom: '2rem',
+                                fontSize: '1.2rem',
+                                letterSpacing: '0.1em'
+                            }}
+                        >
+                            IT'S {todayFocus.label}
+                        </motion.div>
+                    )}
+
                     <motion.h1
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.8, ease: "circOut" }}
                         style={{
-                            fontSize: 'clamp(3rem, 15vw, 12rem)', // Reduced max size scaling
+                            fontSize: 'clamp(3rem, 15vw, 12rem)',
                             lineHeight: 0.9,
                             margin: 0,
                             textTransform: 'uppercase',
                             color: 'var(--color-white)',
                             fontFamily: "'Outfit', sans-serif",
                             fontWeight: '900',
-                            wordBreak: 'break-word', // Ensure wrapping
+                            wordBreak: 'break-word',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center'
@@ -90,7 +138,9 @@ const LandingPage = ({ onStart }) => {
                     position: 'relative',
                     zIndex: 20,
                     display: 'flex',
-                    gap: '1.5rem'
+                    gap: '1.5rem',
+                    flexWrap: 'wrap', // Allow wrapping for small screens
+                    justifyContent: 'center'
                 }}>
                     <motion.button
                         onClick={onStart}
@@ -150,6 +200,15 @@ const LandingPage = ({ onStart }) => {
                     <Video color="var(--color-neon-pink)" size={32} style={{ marginBottom: '1rem' }} />
                     <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Video Upload</h3>
                     <p style={{ fontFamily: "'Anton', sans-serif", fontSize: '1.5rem', margin: 0 }}>INSTANT FEEDBACK</p>
+                </div>
+                {/* [NEW] Smart Schedule Footer Item */}
+                <div
+                    onClick={() => navigate('/schedule')}
+                    style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505', cursor: 'pointer' }}
+                >
+                    <Calendar color="var(--color-neon-blue)" size={32} style={{ marginBottom: '1rem' }} />
+                    <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Smart Schedule</h3>
+                    <p style={{ fontFamily: "'Anton', sans-serif", fontSize: '1.5rem', margin: 0 }}>PLAN & TRACK</p>
                 </div>
             </div>
 

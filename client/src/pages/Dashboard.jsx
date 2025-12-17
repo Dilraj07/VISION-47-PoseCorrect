@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight } from 'lucide-react';
+import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
 
 const exercises = [
     {
@@ -199,6 +199,16 @@ const Dashboard = () => {
                         <ArrowLeft size={16} /> BACK
                     </button>
                     <div style={{ fontSize: '0.9rem', color: '#444', letterSpacing: '0.1em' }}>SELECT EXERCISE</div>
+                    <button
+                        onClick={() => navigate('/schedule')}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',
+                            background: '#222', border: '1px solid #333', cursor: 'pointer',
+                            padding: '0.5rem 1rem', borderRadius: '2rem', fontSize: '0.9rem', fontWeight: 'bold'
+                        }}
+                    >
+                        <Calendar size={16} color="var(--color-neon-blue)" /> SCHEDULE
+                    </button>
                 </div>
 
                 {/* Search Bar */}
