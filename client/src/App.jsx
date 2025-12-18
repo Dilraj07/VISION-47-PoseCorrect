@@ -11,6 +11,7 @@ import VideoAnalysis from './pages/VideoAnalysis';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
+import Help from './pages/Help';
 import Navbar from './components/Navbar';
 import Auth from './pages/Auth';
 import History from './pages/History';
@@ -49,6 +50,7 @@ const AppContent = () => {
           <Route path="/about" element={<><Navbar /><About /></>} />
           <Route path="/contact" element={<><Navbar /><Contact /></>} />
           <Route path="/privacy" element={<><Navbar /><Privacy /></>} />
+          <Route path="/help" element={<><Navbar /><Help /></>} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/coach" element={<RealTimeCoach />} />
           <Route path="/upload" element={<VideoAnalysis />} />

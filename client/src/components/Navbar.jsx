@@ -53,6 +53,7 @@ const Navbar = () => {
             <Link to="/about" className="mobile-nav-link" onClick={closeMenu}>About Us</Link>
             <Link to="/contact" className="mobile-nav-link" onClick={closeMenu}>Contact Us</Link>
             <Link to="/privacy" className="mobile-nav-link" onClick={closeMenu}>Privacy</Link>
+            <Link to="/help" className="mobile-nav-link" onClick={closeMenu}>Help</Link>
 
             {user && (
                 <>

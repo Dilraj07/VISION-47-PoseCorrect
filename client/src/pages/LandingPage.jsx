@@ -261,6 +261,7 @@ const LandingPage = ({ onStart }) => {
                             <a onClick={() => navigate('/about')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>About</a>
                             <a onClick={() => navigate('/contact')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Contact</a>
                             <a onClick={() => navigate('/privacy')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Privacy</a>
+                            <a onClick={() => navigate('/help')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Help</a>
                         </div>
                     </div>
                 </div>
