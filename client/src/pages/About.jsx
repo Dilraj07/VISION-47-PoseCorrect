@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Linkedin, Zap, Target, Users, Shield } from 'lucide-react';
+import { Linkedin, Zap, Target, Users, Shield, Github } from 'lucide-react';
 
 const values = [
     {
@@ -63,22 +63,6 @@ const values = [
 ];
 
 const teamMembers = [
-    {
-        name: 'Arya Wadhwa',
-        role: 'CEO & Co-Founder',
-        color: 'rgba(253, 224, 71, 0.1)', // Translucent Yellow
-        borderColor: 'rgba(253, 224, 71, 0.3)',
-        image: '/team/arya.jpg',
-        linkedin: 'https://www.linkedin.com/in/aryawadhwa'
-    },
-    {
-        name: 'Dilraj Singh',
-        role: 'CTO & Co-Founder',
-        color: 'rgba(167, 139, 250, 0.1)', // Translucent Purple
-        borderColor: 'rgba(167, 139, 250, 0.3)',
-        image: '/team/dilraj.jpg',
-        linkedin: 'https://www.linkedin.com/in/dilraj-singh-cos007/'
-    },
     {
         name: 'Shlokk Sikka',
         role: 'Co-Founder',
@@ -264,7 +248,127 @@ const About = () => {
                 </div>
             </div>
 
-            {/* The Team */}
+            {/* Founders Section (Merged) */}
+            <div style={{ maxWidth: '1000px', margin: '0 auto 6rem' }}>
+                <motion.h2
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    style={{
+                        fontSize: 'clamp(2.5rem, 4vw, 4rem)',
+                        fontWeight: '800',
+                        textAlign: 'center',
+                        marginBottom: '3rem',
+                        letterSpacing: '-2px'
+                    }}
+                >
+                    Founders
+                </motion.h2>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    style={{
+                        background: 'linear-gradient(180deg, rgba(30, 30, 30, 0.7) 0%, rgba(10, 10, 10, 0.9) 100%)',
+                        borderRadius: '2.5rem',
+                        padding: '4rem 2rem',
+                        border: '1px solid #333',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        boxShadow: '0 0 50px rgba(0,0,0,0.5)'
+                    }}
+                >
+                    <div style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
+                        gap: '6rem',
+                        width: '100%',
+                        position: 'relative',
+                        zIndex: 2
+                    }}>
+                        {/* Dilraj (Left) */}
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '1 1 300px' }}>
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                style={{
+                                    width: '250px',
+                                    height: '250px',
+                                    borderRadius: '50%',
+                                    overflow: 'hidden',
+                                    border: '4px solid #A78BFA',
+                                    marginBottom: '1.5rem',
+                                    boxShadow: '0 0 30px rgba(167, 139, 250, 0.2)',
+                                    position: 'relative'
+                                }}
+                            >
+                                <img
+                                    src="/team/dilraj.jpg"
+                                    alt="Dilraj Singh"
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                            </motion.div>
+                            <h3 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, letterSpacing: '-1px' }}>Dilraj Singh</h3>
+                            <p style={{ color: '#A78BFA', fontWeight: '600', fontSize: '1.2rem', marginTop: '0.5rem', letterSpacing: '2px', textTransform: 'uppercase' }}>CTO & Co-Founder</p>
+                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                                <a href="https://www.linkedin.com/in/dilraj-singh-cos007/" target="_blank" rel="noreferrer" style={{ color: '#ccc', transition: 'color 0.3s' }}><Linkedin /></a>
+                                <a href="#" style={{ color: '#ccc' }}><Github /></a>
+                            </div>
+                        </div>
+
+                        {/* Vertical Divider for desktop */}
+                        <div style={{
+                            width: '1px',
+                            background: 'linear-gradient(to bottom, transparent, #444, transparent)',
+                            height: '300px',
+                            display: 'none',
+                            alignSelf: 'center'
+                        }} className="divider"></div>
+
+                        {/* Arya (Right) */}
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '1 1 300px' }}>
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                style={{
+                                    width: '250px',
+                                    height: '250px',
+                                    borderRadius: '50%',
+                                    overflow: 'hidden',
+                                    border: '4px solid #FDE047',
+                                    marginBottom: '1.5rem',
+                                    boxShadow: '0 0 30px rgba(253, 224, 71, 0.2)',
+                                    position: 'relative'
+                                }}
+                            >
+                                <img
+                                    src="/team/arya.jpg"
+                                    alt="Arya Wadhwa"
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                            </motion.div>
+                            <h3 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, letterSpacing: '-1px' }}>Arya Wadhwa</h3>
+                            <p style={{ color: '#FDE047', fontWeight: '600', fontSize: '1.2rem', marginTop: '0.5rem', letterSpacing: '2px', textTransform: 'uppercase' }}>CEO & Co-Founder</p>
+                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                                <a href="https://www.linkedin.com/in/aryawadhwa" target="_blank" rel="noreferrer" style={{ color: '#ccc', transition: 'color 0.3s' }}><Linkedin /></a>
+                                <a href="#" style={{ color: '#ccc' }}><Github /></a>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+                <style>{`
+                    .divider { display: none; }
+                    @media (min-width: 900px) {
+                        .divider { display: block; }
+                    }
+                `}</style>
+            </div>
+
+            {/* The Team - New Style */}
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                 <motion.h2
                     initial={{ opacity: 0 }}
@@ -283,90 +387,47 @@ const About = () => {
                 <p style={{
                     textAlign: 'center',
                     color: '#888',
-                    marginBottom: '3rem',
+                    marginBottom: '4rem',
                     fontSize: '1.1rem'
                 }}>
-                    The engineers behind the algorithms.
+                    Engineering the future of fitness.
                 </p>
 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                    gap: '1.5rem',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                    gap: '2rem',
                 }}>
                     {teamMembers.map((member, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.4, delay: index * 0.1 }}
-                            whileHover={{ y: -5, scale: 1.02 }}
+                            whileHover={{ y: -8 }}
                             style={{
-                                backgroundColor: member.color,
-                                borderRadius: '2rem',
-                                padding: '1.5rem 1.5rem 0',
+                                backgroundColor: 'rgba(20, 20, 20, 0.6)',
+                                borderRadius: '1.5rem',
+                                padding: '2rem',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                color: '#fff',
-                                height: '320px',
-                                position: 'relative',
-                                overflow: 'hidden',
-                                border: `1px solid ${member.borderColor}`,
-                                backdropFilter: 'blur(10px)'
+                                alignItems: 'center',
+                                textAlign: 'center',
+                                border: '1px solid #333',
+                                backdropFilter: 'blur(10px)',
+                                transition: 'border-color 0.3s',
                             }}
+                            onMouseEnter={(e) => e.currentTarget.style.borderColor = member.borderColor}
+                            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#333'}
                         >
-                            {/* Text Content */}
-                            <div style={{ position: 'relative', zIndex: 10 }}>
-                                <h2 style={{
-                                    fontSize: '1.4rem',
-                                    fontWeight: '800',
-                                    lineHeight: 1.1,
-                                    marginBottom: '0.25rem',
-                                    letterSpacing: '-0.5px',
-                                    textShadow: '0 2px 4px rgba(0,0,0,0.5)'
-                                }}>
-                                    {member.name}
-                                </h2>
-                                <p style={{
-                                    fontSize: '0.9rem',
-                                    fontWeight: '600',
-                                    opacity: 0.9,
-                                    margin: 0,
-                                    textShadow: '0 1px 2px rgba(0,0,0,0.5)'
-                                }}>
-                                    {member.role}
-                                </p>
-
-                                <a
-                                    href={member.linkedin}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    style={{
-                                        display: 'inline-block',
-                                        marginTop: '0.75rem',
-                                        color: '#fff',
-                                        padding: '0.4rem',
-                                        border: '1px solid rgba(255,255,255,0.2)',
-                                        borderRadius: '50%',
-                                        transition: 'background 0.2s',
-                                        backgroundColor: 'rgba(0,0,0,0.2)'
-                                    }}
-                                    onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.3)'}
-                                    onMouseLeave={(e) => e.target.style.background = 'rgba(0,0,0,0.2)'}
-                                >
-                                    <Linkedin size={18} />
-                                </a>
-                            </div>
-
-                            {/* Image at bottom */}
                             <div style={{
-                                marginTop: 'auto',
-                                width: '120%',
-                                marginLeft: '-10%',
-                                height: '65%',
-                                position: 'relative',
-                                userSelect: 'none'
+                                width: '120px',
+                                height: '120px',
+                                borderRadius: '50%',
+                                overflow: 'hidden',
+                                marginBottom: '1.5rem',
+                                border: `2px solid ${member.color}`,
                             }}>
                                 <img
                                     src={member.image}
@@ -375,14 +436,55 @@ const About = () => {
                                         width: '100%',
                                         height: '100%',
                                         objectFit: 'cover',
-                                        objectPosition: 'top center',
-                                        maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
-                                        transform: 'scale(1.05)',
-                                        transformOrigin: 'bottom center',
-                                        filter: 'grayscale(20%) contrast(1.1)'
+                                        filter: 'grayscale(30%)'
                                     }}
                                 />
                             </div>
+
+                            <h3 style={{
+                                fontSize: '1.25rem',
+                                fontWeight: '700',
+                                margin: '0 0 0.5rem 0',
+                                color: '#fff'
+                            }}>
+                                {member.name}
+                            </h3>
+                            <p style={{
+                                fontSize: '0.9rem',
+                                fontWeight: '600',
+                                color: '#888',
+                                margin: '0 0 1.5rem 0',
+                                textTransform: 'uppercase',
+                                letterSpacing: '1px'
+                            }}>
+                                {member.role}
+                            </p>
+
+                            <a
+                                href={member.linkedin}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                    color: '#fff',
+                                    padding: '0.5rem',
+                                    backgroundColor: 'rgba(255,255,255,0.05)',
+                                    borderRadius: '50%',
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = member.color;
+                                    e.currentTarget.style.color = '#000';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                                    e.currentTarget.style.color = '#fff';
+                                }}
+                            >
+                                <Linkedin size={18} />
+                            </a>
                         </motion.div>
                     ))}
                 </div>
