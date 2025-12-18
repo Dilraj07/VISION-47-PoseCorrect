@@ -185,10 +185,10 @@ const LandingPage = ({ onStart }) => {
                         Try Demo
                     </motion.button>
                 </div>
-            </main>
+            </main >
 
             {/* Bottom Bar - Feature Highlights */}
-            <div style={{
+            < div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                 borderTop: '1px solid #333'
@@ -211,10 +211,10 @@ const LandingPage = ({ onStart }) => {
                     <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Smart Schedule</h3>
                     <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: '900', fontSize: '1.5rem', margin: 0 }}>PLAN & TRACK</p>
                 </div>
-            </div>
+            </div >
 
             {/* Comprehensive Footer */}
-            <footer style={{
+            < footer style={{
                 padding: '4rem 2rem',
                 backgroundColor: '#050505',
                 borderTop: '1px solid #222',
@@ -274,8 +274,8 @@ const LandingPage = ({ onStart }) => {
                 }}>
                     © 2024 GYMBRO AI. All rights reserved.
                 </div>
-            </footer>
-        </div>
+            </footer >
+        </div >
     );
 };
 

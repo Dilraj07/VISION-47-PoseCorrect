@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAudio } from '../context/AudioContext';
-import { Dumbbell, X, Activity, Flame, Timer } from 'lucide-react';
+import { Dumbbell, X, Activity, Flame, Timer, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];
@@ -82,6 +82,24 @@ const Navbar = () => {
 
             {/* Right Side: Visualizer + Menu Toggle */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {/* Profile Icon */}
+                <button
+                    onClick={() => user ? navigate('/profile') : navigate('/auth', { state: { isSignup: true } })}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: user ? 'var(--color-neon-blue)' : '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '0.5rem'
+                    }}
+                    title={user ? "Profile" : "Join Gymbro"}
+                >
+                    <User size={24} />
+                </button>
+
                 {/* Music Visualizer (Click to Toggle Mute) */}
                 <div
                     onClick={toggleMute}
