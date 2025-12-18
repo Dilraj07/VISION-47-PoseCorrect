@@ -2,386 +2,74 @@
 Exercise Biomechanics Database
 Based on NSCA/ACSM standards
 """
+import numpy as np
+import mediapipe as mp
+
+def calculate_angle(a, b, c):
+    """Calculate angle at point b formed by a-b-c"""
+    a = np.array(a)
+    b = np.array(b)
+    c = np.array(c)
+    
+    ba = a - b
+    bc = c - b
+    
+    cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc) + 1e-6)
+    cosine_angle = np.clip(cosine_angle, -1.0, 1.0)
+    
+    return int(np.degrees(np.arccos(cosine_angle)))
+
+def get_landmark_coords(landmarks, landmark_enum, width, height):
+    """Get pixel coordinates for a landmark"""
+    lm = landmarks[landmark_enum.value]
+    return (int(lm.x * width), int(lm.y * height))
+
+def get_landmarks(landmarks, width, height):
+    """Get all key landmarks as pixel coordinates"""
+    mp_pose = mp.solutions.pose
+    return {
+        'left_shoulder': get_landmark_coords(landmarks, mp_pose.PoseLandmark.LEFT_SHOULDER, width, height),
+        'right_shoulder': get_landmark_coords(landmarks, mp_pose.PoseLandmark.RIGHT_SHOULDER, width, height),
+        'left_elbow': get_landmark_coords(landmarks, mp_pose.PoseLandmark.LEFT_ELBOW, width, height),
+        'right_elbow': get_landmark_coords(landmarks, mp_pose.PoseLandmark.RIGHT_ELBOW, width, height),
+        'left_wrist': get_landmark_coords(landmarks, mp_pose.PoseLandmark.LEFT_WRIST, width, height),
+        'right_wrist': get_landmark_coords(landmarks, mp_pose.PoseLandmark.RIGHT_WRIST, width, height),
+        'left_hip': get_landmark_coords(landmarks, mp_pose.PoseLandmark.LEFT_HIP, width, height),
+        'right_hip': get_landmark_coords(landmarks, mp_pose.PoseLandmark.RIGHT_HIP, width, height),
+        'left_knee': get_landmark_coords(landmarks, mp_pose.PoseLandmark.LEFT_KNEE, width, height),
+        'right_knee': get_landmark_coords(landmarks, mp_pose.PoseLandmark.RIGHT_KNEE, width, height),
+        'left_ankle': get_landmark_coords(landmarks, mp_pose.PoseLandmark.LEFT_ANKLE, width, height),
+        'right_ankle': get_landmark_coords(landmarks, mp_pose.PoseLandmark.RIGHT_ANKLE, width, height),
+    }
 
 EXERCISE_BIOMECHANICS = {
-    "cable_chest_fly": {
-        "description": "Chest isolation exercise using cable machine",
-        "key_joints": ["elbow", "shoulder"],
-        "ideal_angles": {
-            "elbow": {
-                "range": (150, 170),
-                "ideal": 160,
-                "measurement_notes": "Elbow should remain slightly bent throughout movement",
-                "critical": False
-            },
-            "shoulder_adduction": {
-                "range": (0, 30),
-                "ideal": 15,
-                "measurement_notes": "Arms brought together in front of chest",
-                "critical": False
-            }
-        },
-        "common_errors": {
-            "elbow_locked": {
-                "threshold": 175,
-                "message": "Don't lock elbows, keep slight bend",
-                "severity": "warning"
-            },
-            "elbow_too_bent": {
-                "threshold": 150,
-                "message": "Elbows too bent, reduce angle",
-                "severity": "warning"
-            },
-            "excessive_range": {
-                "threshold": 35,
-                "message": "Arms going too far back, risk shoulder injury",
-                "severity": "danger"
-            }
-        },
-        "camera_angle": "front",
-        "reps_phase": "peak_contraction"
-    },
-    
-    "lunges": {
-        "description": "Unilateral lower body exercise",
-        "key_joints": ["front_knee", "front_hip", "rear_knee", "torso"],
-        "ideal_angles": {
-            "front_knee": {
-                "range": (80, 100),
-                "ideal": 90,
-                "measurement_notes": "Knee should be directly above ankle",
-                "critical": True
-            },
-            "front_hip": {
-                "range": (80, 100),
-                "ideal": 90,
-                "measurement_notes": "Thigh parallel to floor",
-                "critical": False
-            },
-            "rear_knee": {
-                "range": (80, 100),
-                "ideal": 90,
-                "measurement_notes": "Knee should hover just above floor",
-                "critical": False
-            },
-            "torso": {
-                "range": (85, 100),
-                "ideal": 90,
-                "measurement_notes": "Torso nearly vertical, minimal forward lean",
-                "critical": True
-            }
-        },
-        "common_errors": {
-            "knee_past_toes": {
-                "threshold": 100,
-                "message": "Front knee passing toes, shift weight back",
-                "severity": "danger"
-            },
-            "torso_lean": {
-                "threshold": 85,
-                "message": "Torso leaning too far forward",
-                "severity": "warning"
-            },
-            "rear_knee_touching": {
-                "threshold": 70,
-                "message": "Rear knee touching ground, control descent",
-                "severity": "warning"
-            }
-        },
-        "camera_angle": "side",
-        "reps_phase": "bottom_position"
-    },
-    
-    "deadlift": {
-        "description": "Hip hinge compound lift",
+    "squat": {
         "key_joints": ["knee", "hip", "torso"],
         "ideal_angles": {
-            "knee_start": {
-                "range": (110, 120),
-                "ideal": 115,
-                "measurement_notes": "Knees slightly bent, not squatting deeply",
-                "critical": True
-            },
-            "hip_start": {
-                "range": (40, 50),
-                "ideal": 45,
-                "measurement_notes": "Hips high, well above knees",
-                "critical": True
-            },
-            "torso_horizontal": {
-                "range": (35, 45),
-                "ideal": 40,
-                "measurement_notes": "Angle between torso and floor",
-                "critical": True
-            },
-            "spine_angle": {
-                "range": (175, 180),
-                "ideal": 180,
-                "measurement_notes": "Back must be kept straight",
-                "critical": True
-            }
-        },
-        "common_errors": {
-            "rounded_back": {
-                "threshold": 170,
-                "condition": "less_than",
-                "message": "BACK ROUNDED! Straighten immediately - INJURY RISK",
-                "severity": "critical"
-            },
-            "hips_too_low": {
-                "threshold": 60,
-                "condition": "greater_than",
-                "message": "Hips too low - you're squatting, not deadlifting",
-                "severity": "danger"
-            },
-            "hips_too_high": {
-                "threshold": 30,
-                "condition": "less_than",
-                "message": "Hips too high - excessive stress on lower back",
-                "severity": "danger"
-            }
-        },
-        "camera_angle": "side",
-        "reps_phase": "start_position"
+            "knee": {"range": (80, 100), "ideal": 90},
+            "torso": {"range": (40, 50), "ideal": 45}
+        }
     },
-    
-    "lat_pulldown": {
-        "description": "Upper back compound exercise",
-        "key_joints": ["elbow", "shoulder"],
-        "ideal_angles": {
-            "elbow": {
-                "range": (90, 100),
-                "ideal": 95,
-                "measurement_notes": "Elbows bent at right angle at bottom",
-                "critical": False
-            },
-            "shoulder_adduction": {
-                "range": (30, 45),
-                "ideal": 37.5,
-                "measurement_notes": "Elbow close to side of torso",
-                "critical": True
-            },
-            "torso_lean": {
-                "range": (0, 15),
-                "ideal": 10,
-                "measurement_notes": "Slight back lean, not excessive",
-                "critical": False
-            }
-        },
-        "common_errors": {
-            "behind_neck": {
-                "condition": "wrist_behind_head",
-                "message": "Pulling behind neck - DANGEROUS for cervical spine",
-                "severity": "critical"
-            },
-            "excessive_lean": {
-                "threshold": 20,
-                "message": "Leaning back too much, using momentum",
-                "severity": "warning"
-            },
-            "partial_rom": {
-                "threshold": 110,
-                "message": "Not full range, bar should reach chest",
-                "severity": "warning"
-            }
-        },
-        "camera_angle": "front",
-        "reps_phase": "bottom_peak_contraction"
-    },
-    
-    "weighted_squats": {
-        "description": "Barbell back squat with weight",
-        "key_joints": ["knee", "hip", "torso"],
-        "ideal_angles": {
-            "knee": {
-                "range": (70, 100),
-                "ideal": 85,
-                "measurement_notes": "Hip crease below knee, 70-90° target",
-                "critical": True
-            },
-            "hip": {
-                "range": (45, 75),
-                "ideal": 60,
-                "measurement_notes": "Related to depth and torso lean",
-                "critical": False
-            },
-            "torso_hip_parallelism": {
-                "range": (0, 15),
-                "ideal": 10,
-                "measurement_notes": "Shin and torso angles should be parallel",
-                "critical": True
-            },
-            "knee_valgus": {
-                "range": (0, 10),
-                "ideal": 0,
-                "measurement_notes": "Knees should not cave inward",
-                "critical": True
-            }
-        },
-        "common_errors": {
-            "butt_wink": {
-                "condition": "pelvic_tilt_at_bottom",
-                "message": "Butt wink - lumbar rounding at bottom",
-                "severity": "danger"
-            },
-            "knee_valgus_excessive": {
-                "threshold": 15,
-                "message": "Knees caving in - ACL injury risk",
-                "severity": "critical"
-            },
-            "forward_lean": {
-                "threshold": 30,
-                "message": "Excessive forward lean, bar path compromised",
-                "severity": "warning"
-            },
-            "heels_lifting": {
-                "condition": "heel_elevation",
-                "message": "Heels lifting off ground",
-                "severity": "danger"
-            }
-        },
-        "camera_angle": "side",
-        "reps_phase": "bottom_position"
-    },
-
     "pushup": {
-        "description": "Upper body pushing exercise",
-        "key_joints": ["elbow", "shoulder", "torso", "hip"],
+        "key_joints": ["elbow", "shoulder", "hip"],
         "ideal_angles": {
-            "elbow": {
-                "range": (80, 100),
-                "ideal": 90,
-                "measurement_notes": "Elbows at 90 degrees at bottom",
-                "critical": True
-            },
-            "torso": {
-                "range": (170, 190),
-                "ideal": 180,
-                "measurement_notes": "Straight line from shoulder to ankle",
-                "critical": True
-            }
-        },
-        "common_errors": {
-            "hip_sag": {
-                "threshold": 160,
-                "condition": "less_than",
-                "message": "Hips sagging/dropping - Engage core",
-                "severity": "warning"
-            },
-            "insufficient_depth": {
-                "threshold": 100,
-                "condition": "greater_than",
-                "message": "Not going deep enough",
-                "severity": "warning"
-            }
-        },
-        "camera_angle": "side",
-        "reps_phase": "bottom_position"
+            "elbow": {"range": (80, 100), "ideal": 90},
+            "torso": {"range": (170, 190), "ideal": 180}
+        }
     },
-
-    "pullup": {
-        "description": "Upper body pulling exercise",
-        "key_joints": ["elbow", "shoulder"],
+    "deadlift": {
+        "key_joints": ["knee", "hip", "back"],
         "ideal_angles": {
-            "elbow_bottom": {
-                "range": (160, 180),
-                "ideal": 175,
-                "measurement_notes": "Full extension at bottom",
-                "critical": True
-            }
-        },
-        "common_errors": {
-            "partial_rep": {
-                "threshold": 150,
-                "condition": "less_than",
-                "message": "Not fully extending arms at bottom",
-                "severity": "warning"
-            }
-        },
-        "camera_angle": "back",
-        "reps_phase": "bottom_position"
-    },
-
-    "bench_press": {
-        "description": "Compound pushing exercise",
-        "key_joints": ["elbow", "shoulder"],
-        "ideal_angles": {
-            "elbow_bottom": {
-                "range": (45, 75),
-                "ideal": 60,
-                "measurement_notes": "Elbows tucked, bar touches chest (angle depends on grip)",
-                "critical": False
-            },
-            "elbow_top": {
-                "range": (170, 180),
-                "ideal": 180,
-                "measurement_notes": "Full lockout at top",
-                "critical": True
-            }
-        },
-        "common_errors": {
-            "flared_elbows": {
-                "threshold": 90,
-                "condition": "greater_than",
-                "message": "Elbows flared too wide (>90°) - Shoulder risk",
-                "severity": "danger"
-            }
-        },
-        "camera_angle": "side/front",
-        "reps_phase": "bottom_position"
+            "back_angle": {"range": (40, 50), "ideal": 45},
+            "knee_start": {"range": (110, 120), "ideal": 115}
+        }
     }
 }
 
-# Helper functions
 def get_exercise_angles(exercise_name):
-    """Get ideal angles for specific exercise"""
-    # Map common names to keys
-    mapping = {
-        "squat": "weighted_squats",
-        "pushup": "pushup",
-        "pullup": "pullup",
-        "deadlift": "deadlift",
-        "benchpress": "bench_press",
-        "bench_press": "bench_press"
-    }
-    
-    key = mapping.get(exercise_name, exercise_name)
-    
-    if key not in EXERCISE_BIOMECHANICS:
-        return {} # Safe fallback
-    
-    return EXERCISE_BIOMECHANICS[key]["ideal_angles"]
+    if exercise_name not in EXERCISE_BIOMECHANICS:
+        return {}
+    return EXERCISE_BIOMECHANICS[exercise_name]["ideal_angles"]
 
 def get_exercise_errors(exercise_name):
-    """Get common errors for specific exercise"""
-    mapping = {
-        "squat": "weighted_squats",
-        "pushup": "pushup",
-        "pullup": "pullup",
-        "deadlift": "deadlift",
-        "benchpress": "bench_press",
-        "bench_press": "bench_press"
-    }
-    
-    key = mapping.get(exercise_name, exercise_name)
-    
-    if key not in EXERCISE_BIOMECHANICS:
-        return {}
-    
-    return EXERCISE_BIOMECHANICS[key]["common_errors"]
-
-def list_exercises():
-    """List all available exercises"""
-    return list(EXERCISE_BIOMECHANICS.keys())
-
-def get_exercise_details(exercise_name):
-    """Get all details for an exercise"""
-    mapping = {
-        "squat": "weighted_squats"
-    }
-    key = mapping.get(exercise_name, exercise_name)
-    
-    if key not in EXERCISE_BIOMECHANICS:
-        return None
-    
-    return EXERCISE_BIOMECHANICS[key]
+    return {}
