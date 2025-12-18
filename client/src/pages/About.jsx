@@ -65,23 +65,23 @@ const values = [
 const teamMembers = [
     {
         name: 'Arya Wadhwa',
-        role: 'Student, RVCE',
+        role: 'CEO & Co-Founder',
         color: 'rgba(253, 224, 71, 0.1)', // Translucent Yellow
         borderColor: 'rgba(253, 224, 71, 0.3)',
-        image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400',
+        image: '/team/arya.jpg',
         linkedin: 'https://www.linkedin.com/in/aryawadhwa'
     },
     {
         name: 'Dilraj Singh',
-        role: 'Student, RVCE',
+        role: 'CTO & Co-Founder',
         color: 'rgba(167, 139, 250, 0.1)', // Translucent Purple
         borderColor: 'rgba(167, 139, 250, 0.3)',
-        image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+        image: '/team/dilraj.jpg',
         linkedin: 'https://www.linkedin.com/in/dilraj-singh-cos007/'
     },
     {
         name: 'Shlokk Sikka',
-        role: 'Student, RVCE',
+        role: 'Co-Founder',
         color: 'rgba(74, 222, 128, 0.1)', // Translucent Green
         borderColor: 'rgba(74, 222, 128, 0.3)',
         image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
@@ -89,7 +89,7 @@ const teamMembers = [
     },
     {
         name: 'Anirudha M',
-        role: 'Student, RVCE',
+        role: 'Co-Founder',
         color: 'rgba(251, 113, 133, 0.1)', // Translucent Red
         borderColor: 'rgba(251, 113, 133, 0.3)',
         image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400',
@@ -97,7 +97,7 @@ const teamMembers = [
     },
     {
         name: 'Ashwin Acharya',
-        role: 'Student, RVCE',
+        role: 'Co-Founder',
         color: 'rgba(34, 211, 238, 0.1)', // Translucent Cyan
         borderColor: 'rgba(34, 211, 238, 0.3)',
         image: 'https://images.unsplash.com/photo-1600486913747-55e5470d6f40?auto=format&fit=crop&q=80&w=400',
