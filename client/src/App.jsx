@@ -16,6 +16,7 @@ import Auth from './pages/Auth';
 import History from './pages/History';
 import Profile from './pages/Profile';
 import Leaderboard from './pages/Leaderboard';
+import Schedule from './pages/Schedule';
 import { AuthProvider } from './context/AuthContext';
 
 const AppContent = () => {
@@ -66,6 +67,7 @@ const AppContent = () => {
           <Route path="/history" element={<><Navbar /><History /></>} />
           <Route path="/profile" element={<><Navbar /><Profile /></>} />
           <Route path="/leaderboard" element={<><Navbar /><Leaderboard /></>} />
+          <Route path="/schedule" element={<Schedule />} />
         </Routes>
       )}
 
