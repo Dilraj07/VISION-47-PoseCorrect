@@ -214,8 +214,8 @@ const LandingPage = ({ onStart }) => {
             </div >
 
             {/* Comprehensive Footer */}
-            < footer style={{
-                padding: '4rem 2rem',
+            <footer style={{
+                padding: '2rem 2rem',
                 backgroundColor: '#050505',
                 borderTop: '1px solid #222',
                 fontFamily: "'Outfit', sans-serif"
@@ -225,7 +225,7 @@ const LandingPage = ({ onStart }) => {
                     margin: '0 auto',
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '4rem'
+                    gap: '3rem'
                 }}>
                     {/* Brand */}
                     <div>
@@ -235,8 +235,8 @@ const LandingPage = ({ onStart }) => {
 
                     {/* Features */}
                     <div>
-                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>Features</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Features</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                             <a onClick={() => navigate('/coach')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>AI Coach</a>
                             <a onClick={() => navigate('/upload')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Video Analysis</a>
                             <a onClick={() => navigate('/schedule')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Schedule</a>
@@ -246,8 +246,8 @@ const LandingPage = ({ onStart }) => {
 
                     {/* Community */}
                     <div>
-                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>Community</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Community</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                             <a onClick={() => navigate('/leaderboard')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Leaderboard</a>
                             <a onClick={() => navigate('/profile')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Profile</a>
                             <a onClick={() => navigate('/settings')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Settings</a>
@@ -256,8 +256,8 @@ const LandingPage = ({ onStart }) => {
 
                     {/* Legal */}
                     <div>
-                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>Support</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Support</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                             <a onClick={() => navigate('/about')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>About</a>
                             <a onClick={() => navigate('/contact')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Contact</a>
                             <a onClick={() => navigate('/privacy')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Privacy</a>
@@ -266,8 +266,8 @@ const LandingPage = ({ onStart }) => {
                 </div>
 
                 <div style={{
-                    marginTop: '4rem',
-                    paddingTop: '2rem',
+                    marginTop: '2rem',
+                    paddingTop: '1rem',
                     borderTop: '1px solid #222',
                     textAlign: 'center',
                     color: '#444'
