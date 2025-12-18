@@ -44,7 +44,7 @@ button {
 
 /* Navbar Responsive Styles */
 .navbar {
-    padding: 2rem;
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
