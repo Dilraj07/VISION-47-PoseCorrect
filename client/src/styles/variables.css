@@ -1,11 +1,13 @@
 :root {
-  /* Brand Colors */
-  --color-neon-green: #ccff00;
+  /* Brand Colors - Lando Norris Aesthetic */
+  --color-neon-green: #D2FF00;
+  /* Lando Neon */
   --color-neon-pink: #ff0099;
   --color-neon-purple: #9900ff;
   --color-neon-blue: #00ccff;
-  --color-black: #000000;
-  --color-dark-gray: #121212;
+  --color-black: #111112;
+  /* Lando Dark Background */
+  --color-dark-gray: #1E1E1F;
   --color-white: #ffffff;
 
   /* Typography */

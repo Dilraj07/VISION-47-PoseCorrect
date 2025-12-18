@@ -77,24 +77,30 @@ button {
 
 .btn-launch {
     padding: 0.8rem 1.5rem;
-    background-color: var(--color-white);
+    background-color: var(--color-neon-green);
     color: var(--color-black);
-    border-radius: 2rem;
-    font-weight: bold;
+    border-radius: 0;
+    /* Sharp corners for Brutalist look */
+    font-weight: 900;
     font-size: 1rem;
-    border: none;
+    border: 2px solid var(--color-neon-green);
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    box-shadow: 4px 4px 0px var(--color-white);
+    /* Brutalist shadow */
 }
 
 .btn-launch:hover {
-    transform: scale(1.05);
-    background-color: var(--color-neon-green);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--color-white);
+    background-color: var(--color-black);
+    color: var(--color-neon-green);
 }
 
 /* Mobile Menu */
 .mobile-toggle {
-    display: none;
+    display: block;
     cursor: pointer;
     z-index: 101;
 }
@@ -147,24 +153,23 @@ button {
 
 .mobile-btn-launch {
     padding: 1rem 3rem;
-    background-color: var(--color-neon-blue);
+    background-color: var(--color-neon-green);
     color: var(--color-black);
-    border-radius: 3rem;
+    border-radius: 0;
     font-weight: 900;
     font-size: 1.5rem;
-    border: none;
+    border: 2px solid var(--color-neon-green);
     cursor: pointer;
     margin-top: 2rem;
     text-transform: uppercase;
+    box-shadow: 4px 4px 0px var(--color-white);
 }
 
-/* Responsive Breakpoints */
+/* Responsive Breakpoints - No longer needed for hiding desktop menu as it's gone */
 @media (max-width: 768px) {
-    .desktop-only {
-        display: none !important;
-    }
 
-    .mobile-toggle {
-        display: block;
+    /* Adjust font sizes for mobile if needed, but layout is now unified */
+    .mobile-nav-link {
+        font-size: 1.5rem;
     }
 }

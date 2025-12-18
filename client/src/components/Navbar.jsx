@@ -1,48 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Dumbbell, X } from 'lucide-react';
+import { useAudio } from '../context/AudioContext';
+import { Dumbbell, X, Activity, Flame, Timer } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];
 const Navbar = () => {
     const navigate = useNavigate();
     const { user, signOut } = useAuth();
+    const { isPlaying, isMuted, toggleMute } = useAudio();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMenu = () => setIsMobileMenuOpen(false);
 
-    const NavLinks = ({ mobile = false }) => (
-        <>
-            <Link to="/about" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>About Us</Link>
-            <Link to="/contact" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>Contact Us</Link>
-            <Link to="/privacy" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>Privacy</Link>
+    // Visualizer Bar Component
+    const AudioBar = ({ delay }) => (
+        <motion.div
+            animate={
+                isPlaying && !isMuted
+                    ? {
+                        height: [4, 16, 8, 24, 4],
+                        backgroundColor: ['#fff', 'var(--color-neon-pink)', 'var(--color-neon-green)', '#fff']
+                    }
+                    : { height: 4, backgroundColor: isMuted ? '#444' : '#666' }
+            }
+            transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                delay: delay,
+                ease: "easeInOut"
+            }}
+            style={{
+                width: '4px',
+                backgroundColor: isMuted ? '#444' : '#666',
+                borderRadius: '2px'
+            }}
+        />
+    );
 
-            {user ? (
+    const NavLinks = () => (
+        <>
+            {!user ? (
+                <Link to="/auth" className="mobile-nav-link" onClick={closeMenu}>Join Gymbro</Link>
+            ) : (
+                <Link to="/dashboard" className="mobile-nav-link" onClick={closeMenu}>Dashboard</Link>
+            )}
+
+            <Link to="/" className="mobile-nav-link" onClick={closeMenu}>Homepage</Link>
+
+            <Link to="/about" className="mobile-nav-link" onClick={closeMenu}>About Us</Link>
+            <Link to="/contact" className="mobile-nav-link" onClick={closeMenu}>Contact Us</Link>
+            <Link to="/privacy" className="mobile-nav-link" onClick={closeMenu}>Privacy</Link>
+
+            {user && (
                 <>
-                    <Link to="/history" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>History</Link>
-                    <Link to="/profile" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>Profile</Link>
-                    <Link to="/leaderboard" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>Leaderboard</Link>
-                    <Link to="/schedule" className={mobile ? "mobile-nav-link" : "nav-link"} onClick={mobile ? closeMenu : undefined}>Schedule</Link>
-                    {!mobile && <span style={{ color: '#888', marginRight: '1rem', fontSize: '0.9rem' }}>{user.email}</span>}
+                    <Link to="/history" className="mobile-nav-link" onClick={closeMenu}>History</Link>
+                    <Link to="/profile" className="mobile-nav-link" onClick={closeMenu}>Profile</Link>
+                    <Link to="/leaderboard" className="mobile-nav-link" onClick={closeMenu}>Leaderboard</Link>
+                    <Link to="/schedule" className="mobile-nav-link" onClick={closeMenu}>Schedule</Link>
+
                     <button
                         onClick={() => { signOut(); closeMenu(); }}
-                        className={mobile ? "mobile-nav-link" : "nav-link"}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: mobile ? 'center' : 'left' }}
+                        className="mobile-nav-link"
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'center' }}
                     >
                         Log Out
                     </button>
+                    <p style={{ marginTop: '1rem', color: '#666', fontSize: '0.9rem' }}>Signed in as<br />{user.email}</p>
                 </>
-            ) : (
-                <Link to="/auth" className={mobile ? "mobile-nav-link" : "nav-link"} style={!mobile ? { color: '#fff' } : {}} onClick={mobile ? closeMenu : undefined}>Sign In</Link>
             )}
-
-            <button
-                onClick={() => { navigate('/dashboard'); closeMenu(); }}
-                className={mobile ? "mobile-btn-launch" : "btn-launch"}
-            >
-                Launch App
-            </button>
         </>
     );
 
@@ -52,17 +80,43 @@ const Navbar = () => {
                 <h2>GYMBRO</h2>
             </Link>
 
-            {/* Desktop Menu */}
-            <div className="navbar-links desktop-only">
-                <NavLinks />
+            {/* Right Side: Visualizer + Menu Toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {/* Music Visualizer (Click to Toggle Mute) */}
+                <div
+                    onClick={toggleMute}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '3px',
+                        height: '24px',
+                        cursor: 'pointer',
+                        padding: '0.5rem',
+                        borderRadius: '4px',
+                        backgroundColor: 'rgba(255,255,255,0.05)'
+                    }}
+                    title={isMuted ? "Unmute Music" : "Mute Music"}
+                >
+                    <AudioBar delay={0} />
+                    <AudioBar delay={0.2} />
+                    <AudioBar delay={0.4} />
+                    <AudioBar delay={0.1} />
+                </div>
+
+                {/* Menu Toggle (Visible on all screens) */}
+                <div className="mobile-toggle" onClick={toggleMenu} style={{ display: 'block' }}>
+                    <Dumbbell
+                        size={32}
+                        color="var(--color-neon-green)"
+                        style={{
+                            transform: isMobileMenuOpen ? 'rotate(45deg)' : 'none',
+                            transition: 'transform 0.3s'
+                        }}
+                    />
+                </div>
             </div>
 
-            {/* Mobile Toggle */}
-            <div className="mobile-toggle" onClick={toggleMenu}>
-                <Dumbbell size={32} color="var(--color-neon-green)" style={{ transform: isMobileMenuOpen ? 'rotate(45deg)' : 'none', transition: 'transform 0.3s' }} />
-            </div>
-
-            {/* Mobile Menu Overlay */}
+            {/* Menu Overlay */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
@@ -77,8 +131,7 @@ const Navbar = () => {
                         </button>
                         <div className="mobile-menu-content">
                             <h2 style={{ marginBottom: '2rem', color: 'var(--color-neon-green)' }}>MENU</h2>
-                            <NavLinks mobile={true} />
-                            {user && <p style={{ marginTop: '2rem', color: '#666' }}>Signed in as<br />{user.email}</p>}
+                            <NavLinks />
                         </div>
                     </motion.div>
                 )}

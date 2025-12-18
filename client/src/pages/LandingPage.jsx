@@ -123,12 +123,12 @@ const LandingPage = ({ onStart }) => {
                             alignItems: 'center'
                         }}
                     >
-                        <span style={{ display: 'block' }}>WELCOME</span>
+                        <span style={{ display: 'block' }}>TRAIN</span>
                         <span style={{
                             color: 'transparent',
                             WebkitTextStroke: '2px var(--color-neon-pink)',
                             display: 'block'
-                        }}>BRO</span>
+                        }}>SMARTER</span>
                     </motion.h1>
                 </div>
 

@@ -1,17 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAudio } from '../context/AudioContext';
 
 const IntroAnimation = ({ onComplete, onStart, isLoading }) => {
     const [step, setStep] = useState(-1); // Start at -1 (Click to Start)
+    const { analyser } = useAudio();
+    const lastStepTimeRef = useRef(0);
+    const animationFrameRef = useRef(null);
 
+    // Sync animation with music beats
     useEffect(() => {
-        if (step >= 0 && step < 3) {
+        if (step >= 0 && step < 3 && analyser) {
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            const checkBeat = () => {
+                analyser.getByteFrequencyData(dataArray);
+
+                // Calculate average bass volume (first 10 bins approx)
+                let bassSum = 0;
+                const bassBins = 10;
+                for (let i = 0; i < bassBins; i++) {
+                    bassSum += dataArray[i];
+                }
+                const bassAvg = bassSum / bassBins;
+
+                const MIN_DELAY = 600; // Minimum ms between steps (approx 100 BPM)
+                const BEAT_THRESHOLD = 180; // Volume threshold
+
+                const now = Date.now();
+                if (now - lastStepTimeRef.current > MIN_DELAY) {
+                    if (bassAvg > BEAT_THRESHOLD) {
+                        setStep(prev => prev + 1);
+                        lastStepTimeRef.current = now;
+                    }
+                }
+
+                animationFrameRef.current = requestAnimationFrame(checkBeat);
+            };
+
+            checkBeat();
+
+            // Safety fallback: Advance if no beat detected for too long (2s)
+            const safetyTimer = setTimeout(() => {
+                if (Date.now() - lastStepTimeRef.current > 2000) {
+                    setStep(prev => prev + 1);
+                    lastStepTimeRef.current = Date.now();
+                }
+            }, 2000);
+
+            return () => {
+                cancelAnimationFrame(animationFrameRef.current);
+                clearTimeout(safetyTimer);
+            };
+        } else if (step >= 0 && step < 3 && !analyser) {
+            // Fallback for no audio context
             const timer = setTimeout(() => {
                 setStep(step + 1);
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [step]);
+    }, [step, analyser]);
 
 
     const variants = {
