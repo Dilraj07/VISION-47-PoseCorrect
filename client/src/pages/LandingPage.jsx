@@ -187,7 +187,7 @@ const LandingPage = ({ onStart }) => {
                 </div>
             </main>
 
-            {/* Bottom Bar */}
+            {/* Bottom Bar - Feature Highlights */}
             <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -203,7 +203,6 @@ const LandingPage = ({ onStart }) => {
                     <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Video Upload</h3>
                     <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: '900', fontSize: '1.5rem', margin: 0 }}>INSTANT FEEDBACK</p>
                 </div>
-                {/* [NEW] Smart Schedule Footer Item */}
                 <div
                     onClick={() => navigate('/schedule')}
                     style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505', cursor: 'pointer' }}
@@ -214,10 +213,68 @@ const LandingPage = ({ onStart }) => {
                 </div>
             </div>
 
-            {/* Full Width Footer Bar */}
-            <div style={{ padding: '2rem', backgroundColor: 'var(--color-neon-green)', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                <span style={{ fontSize: '2rem', fontFamily: "'Outfit', sans-serif", fontWeight: '900' }}>JOIN THE FUTURE</span>
-            </div>
+            {/* Comprehensive Footer */}
+            <footer style={{
+                padding: '4rem 2rem',
+                backgroundColor: '#050505',
+                borderTop: '1px solid #222',
+                fontFamily: "'Outfit', sans-serif"
+            }}>
+                <div style={{
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '4rem'
+                }}>
+                    {/* Brand */}
+                    <div>
+                        <h2 style={{ fontSize: '2rem', fontWeight: '900', margin: '0 0 1rem 0' }}>GYMBRO</h2>
+                        <p style={{ color: '#666', lineHeight: '1.6' }}>The future of AI-powered workout analysis. Train smarter, not harder.</p>
+                    </div>
+
+                    {/* Features */}
+                    <div>
+                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>Features</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <a onClick={() => navigate('/coach')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>AI Coach</a>
+                            <a onClick={() => navigate('/upload')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Video Analysis</a>
+                            <a onClick={() => navigate('/schedule')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Schedule</a>
+                            <a onClick={() => navigate('/history')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>History</a>
+                        </div>
+                    </div>
+
+                    {/* Community */}
+                    <div>
+                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>Community</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <a onClick={() => navigate('/leaderboard')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Leaderboard</a>
+                            <a onClick={() => navigate('/profile')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Profile</a>
+                            <a onClick={() => navigate('/settings')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Settings</a>
+                        </div>
+                    </div>
+
+                    {/* Legal */}
+                    <div>
+                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>Support</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <a onClick={() => navigate('/about')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>About</a>
+                            <a onClick={() => navigate('/contact')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Contact</a>
+                            <a onClick={() => navigate('/privacy')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Privacy</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{
+                    marginTop: '4rem',
+                    paddingTop: '2rem',
+                    borderTop: '1px solid #222',
+                    textAlign: 'center',
+                    color: '#444'
+                }}>
+                    © 2024 GYMBRO AI. All rights reserved.
+                </div>
+            </footer>
         </div>
     );
 };

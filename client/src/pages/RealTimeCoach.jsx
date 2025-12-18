@@ -106,7 +106,7 @@ const RealTimeCoach = () => {
         formData.append('exercise_type', selectedExercise);
 
         try {
-            const response = await fetch(`${API_URL}/analyze`, {
+            const response = await fetch(`${API_URL}/api/analyze`, {
                 method: 'POST',
                 body: formData,
             });

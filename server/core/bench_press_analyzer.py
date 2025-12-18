@@ -2,19 +2,10 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
+from .biomechanics import calculate_angle, get_landmark_coords
 
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
-
-def calculate_angle(a, b, c):
-    a = np.array(a)
-    b = np.array(b)
-    c = np.array(c)
-    ba = a - b
-    bc = c - b
-    cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc) + 1e-6)
-    cosine_angle = np.clip(cosine_angle, -1.0, 1.0)
-    return int(np.degrees(np.arccos(cosine_angle)))
 
 def get_key_metrics(landmarks, width, height):
     def pixel_coord(idx):

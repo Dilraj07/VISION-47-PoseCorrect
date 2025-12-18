@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700;900&display=swap');
 @import './variables.css';
 
+@font-face {
+    font-family: 'Migha';
+    src: url('/src/assets/fonts/Migha-BoldExpanded.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+}
+
 body {
     margin: 0;
     padding: 0;

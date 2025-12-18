@@ -62,7 +62,7 @@ const VideoAnalysis = () => {
         formData.append('exercise_type', selectedExercise);
 
         try {
-            const response = await fetch(`${API_URL}/analyze`, {
+            const response = await fetch(`${API_URL}/api/analyze`, {
                 method: 'POST',
                 body: formData,
             });
@@ -213,12 +213,16 @@ const VideoAnalysis = () => {
                                         borderRadius: '1rem',
                                         textAlign: 'center'
                                     }}>
-                                        <h4 style={{ color: '#888', marginBottom: '0.5rem' }}>TOTAL REPS</h4>
+                                        <h4 style={{ color: '#888', marginBottom: '0.5rem' }}>
+                                            {selectedExercise === 'plank' ? 'HOLD TIME' : 'TOTAL REPS'}
+                                        </h4>
                                         <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#fff' }}>
-                                            {result.analysis_data.reps_count}
+                                            {selectedExercise === 'plank'
+                                                ? (result.analysis_data.hold_time ? `${result.analysis_data.hold_time}s` : '0s')
+                                                : result.analysis_data.reps_count}
                                         </p>
                                     </div>
-                                    {result.analysis_data.avg_depth > 0 && (
+                                    {(result.analysis_data.avg_depth > 0 || (selectedExercise === 'plank' && result.analysis_data.avg_depth)) && (
                                         <div style={{
                                             flex: 1,
                                             backgroundColor: '#222',
@@ -227,9 +231,10 @@ const VideoAnalysis = () => {
                                             textAlign: 'center'
                                         }}>
                                             <h4 style={{ color: '#888', marginBottom: '0.5rem' }}>
-                                                {selectedExercise === 'pullup' ? 'AVG EXTENSION' :
+                                                {selectedExercise === 'pullup' || selectedExercise === 'shoulder_press' || selectedExercise === 'bicep_curl' ? 'AVG EXTENSION' :
                                                     selectedExercise === 'deadlift' ? 'HIP EXTENSION' :
-                                                        'AVG DEPTH'}
+                                                        selectedExercise === 'plank' ? 'AVG ALIGNMENT' :
+                                                            'AVG DEPTH'}
                                             </h4>
                                             <p style={{
                                                 fontSize: '2.5rem',
@@ -237,14 +242,16 @@ const VideoAnalysis = () => {
                                                 // Dynamic Color Logic based on Exercise Biomechanics
                                                 color: (() => {
                                                     const val = result.analysis_data.avg_depth;
-                                                    // Higher is Better: Pullup (Extension), Deadlift (Lockout)
-                                                    if (['pullup', 'deadlift'].includes(selectedExercise)) {
-                                                        return val >= 160 ? 'var(--color-neon-green)' : 'var(--color-neon-pink)';
+                                                    // Higher is Better: Pullup (Extension), Deadlift (Lockout), Shoulder Press, Bicep Curl (Extension)
+                                                    if (['pullup', 'deadlift', 'shoulder_press', 'bicep_curl'].includes(selectedExercise)) {
+                                                        return val >= 150 ? 'var(--color-neon-green)' : 'var(--color-neon-pink)';
                                                     }
-                                                    // Lower is Better: Squat (Knee flexion), Pushup (Elbow flexion), Bench
-                                                    if (['squat', 'pushup', 'benchpress'].includes(selectedExercise)) {
-                                                        // Wait, squat depth rating: < 80 is deep (good?), > 100 is shallow (bad)
-                                                        // Pushup: < 80 is excellent, > 100 is shallow
+                                                    // Plank: 180 is ideal
+                                                    if (selectedExercise === 'plank') {
+                                                        return (val >= 165 && val <= 195) ? 'var(--color-neon-green)' : 'var(--color-neon-pink)';
+                                                    }
+                                                    // Lower is Better: Squat (Knee flexion), Pushup (Elbow flexion), Bench, Lunge
+                                                    if (['squat', 'pushup', 'benchpress', 'lunge'].includes(selectedExercise)) {
                                                         return val <= 100 ? 'var(--color-neon-green)' : 'var(--color-neon-pink)';
                                                     }
                                                     return '#fff';
