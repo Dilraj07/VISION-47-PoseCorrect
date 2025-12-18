@@ -248,8 +248,8 @@ const About = () => {
                 </div>
             </div>
 
-            {/* Founders Section (Merged) */}
-            <div style={{ maxWidth: '1000px', margin: '0 auto 6rem' }}>
+            {/* Founders Section (Merged Group) */}
+            <div style={{ maxWidth: '800px', margin: '0 auto 6rem' }}>
                 <motion.h2
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
@@ -272,7 +272,7 @@ const About = () => {
                     style={{
                         background: 'linear-gradient(180deg, rgba(30, 30, 30, 0.7) 0%, rgba(10, 10, 10, 0.9) 100%)',
                         borderRadius: '2.5rem',
-                        padding: '4rem 2rem',
+                        padding: '0',
                         border: '1px solid #333',
                         display: 'flex',
                         flexDirection: 'column',
@@ -282,42 +282,52 @@ const About = () => {
                         boxShadow: '0 0 50px rgba(0,0,0,0.5)'
                     }}
                 >
+                    {/* Group Image */}
+                    <div style={{
+                        width: '100%',
+                        height: '400px',
+                        overflow: 'hidden',
+                        position: 'relative'
+                    }}>
+                        <img
+                            src="/team/founders.jpg"
+                            alt="Dilraj and Arya"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.style.display = 'none';
+                                e.target.parentElement.style.backgroundColor = '#222';
+                                e.target.parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;flex-direction:column"><span>Group Photo Placeholder</span><small>/team/founders.jpg</small></div>';
+                            }}
+                        />
+                        <div style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: '150px',
+                            background: 'linear-gradient(to top, rgba(10,10,10,1) 0%, transparent 100%)'
+                        }} />
+                    </div>
+
+                    {/* Details Container */}
                     <div style={{
                         display: 'flex',
                         flexWrap: 'wrap',
-                        justifyContent: 'center',
-                        alignItems: 'flex-start',
-                        gap: '6rem',
+                        justifyContent: 'space-around',
                         width: '100%',
+                        padding: '2rem 2rem 4rem',
+                        gap: '2rem',
                         position: 'relative',
                         zIndex: 2
                     }}>
-                        {/* Dilraj (Left) */}
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '1 1 300px' }}>
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                style={{
-                                    width: '250px',
-                                    height: '250px',
-                                    borderRadius: '50%',
-                                    overflow: 'hidden',
-                                    border: '4px solid #A78BFA',
-                                    marginBottom: '1.5rem',
-                                    boxShadow: '0 0 30px rgba(167, 139, 250, 0.2)',
-                                    position: 'relative'
-                                }}
-                            >
-                                <img
-                                    src="/team/dilraj.jpg"
-                                    alt="Dilraj Singh"
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
-                            </motion.div>
-                            <h3 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, letterSpacing: '-1px' }}>Dilraj Singh</h3>
-                            <p style={{ color: '#A78BFA', fontWeight: '600', fontSize: '1.2rem', marginTop: '0.5rem', letterSpacing: '2px', textTransform: 'uppercase' }}>CTO & Co-Founder</p>
-                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                                <a href="https://www.linkedin.com/in/dilraj-singh-cos007/" target="_blank" rel="noreferrer" style={{ color: '#ccc', transition: 'color 0.3s' }}><Linkedin /></a>
-                                <a href="#" style={{ color: '#ccc' }}><Github /></a>
+                        {/* Arya (Left) */}
+                        <div style={{ textAlign: 'center', flex: '1 1 200px' }}>
+                            <h3 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, letterSpacing: '-1px' }}>Arya Wadhwa</h3>
+                            <p style={{ color: '#FDE047', fontWeight: '600', fontSize: '1.1rem', marginTop: '0.25rem', letterSpacing: '1px', textTransform: 'uppercase' }}>CEO & Co-Founder</p>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
+                                <a href="https://www.linkedin.com/in/aryawadhwa" target="_blank" rel="noreferrer" style={{ color: '#ccc', transition: 'color 0.3s' }}><Linkedin size={20} /></a>
+                                <a href="#" style={{ color: '#ccc' }}><Github size={20} /></a>
                             </div>
                         </div>
 
@@ -325,44 +335,25 @@ const About = () => {
                         <div style={{
                             width: '1px',
                             background: 'linear-gradient(to bottom, transparent, #444, transparent)',
-                            height: '300px',
-                            display: 'none',
-                            alignSelf: 'center'
+                            height: 'auto',
+                            alignSelf: 'stretch',
+                            display: 'none'
                         }} className="divider"></div>
 
-                        {/* Arya (Right) */}
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '1 1 300px' }}>
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                style={{
-                                    width: '250px',
-                                    height: '250px',
-                                    borderRadius: '50%',
-                                    overflow: 'hidden',
-                                    border: '4px solid #FDE047',
-                                    marginBottom: '1.5rem',
-                                    boxShadow: '0 0 30px rgba(253, 224, 71, 0.2)',
-                                    position: 'relative'
-                                }}
-                            >
-                                <img
-                                    src="/team/arya.jpg"
-                                    alt="Arya Wadhwa"
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
-                            </motion.div>
-                            <h3 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, letterSpacing: '-1px' }}>Arya Wadhwa</h3>
-                            <p style={{ color: '#FDE047', fontWeight: '600', fontSize: '1.2rem', marginTop: '0.5rem', letterSpacing: '2px', textTransform: 'uppercase' }}>CEO & Co-Founder</p>
-                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                                <a href="https://www.linkedin.com/in/aryawadhwa" target="_blank" rel="noreferrer" style={{ color: '#ccc', transition: 'color 0.3s' }}><Linkedin /></a>
-                                <a href="#" style={{ color: '#ccc' }}><Github /></a>
+                        {/* Dilraj (Right) */}
+                        <div style={{ textAlign: 'center', flex: '1 1 200px' }}>
+                            <h3 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, letterSpacing: '-1px' }}>Dilraj Singh</h3>
+                            <p style={{ color: '#A78BFA', fontWeight: '600', fontSize: '1.1rem', marginTop: '0.25rem', letterSpacing: '1px', textTransform: 'uppercase' }}>CTO & Co-Founder</p>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
+                                <a href="https://www.linkedin.com/in/dilraj-singh-cos007/" target="_blank" rel="noreferrer" style={{ color: '#ccc', transition: 'color 0.3s' }}><Linkedin size={20} /></a>
+                                <a href="#" style={{ color: '#ccc' }}><Github size={20} /></a>
                             </div>
                         </div>
                     </div>
                 </motion.div>
                 <style>{`
                     .divider { display: none; }
-                    @media (min-width: 900px) {
+                    @media (min-width: 600px) {
                         .divider { display: block; }
                     }
                 `}</style>
