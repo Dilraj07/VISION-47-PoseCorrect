@@ -22,15 +22,14 @@ const exerciseCategories = [
                 gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
                 accentColor: '#ff0099',
                 image: 'https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?auto=format&fit=crop&q=80',
-                status: 'in-progress'
             },
             {
-                id: 'overhead_press',
-                name: 'OVERHEAD PRESS',
+                id: 'shoulder_press',
+                name: 'SHOULDER PRESS',
                 targetMuscles: ['Shoulders', 'Triceps'],
                 gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
                 accentColor: '#ff0055',
-                status: 'in-progress'
+                image: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&q=80',
             },
             {
                 id: 'dips',
@@ -68,7 +67,6 @@ const exerciseCategories = [
                 gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
                 accentColor: '#00ccff',
                 image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=80',
-                status: 'in-progress'
             },
             {
                 id: 'barbell_row',
@@ -98,7 +96,6 @@ const exerciseCategories = [
                 gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
                 accentColor: '#ffbf00',
                 image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&q=80',
-                status: 'in-progress'
             },
             {
                 id: 'leg_press',
@@ -119,7 +116,7 @@ const exerciseCategories = [
                 targetMuscles: ['Core', 'Abs'],
                 gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
                 accentColor: '#0099ff',
-                status: 'in-progress' // Set to in-progress unless we have a route or logic for it
+                image: 'https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?auto=format&fit=crop&q=80',
             },
             {
                 id: 'crunches',
