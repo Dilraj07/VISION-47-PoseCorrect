@@ -258,6 +258,7 @@ const Footer = ({ navigate }) => (
             <div>
                 <h2 style={{ margin: 0, fontSize: '1.5rem' }}>GYMBRO</h2>
                 <p style={{ color: '#666', marginTop: '0.5rem' }}>BETA v1.4</p>
+                <p style={{ color: '#666', fontSize: '0.8rem', marginTop: '0.5rem' }}>aryawadhwa2@gmail.com</p>
             </div>
             <div style={{ display: 'flex', gap: '2rem' }}>
                 <a onClick={() => navigate('/about')} style={{ color: '#888', cursor: 'pointer' }}>About</a>
