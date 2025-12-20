@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Upload, FileVideo, CheckCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Upload, FileVideo, CheckCircle, Dumbbell, Activity, Utensils, Trophy } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { API_URL } from '../config';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../context/AuthContext';
+
+const LOADING_ICONS = [Dumbbell, Activity, Utensils, Trophy];
 
 const VideoAnalysis = () => {
     const navigate = useNavigate();
@@ -14,10 +16,21 @@ const VideoAnalysis = () => {
     const [isDragging, setIsDragging] = useState(false);
     const [file, setFile] = useState(null);
     const [analyzing, setAnalyzing] = useState(false);
+    const [loadingIconIndex, setLoadingIconIndex] = useState(0);
 
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
     const fileInputRef = React.useRef(null);
+
+    useEffect(() => {
+        let interval;
+        if (analyzing) {
+            interval = setInterval(() => {
+                setLoadingIconIndex((prev) => (prev + 1) % LOADING_ICONS.length);
+            }, 800);
+        }
+        return () => clearInterval(interval);
+    }, [analyzing]);
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -157,18 +170,22 @@ const VideoAnalysis = () => {
 
                 {analyzing && (
                     <div style={{ textAlign: 'center', padding: '4rem' }}>
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                            style={{
-                                width: '64px',
-                                height: '64px',
-                                border: '4px solid #333',
-                                borderTopColor: 'var(--color-neon-pink)',
-                                borderRadius: '50%',
-                                margin: '0 auto 2rem'
-                            }}
-                        />
+                        <div style={{ height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={loadingIconIndex}
+                                    initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.5, y: -10 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    {React.createElement(LOADING_ICONS[loadingIconIndex], {
+                                        size: 48,
+                                        color: 'var(--color-neon-green)'
+                                    })}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
                         <h3 style={{ fontSize: '1.5rem', color: '#fff' }}>Analyzing Form...</h3>
                         <p style={{ color: '#666' }}>This may take a minute based on video length</p>
                     </div>
@@ -347,7 +364,6 @@ const VideoAnalysis = () => {
                                                     overflow: 'hidden'
                                                 }}
                                             >
-                                                <div style={{ position: 'absolute', top: 0, right: 0, width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(57,255,20,0.1) 0%, rgba(0,0,0,0) 70%)' }} />
                                                 <h4 style={{ color: '#666', margin: 0, fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                                                     {selectedExercise === 'plank' ? 'HOLD TIME' : 'TOTAL REPS'}
                                                 </h4>
@@ -379,7 +395,6 @@ const VideoAnalysis = () => {
                                                     overflow: 'hidden'
                                                 }}
                                             >
-                                                <div style={{ position: 'absolute', top: 0, right: 0, width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(0,204,255,0.1) 0%, rgba(0,0,0,0) 70%)' }} />
                                                 <h4 style={{ color: '#666', margin: 0, fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                                                     {selectedExercise === 'pullup' || selectedExercise === 'shoulder_press' || selectedExercise === 'bicep_curl' ? 'AVG EXTENSION' :
                                                         selectedExercise === 'deadlift' ? 'HIP EXTENSION' :
