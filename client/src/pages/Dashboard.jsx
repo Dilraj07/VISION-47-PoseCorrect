@@ -3,65 +3,154 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
 
-const exercises = [
+const exerciseCategories = [
     {
-        id: 'pushup',
-        name: 'PUSH UP',
-        targetMuscles: ['Chest', 'Triceps', 'Shoulders'],
-        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
-        accentColor: '#ccff00',
-        image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80',
+        title: "PUSH (CHEST, SHOULDERS, TRICEPS)",
+        exercises: [
+            {
+                id: 'pushup',
+                name: 'PUSH UP',
+                targetMuscles: ['Chest', 'Triceps', 'Shoulders'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#ccff00',
+                image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80',
+            },
+            {
+                id: 'benchpress',
+                name: 'BENCH PRESS',
+                targetMuscles: ['Chest', 'Triceps', 'Shoulders'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#ff0099',
+                image: 'https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?auto=format&fit=crop&q=80',
+                status: 'in-progress'
+            },
+            {
+                id: 'overhead_press',
+                name: 'OVERHEAD PRESS',
+                targetMuscles: ['Shoulders', 'Triceps'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#ff0055',
+                status: 'in-progress'
+            },
+            {
+                id: 'dips',
+                name: 'DIPS',
+                targetMuscles: ['Triceps', 'Chest'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#ffcc00',
+                status: 'in-progress'
+            }
+        ]
     },
     {
-        id: 'pullup',
-        name: 'PULL UP',
-        targetMuscles: ['Back', 'Biceps', 'Lats'],
-        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
-        accentColor: '#9900ff',
-        image: 'https://images.unsplash.com/photo-1598971639058-211a74a96fb4?auto=format&fit=crop&q=80',
+        title: "PULL (BACK, BICEPS)",
+        exercises: [
+            {
+                id: 'pullup',
+                name: 'PULL UP',
+                targetMuscles: ['Back', 'Biceps', 'Lats'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#9900ff',
+                image: 'https://images.unsplash.com/photo-1598971639058-211a74a96fb4?auto=format&fit=crop&q=80',
+            },
+            {
+                id: 'deadlift',
+                name: 'DEADLIFT',
+                targetMuscles: ['Back', 'Glutes', 'Hamstrings'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#ff6600',
+                image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80',
+            },
+            {
+                id: 'bicep_curl',
+                name: 'BICEP CURL',
+                targetMuscles: ['Biceps', 'Forearms'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#00ccff',
+                image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=80',
+                status: 'in-progress'
+            },
+            {
+                id: 'barbell_row',
+                name: 'BARBELL ROW',
+                targetMuscles: ['Back', 'Lats'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#aa00ff',
+                status: 'in-progress'
+            }
+        ]
     },
     {
-        id: 'benchpress',
-        name: 'BENCH PRESS',
-        targetMuscles: ['Chest', 'Triceps', 'Shoulders'],
-        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
-        accentColor: '#ff0099',
-        image: 'https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?auto=format&fit=crop&q=80',
-        status: 'in-progress'
+        title: "LEGS (QUADS, HAMSTRINGS, GLUTES)",
+        exercises: [
+            {
+                id: 'squat',
+                name: 'SQUAT',
+                targetMuscles: ['Quads', 'Glutes', 'Hamstrings'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#00ffcc',
+                image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&q=80',
+            },
+            {
+                id: 'lunge',
+                name: 'LUNGE',
+                targetMuscles: ['Quads', 'Glutes', 'Hamstrings'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#ffbf00',
+                image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&q=80',
+                status: 'in-progress'
+            },
+            {
+                id: 'leg_press',
+                name: 'LEG PRESS',
+                targetMuscles: ['Quads', 'Glutes'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#00ff66',
+                status: 'in-progress'
+            }
+        ]
     },
     {
-        id: 'squat',
-        name: 'SQUAT',
-        targetMuscles: ['Quads', 'Glutes', 'Hamstrings'],
-        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
-        accentColor: '#00ffcc',
-        image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&q=80',
+        title: "CORE & ABS",
+        exercises: [
+            {
+                id: 'plank',
+                name: 'PLANK',
+                targetMuscles: ['Core', 'Abs'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#0099ff',
+                status: 'in-progress' // Set to in-progress unless we have a route or logic for it
+            },
+            {
+                id: 'crunches',
+                name: 'CRUNCHES',
+                targetMuscles: ['Abs'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#33ccff',
+                status: 'in-progress'
+            }
+        ]
     },
     {
-        id: 'deadlift',
-        name: 'DEADLIFT',
-        targetMuscles: ['Back', 'Glutes', 'Hamstrings'],
-        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
-        accentColor: '#ff6600',
-        image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80',
-    },
-    {
-        id: 'lunge',
-        name: 'LUNGE',
-        targetMuscles: ['Quads', 'Glutes', 'Hamstrings'],
-        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
-        accentColor: '#ffbf00',
-        image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&q=80',
-        status: 'in-progress'
-    },
-    {
-        id: 'bicep_curl',
-        name: 'BICEP CURL',
-        targetMuscles: ['Biceps', 'Forearms'],
-        gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
-        accentColor: '#00ccff',
-        image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=80',
-        status: 'in-progress'
+        title: "CARDIO & ENDURANCE",
+        exercises: [
+            {
+                id: 'running',
+                name: 'RUNNING FORM',
+                targetMuscles: ['Full Body', 'Cardio'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#ff3300',
+                status: 'in-progress'
+            },
+            {
+                id: 'hiit',
+                name: 'HIIT',
+                targetMuscles: ['Full Body', 'Cardio'],
+                gradient: 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 100%)',
+                accentColor: '#ff6600',
+                status: 'in-progress'
+            }
+        ]
     }
 ];
 
@@ -200,9 +289,20 @@ const Dashboard = () => {
         navigate(targetPath, { state: { selectedExercise: selectedExercise.id } });
     };
 
-    const filteredExercises = exercises.filter(ex =>
-        ex.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Flatten for search, but keep structure for display if no search
+    const getDisplayData = () => {
+        if (!searchTerm) return exerciseCategories;
+
+        // If searching, return a single "Search Results" category
+        const allExercises = exerciseCategories.flatMap(cat => cat.exercises);
+        const filtered = allExercises.filter(ex =>
+            ex.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        return [{ title: `SEARCH RESULTS FOR "${searchTerm}"`, exercises: filtered }];
+    };
+
+    const displayData = getDisplayData();
 
     return (
         <div style={{
@@ -236,6 +336,14 @@ const Dashboard = () => {
                 .dashboard-header {
                     padding: 1rem !important;
                 }
+                 .category-header {
+                    padding: 1.5rem 1rem 0.5rem 1rem;
+                    background-color: #050505;
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                    border-bottom: 1px solid #222;
+                }
                 @media (min-width: 768px) {
                     .exercise-strip {
                         padding: 0 2rem !important;
@@ -259,6 +367,9 @@ const Dashboard = () => {
                     }
                     .dashboard-header {
                         padding: 2rem !important;
+                    }
+                     .category-header {
+                        padding: 2rem 2rem 1rem 2rem;
                     }
                 }
             `}</style>
@@ -320,16 +431,36 @@ const Dashboard = () => {
                     </>
                 ) : (
                     <>
-                        {filteredExercises.map((exercise) => (
-                            <ExerciseStrip
-                                key={exercise.id}
-                                exercise={exercise}
-                                isHovered={hoveredId === exercise.id}
-                                setHovered={setHoveredId}
-                                onSelect={setSelectedExercise}
-                            />
+                        {displayData.map((category, index) => (
+                            <React.Fragment key={index}>
+                                {category.exercises.length > 0 && (
+                                    <>
+                                        <div className="category-header">
+                                            <h3 style={{
+                                                fontSize: '0.9rem',
+                                                color: '#666',
+                                                letterSpacing: '0.1em',
+                                                fontWeight: 'bold',
+                                                margin: 0
+                                            }}>
+                                                {category.title}
+                                            </h3>
+                                        </div>
+                                        {category.exercises.map((exercise) => (
+                                            <ExerciseStrip
+                                                key={exercise.id}
+                                                exercise={exercise}
+                                                isHovered={hoveredId === exercise.id}
+                                                setHovered={setHoveredId}
+                                                onSelect={setSelectedExercise}
+                                            />
+                                        ))}
+                                    </>
+                                )}
+                            </React.Fragment>
                         ))}
-                        {filteredExercises.length === 0 && (
+
+                        {displayData.length === 0 || (displayData.length === 1 && displayData[0].exercises.length === 0) && (
                             <div style={{ padding: '4rem', textAlign: 'center', color: '#666' }}>
                                 No exercises found matching "{searchTerm}"
                             </div>
