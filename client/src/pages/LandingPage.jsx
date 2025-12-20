@@ -35,14 +35,38 @@ const LandingPage = ({ onStart }) => {
                     padding: 4rem 1.5rem !important;
                 }
                 .hero-title {
-                    font-size: clamp(3rem, 10vw, 8rem) !important;
+                    font-size: 15vw !important;
+                    line-height: 0.9 !important;
                 }
+                .cta-container {
+                    flex-direction: column !important;
+                    width: 100% !important;
+                    gap: 1rem !important;
+                    padding: 0 1rem;
+                }
+                .cta-btn {
+                    width: 100% !important;
+                    justify-content: center !important;
+                    padding: 1.2rem !important;
+                    font-size: 1.1rem !important;
+                }
+                
                 @media (min-width: 768px) {
                     .section-padding {
                         padding: 8rem 2rem !important;
                     }
                     .hero-title {
-                        font-size: clamp(3.5rem, 12vw, 10rem) !important;
+                        font-size: 8rem !important;
+                    }
+                    .cta-container {
+                        flex-direction: row !important;
+                        width: auto !important;
+                        gap: 2rem !important;
+                    }
+                    .cta-btn {
+                        width: auto !important;
+                        padding: 1rem 3rem !important;
+                        font-size: 1rem !important;
                     }
                 }
             `}</style>
@@ -103,14 +127,14 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
                 </motion.div>
             </div>
 
-            <motion.div style={{ y: yText, opacity: opacityText, scale: scaleText, zIndex: 1, textAlign: 'center' }}>
+            <motion.div style={{ y: yText, opacity: opacityText, scale: scaleText, zIndex: 1, textAlign: 'center', width: '100%' }}>
                 <h1 className="hero-title" style={{
-                    lineHeight: 0.9,
                     margin: 0,
                     textTransform: 'uppercase',
                     fontFamily: "var(--font-display)",
                     fontWeight: '900',
-                    letterSpacing: '-2px'
+                    letterSpacing: '-2px',
+                    marginBottom: '2rem'
                 }}>
                     <span style={{ display: 'block', color: 'var(--color-white)' }}>TRAIN</span>
                     <span style={{
@@ -121,22 +145,29 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
                     }}>SMARTER</span>
                 </h1>
 
-                <div style={{ marginTop: '3rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <GlowButton onClick={onStart}>
-                        Start Training <ArrowRight size={20} />
-                    </GlowButton>
+                <div className="cta-container" style={{ marginTop: '0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div className="cta-btn" style={{ display: 'contents' }}>
+                        <GlowButton onClick={onStart} className="cta-btn">
+                            Start Training <ArrowRight size={20} />
+                        </GlowButton>
+                    </div>
+
                     <button
                         onClick={handleDemo}
+                        className="cta-btn"
                         style={{
-                            padding: '1rem 2rem',
                             border: '1px solid #333',
                             color: '#888',
-                            background: 'transparent',
+                            background: 'rgba(0,0,0,0.5)',
+                            backdropFilter: 'blur(10px)',
                             cursor: 'pointer',
-                            fontSize: '1rem',
                             textTransform: 'uppercase',
                             letterSpacing: '1px',
-                            transition: 'all 0.3s'
+                            transition: 'all 0.3s',
+                            borderRadius: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
                         }}
                     >
                         Try Demo
