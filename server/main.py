@@ -77,6 +77,10 @@ class WorkoutPlan(BaseModel):
     difficulty: str
 
 # ============ ROUTES ============
+@app.get("/")
+async def root_path():
+    return {"message": "GYMBRO AI Backend is running. Access API at /api/"}
+
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy", "service": "GYMBRO AI Backend v2.0"}
