@@ -38,7 +38,7 @@ const Auth = () => {
     };
 
     return (
-        <div style={{
+        <div className="auth-container" style={{
             minHeight: '100vh',
             display: 'flex',
             alignItems: 'center',
@@ -49,12 +49,31 @@ const Auth = () => {
             position: 'relative',
             overflow: 'hidden'
         }}>
+            <style>{`
+                .auth-container {
+                    padding: 1rem !important;
+                }
+                .back-btn {
+                    top: 1rem !important;
+                    left: 1rem !important;
+                }
+                @media (min-width: 768px) {
+                    .auth-container {
+                        padding: 2rem !important;
+                    }
+                    .back-btn {
+                        top: 2rem !important;
+                        left: 2rem !important;
+                    }
+                }
+            `}</style>
             {/* Background Effects */}
             <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '60%', height: '60%', backgroundColor: 'var(--color-neon-blue)', filter: 'blur(200px)', opacity: 0.1 }}></div>
             <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '60%', height: '60%', backgroundColor: 'var(--color-neon-green)', filter: 'blur(200px)', opacity: 0.1 }}></div>
 
             <button
                 onClick={() => navigate('/')}
+                className="back-btn"
                 style={{
                     position: 'absolute',
                     top: '2rem',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
@@ -90,6 +90,7 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
                 transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                 opacity: isInProgress ? 0.6 : 1
             }}
+            className={`exercise-strip ${isHovered && !isInProgress ? 'expanded' : ''}`}
         >
             {/* Hover Background Accent */}
             <motion.div
@@ -111,8 +112,8 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <motion.h2
                             layout="position"
+                            className={`exercise-title ${isHovered && !isInProgress ? 'expanded' : ''}`}
                             style={{
-                                fontSize: isHovered && !isInProgress ? '3rem' : '2rem',
                                 color: isHovered && !isInProgress ? '#fff' : '#888',
                                 fontWeight: '900',
                                 margin: 0,
@@ -163,11 +164,36 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
     );
 };
 
+const SkeletonStrip = () => (
+    <div style={{
+        width: '100%',
+        height: '100px',
+        backgroundColor: '#111',
+        borderBottom: '1px solid #222',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 2rem',
+        gap: '1rem'
+    }}>
+        <motion.div
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            style={{ width: '60%', height: '30px', backgroundColor: '#333', borderRadius: '4px' }}
+        />
+    </div>
+);
+
 const Dashboard = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [hoveredId, setHoveredId] = useState(null);
     const [selectedExercise, setSelectedExercise] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Simulate load
+    useEffect(() => {
+        setTimeout(() => setIsLoading(false), 800);
+    }, []);
 
     const handleModeSelect = (mode) => {
         const targetPath = mode === 'upload' ? '/upload' : '/coach';
@@ -186,8 +212,59 @@ const Dashboard = () => {
             display: 'flex',
             flexDirection: 'column'
         }}>
+            <style>{`
+                .exercise-strip {
+                    padding: 0 1rem !important;
+                    height: 80px !important;
+                }
+                .exercise-strip.expanded {
+                    height: 180px !important;
+                }
+                .exercise-title {
+                    font-size: 1.5rem !important;
+                }
+                .exercise-title.expanded {
+                    font-size: 2.5rem !important;
+                }
+                .modal-grid {
+                    grid-template-columns: 1fr !important;
+                    gap: 1rem !important;
+                }
+                .modal-card {
+                    padding: 2rem !important;
+                }
+                .dashboard-header {
+                    padding: 1rem !important;
+                }
+                @media (min-width: 768px) {
+                    .exercise-strip {
+                        padding: 0 2rem !important;
+                        height: 100px !important;
+                    }
+                    .exercise-strip.expanded {
+                        height: 200px !important;
+                    }
+                    .exercise-title {
+                        font-size: 2rem !important;
+                    }
+                    .exercise-title.expanded {
+                        font-size: 3rem !important;
+                    }
+                    .modal-grid {
+                        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+                        gap: 2rem !important;
+                    }
+                    .modal-card {
+                        padding: 3rem !important;
+                    }
+                    .dashboard-header {
+                        padding: 2rem !important;
+                    }
+                }
+            `}</style>
+
             {/* Header */}
-            <header style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid #222' }}>
+            <header className="dashboard-header" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid #222' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                     <button
                         onClick={() => navigate('/')}
@@ -234,19 +311,30 @@ const Dashboard = () => {
 
             {/* List */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                {filteredExercises.map((exercise) => (
-                    <ExerciseStrip
-                        key={exercise.id}
-                        exercise={exercise}
-                        isHovered={hoveredId === exercise.id}
-                        setHovered={setHoveredId}
-                        onSelect={setSelectedExercise}
-                    />
-                ))}
-                {filteredExercises.length === 0 && (
-                    <div style={{ padding: '4rem', textAlign: 'center', color: '#666' }}>
-                        No exercises found matching "{searchTerm}"
-                    </div>
+                {isLoading ? (
+                    <>
+                        <SkeletonStrip />
+                        <SkeletonStrip />
+                        <SkeletonStrip />
+                        <SkeletonStrip />
+                    </>
+                ) : (
+                    <>
+                        {filteredExercises.map((exercise) => (
+                            <ExerciseStrip
+                                key={exercise.id}
+                                exercise={exercise}
+                                isHovered={hoveredId === exercise.id}
+                                setHovered={setHoveredId}
+                                onSelect={setSelectedExercise}
+                            />
+                        ))}
+                        {filteredExercises.length === 0 && (
+                            <div style={{ padding: '4rem', textAlign: 'center', color: '#666' }}>
+                                No exercises found matching "{searchTerm}"
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
 
@@ -266,7 +354,7 @@ const Dashboard = () => {
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            padding: '2rem'
+                            padding: '1rem'
                         }}
                         onClick={() => setSelectedExercise(null)}
                     >
@@ -275,6 +363,7 @@ const Dashboard = () => {
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.9, y: 20 }}
                             onClick={e => e.stopPropagation()}
+                            className="modal-grid"
                             style={{
                                 width: '100%',
                                 maxWidth: '800px',
@@ -285,6 +374,7 @@ const Dashboard = () => {
                         >
                             <div
                                 onClick={() => handleModeSelect('coach')}
+                                className="modal-card"
                                 style={{
                                     backgroundColor: '#111',
                                     border: `1px solid ${selectedExercise.accentColor}`,
@@ -301,11 +391,12 @@ const Dashboard = () => {
                                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 <Camera size={48} color={selectedExercise.accentColor} />
-                                <h2 style={{ fontSize: '1.5rem', margin: 0 }}>REAL-TIME COACH</h2>
+                                <h2 style={{ fontSize: '1.5rem', margin: 0, textAlign: 'center' }}>REAL-TIME COACH</h2>
                             </div>
 
                             <div
                                 onClick={() => handleModeSelect('upload')}
+                                className="modal-card"
                                 style={{
                                     backgroundColor: '#111',
                                     border: '1px solid #333',
@@ -328,7 +419,7 @@ const Dashboard = () => {
                                 }}
                             >
                                 <Video size={48} color="#666" />
-                                <h2 style={{ fontSize: '1.5rem', margin: 0, color: '#888' }}>VIDEO UPLOAD</h2>
+                                <h2 style={{ fontSize: '1.5rem', margin: 0, color: '#888', textAlign: 'center' }}>VIDEO UPLOAD</h2>
                             </div>
                         </motion.div>
                     </motion.div>

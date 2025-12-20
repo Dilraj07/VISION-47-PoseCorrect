@@ -1,283 +1,290 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Activity, Video, Calendar } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
+import { ArrowRight, Activity, Video, Calendar, ChevronDown, Trophy, Smartphone, Brain, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-
-const WORKOUT_TYPES = {
-    'rest': { label: 'REST DAY', color: '#666' },
-    'push': { label: 'PUSH DAY', color: '#ff0099' },
-    'pull': { label: 'PULL DAY', color: '#9900ff' },
-    'legs': { label: 'LEG DAY', color: '#ccff00' },
-    'cardio': { label: 'CARDIO', color: '#00ccff' },
-    'full': { label: 'FULL BODY', color: '#ff6600' },
-};
+import GlowButton from '../components/GlowButton';
 
 const LandingPage = ({ onStart }) => {
     const { loginDemo } = useAuth();
     const navigate = useNavigate();
-    const [todayFocus, setTodayFocus] = useState(null);
 
-    useEffect(() => {
-        try {
-            const schedule = JSON.parse(localStorage.getItem('gymbro_schedule') || '{}');
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            const todayIndex = (new Date().getDay() + 6) % 7; // 0 = Mon
-            const focusId = schedule[days[todayIndex]];
+    // Scroll Controls
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"]
+    });
 
-            if (focusId && WORKOUT_TYPES[focusId]) {
-                setTodayFocus(WORKOUT_TYPES[focusId]);
-            }
-        } catch (e) {
-            console.error("Schedule error", e);
-        }
-    }, []);
+    const smoothScroll = useSpring(scrollYProgress, { damping: 20, stiffness: 100 });
 
     const handleDemo = async () => {
         await loginDemo();
         navigate('/dashboard');
     };
+
     return (
-        <div style={{
-            minHeight: '100vh',
+        <div ref={containerRef} style={{
             backgroundColor: 'var(--color-black)',
             color: 'var(--color-white)',
-            fontFamily: "'Anton', sans-serif",
-            overflowX: 'hidden',
-            display: 'flex',
-            flexDirection: 'column'
+            fontFamily: "var(--font-primary)",
+            overflowX: 'hidden'
         }}>
+            {/* HERO SECTION */}
+            <HeroSection onStart={onStart} handleDemo={handleDemo} scrollProgress={scrollYProgress} />
 
-            {/* Main Content */}
-            <main style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                padding: '2rem',
-                marginTop: '1rem'
+            {/* ECOSYSTEM SECTION */}
+            <EcosystemSection />
+
+            {/* PROTOCOL SECTION */}
+            <ProtocolSection />
+
+            {/* CTA SECTION */}
+            <CTASection onStart={onStart} />
+
+            {/* FOOTER */}
+            <Footer navigate={navigate} />
+        </div>
+    );
+};
+
+// --- SUB-SECTIONS ---
+
+const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
+    const yText = useTransform(scrollProgress, [0, 0.3], [0, -100]);
+    const opacityText = useTransform(scrollProgress, [0, 0.2], [1, 0]);
+    const scaleText = useTransform(scrollProgress, [0, 0.2], [1, 0.9]);
+
+    return (
+        <section style={{
+            height: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative',
+            overflow: 'hidden'
+        }}>
+            {/* Background Marquee */}
+            <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: 0,
+                width: '100%',
+                transform: 'translateY(-50%) rotate(-5deg)',
+                opacity: 0.05,
+                pointerEvents: 'none',
+                whiteSpace: 'nowrap',
+                zIndex: 0
             }}>
-                {/* Version Tag */}
-                <div style={{
-                    position: 'absolute',
-                    top: '0',
-                    right: '2rem',
-                    fontFamily: "'Outfit', sans-serif",
-                    fontSize: '0.9rem',
-                    color: '#666',
-                    fontWeight: 600,
-                    letterSpacing: '1px'
+                <motion.div
+                    animate={{ x: ["0%", "-50%"] }}
+                    transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                    style={{ fontSize: '15vw', fontWeight: 900, fontFamily: "var(--font-display)" }}
+                >
+                    PUSH PULL LEGS PUSH PULL LEGS PUSH PULL LEGS
+                </motion.div>
+            </div>
+
+            <motion.div style={{ y: yText, opacity: opacityText, scale: scaleText, zIndex: 1, textAlign: 'center' }}>
+                <h1 style={{
+                    fontSize: 'clamp(3.5rem, 12vw, 10rem)',
+                    lineHeight: 0.9,
+                    margin: 0,
+                    textTransform: 'uppercase',
+                    fontFamily: "var(--font-display)",
+                    fontWeight: '900',
+                    letterSpacing: '-2px'
                 }}>
-                    BETA v1.4
-                </div>
+                    <span style={{ display: 'block', color: 'var(--color-white)' }}>TRAIN</span>
+                    <span style={{
+                        display: 'block',
+                        color: 'transparent',
+                        WebkitTextStroke: '2px var(--color-neon-pink)',
+                        textShadow: '0 0 30px rgba(255, 0, 153, 0.3)'
+                    }}>SMARTER</span>
+                </h1>
 
-                {/* Giant Text */}
-                <div style={{
-                    textAlign: 'center',
-                    position: 'relative',
-                    zIndex: 1,
-                    mixBlendMode: 'normal',
-                    width: '100%',
-                    padding: '0 1rem'
-                }}>
-                    {/* Today's Focus Banner */}
-                    {todayFocus && (
-                        <motion.div
-                            initial={{ y: -50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            style={{
-                                display: 'inline-block',
-                                padding: '0.5rem 1.5rem',
-                                borderRadius: '2rem',
-                                backgroundColor: 'rgba(255,255,255,0.1)',
-                                border: `1px solid ${todayFocus.color}`,
-                                color: todayFocus.color,
-                                fontFamily: "'Outfit', sans-serif",
-                                fontWeight: 'bold',
-                                marginBottom: '2rem',
-                                fontSize: '1.2rem',
-                                letterSpacing: '0.1em'
-                            }}
-                        >
-                            IT'S {todayFocus.label}
-                        </motion.div>
-                    )}
-
-                    <motion.h1
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.8, ease: "circOut" }}
-                        style={{
-                            fontSize: 'clamp(3rem, 15vw, 12rem)',
-                            lineHeight: 0.9,
-                            margin: 0,
-                            textTransform: 'uppercase',
-                            color: 'var(--color-white)',
-                            fontFamily: "'Outfit', sans-serif",
-                            fontWeight: '900',
-                            wordBreak: 'break-word',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <span style={{ display: 'block' }}>TRAIN</span>
-                        <span style={{
-                            color: 'transparent',
-                            WebkitTextStroke: '2px var(--color-neon-pink)',
-                            display: 'block'
-                        }}>SMARTER</span>
-                    </motion.h1>
-                </div>
-
-                {/* Action Buttons */}
-                <div style={{
-                    marginTop: '3rem',
-                    position: 'relative',
-                    zIndex: 20,
-                    display: 'flex',
-                    gap: '1.5rem',
-                    flexWrap: 'wrap', // Allow wrapping for small screens
-                    justifyContent: 'center'
-                }}>
-                    <motion.button
-                        onClick={onStart}
-                        whileHover={{ scale: 1.05, backgroundColor: 'var(--color-neon-green)', color: 'black' }}
-                        whileTap={{ scale: 0.95 }}
-                        style={{
-                            backgroundColor: 'transparent',
-                            color: 'var(--color-neon-green)',
-                            border: '2px solid var(--color-neon-green)',
-                            padding: '1rem 3rem',
-                            fontSize: '1.5rem',
-                            fontFamily: "'Outfit', sans-serif",
-                            fontWeight: '900',
-                            textTransform: 'uppercase',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                            letterSpacing: '1px'
-                        }}
-                    >
-                        Start Training <ArrowRight />
-                    </motion.button>
-
-                    <motion.button
+                <div style={{ marginTop: '3rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <GlowButton onClick={onStart}>
+                        Start Training <ArrowRight size={20} />
+                    </GlowButton>
+                    <button
                         onClick={handleDemo}
-                        whileHover={{ scale: 1.05, borderColor: 'var(--color-neon-pink)', color: 'var(--color-neon-pink)' }}
-                        whileTap={{ scale: 0.95 }}
                         style={{
-                            backgroundColor: 'transparent',
-                            color: 'white',
-                            border: '2px solid #333',
-                            padding: '1rem 3rem',
-                            fontSize: '1.5rem',
-                            fontFamily: "'Outfit', sans-serif",
-                            fontWeight: '900',
-                            textTransform: 'uppercase',
+                            padding: '1rem 2rem',
+                            border: '1px solid #333',
+                            color: '#888',
+                            background: 'transparent',
                             cursor: 'pointer',
-                            letterSpacing: '1px'
+                            fontSize: '1rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                            transition: 'all 0.3s'
                         }}
                     >
                         Try Demo
-                    </motion.button>
+                    </button>
                 </div>
-            </main >
+            </motion.div>
 
-            {/* Bottom Bar - Feature Highlights */}
-            < div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                borderTop: '1px solid #333'
-            }}>
-                <div style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505' }}>
-                    <Activity color="var(--color-neon-green)" size={32} style={{ marginBottom: '1rem' }} />
-                    <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Real-time Analysis</h3>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: '900', fontSize: '1.5rem', margin: 0 }}>30 FPS TRACKING</p>
-                </div>
-                <div style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505' }}>
-                    <Video color="var(--color-neon-pink)" size={32} style={{ marginBottom: '1rem' }} />
-                    <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Video Upload</h3>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: '900', fontSize: '1.5rem', margin: 0 }}>INSTANT FEEDBACK</p>
-                </div>
-                <div
-                    onClick={() => navigate('/schedule')}
-                    style={{ padding: '2rem', borderRight: '1px solid #333', backgroundColor: '#050505', cursor: 'pointer' }}
-                >
-                    <Calendar color="var(--color-neon-blue)" size={32} style={{ marginBottom: '1rem' }} />
-                    <h3 style={{ fontFamily: "'Outfit', sans-serif", textTransform: 'uppercase', fontSize: '0.9rem', color: '#888', letterSpacing: '1px' }}>Smart Schedule</h3>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: '900', fontSize: '1.5rem', margin: 0 }}>PLAN & TRACK</p>
-                </div>
-            </div >
-
-            {/* Comprehensive Footer */}
-            <footer style={{
-                padding: '2rem 2rem',
-                backgroundColor: '#050505',
-                borderTop: '1px solid #222',
-                fontFamily: "'Outfit', sans-serif"
-            }}>
-                <div style={{
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '3rem'
-                }}>
-                    {/* Brand */}
-                    <div>
-                        <h2 style={{ fontSize: '2rem', fontWeight: '900', margin: '0 0 1rem 0' }}>GYMBRO</h2>
-                        <p style={{ color: '#666', lineHeight: '1.6' }}>The future of AI-powered workout analysis. Train smarter, not harder.</p>
-                    </div>
-
-                    {/* Features */}
-                    <div>
-                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Features</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                            <a onClick={() => navigate('/coach')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>AI Coach</a>
-                            <a onClick={() => navigate('/upload')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Video Analysis</a>
-                            <a onClick={() => navigate('/schedule')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Schedule</a>
-                            <a onClick={() => navigate('/history')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>History</a>
-                        </div>
-                    </div>
-
-                    {/* Community */}
-                    <div>
-                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Community</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                            <a onClick={() => navigate('/leaderboard')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Leaderboard</a>
-                            <a onClick={() => navigate('/profile')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Profile</a>
-                            <a onClick={() => navigate('/settings')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Settings</a>
-                        </div>
-                    </div>
-
-                    {/* Legal */}
-                    <div>
-                        <h4 style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Support</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                            <a onClick={() => navigate('/about')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>About</a>
-                            <a onClick={() => navigate('/contact')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Contact</a>
-                            <a onClick={() => navigate('/privacy')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Privacy</a>
-                            <a onClick={() => navigate('/help')} style={{ color: 'white', cursor: 'pointer', textDecoration: 'none' }}>Help</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div style={{
-                    marginTop: '2rem',
-                    paddingTop: '1rem',
-                    borderTop: '1px solid #222',
-                    textAlign: 'center',
-                    color: '#444'
-                }}>
-                    © 2024 GYMBRO AI. All rights reserved.
-                </div>
-            </footer >
-        </div >
+            <motion.div
+                style={{ position: 'absolute', bottom: '2rem', opacity: opacityText }}
+                animate={{ y: [0, 10, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+            >
+                <ChevronDown color="#444" size={32} />
+            </motion.div>
+        </section>
     );
 };
+
+const EcosystemSection = () => {
+    return (
+        <section style={{ padding: '8rem 2rem', position: 'relative' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+                <SectionHeader title="THE ECOSYSTEM" subtitle="YOUR PERSONAL PERFORMANCE LAB" />
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    <FeatureCard
+                        icon={Brain}
+                        color="var(--color-neon-pink)"
+                        title="AI COACH"
+                        desc="Precision targeting algorithms analyze your weak points and adjust volume automatically."
+                        delay={0.1}
+                    />
+                    <FeatureCard
+                        icon={Activity}
+                        color="var(--color-neon-green)"
+                        title="METRICS"
+                        desc="30FPS computer vision tracks bar path, velocity, and range of motion in real-time."
+                        delay={0.2}
+                    />
+                    <FeatureCard
+                        icon={Calendar}
+                        color="var(--color-neon-blue)"
+                        title="SCHEDULE"
+                        desc="Dynamic periodization that adapts to your recovery state and training history."
+                        delay={0.3}
+                    />
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const ProtocolSection = () => {
+    return (
+        <section style={{ padding: '8rem 2rem', backgroundColor: '#0a0a0a' }}>
+            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <SectionHeader title="THE PROTOCOL" subtitle="SYSTEMATIC OPTIMIZATION" center />
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem', paddingLeft: '2rem', position: 'relative' }}>
+                    {/* Timeline Line */}
+                    <div style={{ position: 'absolute', left: '2.9rem', top: 0, bottom: 0, width: '2px', background: '#222', zIndex: 0 }} />
+
+                    <TimelineItem step="01" title="RECORD" desc="Capture your sets using any smartphone camera. No wearables required." icon={Smartphone} />
+                    <TimelineItem step="02" title="ANALYZE" desc="Our engine breaks down form, tempo, and RPE instantly." icon={Zap} />
+                    <TimelineItem step="03" title="OPTIMIZE" desc="Receive actionable insights to add 5-10lbs to your lifts weekly." icon={Trophy} />
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const CTASection = ({ onStart }) => {
+    return (
+        <section style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '2rem' }}>
+            <h2 style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', fontFamily: "var(--font-display)", marginBottom: '2rem' }}>
+                READY TO <span style={{ color: 'var(--color-neon-green)' }}>ASCEND?</span>
+            </h2>
+            <GlowButton onClick={onStart} style={{ padding: '1.5rem 4rem', fontSize: '1.5rem' }}>
+                START TRAINING
+            </GlowButton>
+        </section>
+    );
+};
+
+const Footer = ({ navigate }) => (
+    <footer style={{ padding: '4rem 2rem', borderTop: '1px solid #222', backgroundColor: '#000' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '2rem' }}>
+            <div>
+                <h2 style={{ margin: 0, fontSize: '1.5rem' }}>GYMBRO</h2>
+                <p style={{ color: '#666', marginTop: '0.5rem' }}>BETA v1.4</p>
+            </div>
+            <div style={{ display: 'flex', gap: '2rem' }}>
+                <a onClick={() => navigate('/about')} style={{ color: '#888', cursor: 'pointer' }}>About</a>
+                <a onClick={() => navigate('/privacy')} style={{ color: '#888', cursor: 'pointer' }}>Privacy</a>
+                <a onClick={() => navigate('/contact')} style={{ color: '#888', cursor: 'pointer' }}>Contact</a>
+            </div>
+        </div>
+    </footer>
+);
+
+// --- HELPERS ---
+
+const SectionHeader = ({ title, subtitle, center }) => (
+    <div style={{ marginBottom: '4rem', textAlign: center ? 'center' : 'left' }}>
+        <h2 style={{ fontSize: '1rem', color: '#666', letterSpacing: '4px', marginBottom: '0.5rem' }}>{title}</h2>
+        <h3 style={{ fontSize: '2.5rem', color: 'var(--color-white)', margin: 0, fontFamily: "var(--font-display)", textTransform: 'uppercase' }}>{subtitle}</h3>
+    </div>
+);
+
+const FeatureCard = ({ icon: Icon, color, title, desc, delay }) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, delay }}
+            style={{
+                backgroundColor: 'rgba(20, 20, 20, 0.5)',
+                padding: '2rem',
+                border: '1px solid #222',
+                backdropFilter: 'blur(10px)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.5rem'
+            }}
+            whileHover={{ y: -10, borderColor: color }}
+        >
+            <Icon color={color} size={40} />
+            <div>
+                <h4 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontFamily: "var(--font-display)" }}>{title}</h4>
+                <p style={{ color: '#888', lineHeight: 1.6 }}>{desc}</p>
+            </div>
+        </motion.div>
+    );
+};
+
+const TimelineItem = ({ step, title, desc, icon: Icon }) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            style={{ display: 'flex', gap: '2rem', alignItems: 'center', zIndex: 1 }}
+        >
+            <div style={{
+                background: '#000',
+                border: '1px solid #333',
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+            }}>
+                <Icon size={24} color="var(--color-white)" />
+            </div>
+            <div>
+                <span style={{ color: 'var(--color-neon-purple)', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block', fontWeight: 'bold' }}>STEP {step}</span>
+                <h4 style={{ fontSize: '2rem', margin: 0, fontFamily: "var(--font-display)" }}>{title}</h4>
+                <p style={{ color: '#888', marginTop: '0.5rem', maxWidth: '400px' }}>{desc}</p>
+            </div>
+        </motion.div>
+    );
+}
 
 export default LandingPage;

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Activity, CheckCircle, Video, Loader } from 'lucide-react';
@@ -24,6 +23,34 @@ const VideoPreview = ({ stream }) => {
 
     return <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} autoPlay muted />;
 };
+
+// Pro Visual Components
+const ScanLine = () => (
+    <motion.div
+        initial={{ top: '0%' }}
+        animate={{ top: '100%' }}
+        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        style={{
+            position: 'absolute',
+            left: 0,
+            width: '100%',
+            height: '2px',
+            backgroundColor: 'rgba(57, 255, 20, 0.5)',
+            boxShadow: '0 0 10px rgba(57, 255, 20, 0.8)',
+            zIndex: 10,
+            pointerEvents: 'none'
+        }}
+    />
+);
+
+const CornerReticles = () => (
+    <div style={{ position: 'absolute', inset: '2rem', pointerEvents: 'none', zIndex: 5 }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '50px', height: '50px', borderTop: '4px solid var(--color-neon-green)', borderLeft: '4px solid var(--color-neon-green)' }} />
+        <div style={{ position: 'absolute', top: 0, right: 0, width: '50px', height: '50px', borderTop: '4px solid var(--color-neon-green)', borderRight: '4px solid var(--color-neon-green)' }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '50px', height: '50px', borderBottom: '4px solid var(--color-neon-green)', borderLeft: '4px solid var(--color-neon-green)' }} />
+        <div style={{ position: 'absolute', bottom: 0, right: 0, width: '50px', height: '50px', borderBottom: '4px solid var(--color-neon-green)', borderRight: '4px solid var(--color-neon-green)' }} />
+    </div>
+);
 
 const RealTimeCoach = () => {
     const navigate = useNavigate();
@@ -158,10 +185,69 @@ const RealTimeCoach = () => {
 
     return (
         <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--color-black)', fontFamily: "'Outfit', sans-serif" }}>
+            <style>{`
+                .coach-header {
+                    padding: 1rem !important;
+                }
+                .report-container {
+                    padding: 1rem !important;
+                }
+                .report-title {
+                    font-size: 2rem !important;
+                }
+                .report-grid {
+                    grid-template-columns: 1fr !important;
+                    gap: 1rem !important;
+                }
+                .stat-card {
+                    padding: 1.5rem !important;
+                }
+                .big-stat {
+                    font-size: 4rem !important;
+                }
+                .action-button {
+                    padding: 1rem 1.5rem !important;
+                    font-size: 1.2rem !important;
+                }
+                 .analysis-button {
+                    padding: 1rem 1.5rem !important;
+                    font-size: 1rem !important;
+                }
+                @media (min-width: 768px) {
+                    .coach-header {
+                        padding: 1rem 2rem !important;
+                    }
+                    .report-container {
+                        padding: 2rem !important;
+                    }
+                    .report-title {
+                        font-size: 3rem !important;
+                    }
+                    .report-grid {
+                        grid-template-columns: 1fr 1fr !important;
+                        gap: 2rem !important;
+                    }
+                    .stat-card {
+                        padding: 2rem !important;
+                    }
+                    .big-stat {
+                        font-size: 5rem !important;
+                    }
+                     .action-button {
+                        padding: 1.5rem 3rem !important;
+                        font-size: 1.5rem !important;
+                    }
+                     .analysis-button {
+                        padding: 1rem 2rem !important;
+                        font-size: 1.1rem !important;
+                    }
+                }
+            `}</style>
+
             {/* Header */}
-            <header style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333' }}>
+            <header className="coach-header" style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333' }}>
                 <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/')}
                     style={{
                         display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',
                         background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 'bold'
@@ -196,12 +282,13 @@ const RealTimeCoach = () => {
 
                 {/* Result View */}
                 {step === 'result' ? (
-                    <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+                    <div className="report-container" style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
                         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-                                <h2 style={{ fontSize: '3rem', color: '#fff', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', margin: 0 }}>SESSION REPORT</h2>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', flexDirection: 'row', flexWrap: 'wrap', gap: '1rem' }}>
+                                <h2 className="report-title" style={{ fontSize: '3rem', color: '#fff', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', margin: 0 }}>SESSION REPORT</h2>
                                 <button
                                     onClick={handleRetry}
+                                    className="analysis-button"
                                     style={{
                                         padding: '1rem 2rem', backgroundColor: 'transparent', color: 'var(--color-neon-green)',
                                         border: '1px solid var(--color-neon-green)', fontWeight: 'bold', cursor: 'pointer',
@@ -233,17 +320,17 @@ const RealTimeCoach = () => {
                                     {/* Analysis Feedback Section */}
                                     {result.analysis_data && (
                                         <div>
-                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
-                                                <div style={{ border: '1px solid #333', padding: '2rem', textAlign: 'center' }}>
+                                            <div className="report-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
+                                                <div className="stat-card" style={{ border: '1px solid #333', padding: '2rem', textAlign: 'center' }}>
                                                     <h4 style={{ color: '#888', marginBottom: '0.5rem', fontFamily: "'Outfit', sans-serif", fontSize: '0.9rem', letterSpacing: '1px' }}>TOTAL REPS</h4>
-                                                    <p style={{ fontSize: '5rem', fontWeight: 'bold', color: '#fff', fontFamily: "'Anton', sans-serif", margin: 0, lineHeight: 1 }}>{result.analysis_data.reps_count}</p>
+                                                    <p className="big-stat" style={{ fontSize: '5rem', fontWeight: 'bold', color: '#fff', fontFamily: "'Anton', sans-serif", margin: 0, lineHeight: 1 }}>{result.analysis_data.reps_count}</p>
                                                 </div>
                                                 {result.analysis_data.avg_depth > 0 && (
-                                                    <div style={{ border: '1px solid #333', padding: '2rem', textAlign: 'center' }}>
+                                                    <div className="stat-card" style={{ border: '1px solid #333', padding: '2rem', textAlign: 'center' }}>
                                                         <h4 style={{ color: '#888', marginBottom: '0.5rem', fontFamily: "'Outfit', sans-serif", fontSize: '0.9rem', letterSpacing: '1px' }}>
                                                             {selectedExercise === 'pullup' ? 'AVG EXTENSION' : selectedExercise === 'deadlift' ? 'HIP EXTENSION' : 'AVG DEPTH'}
                                                         </h4>
-                                                        <p style={{
+                                                        <p className="big-stat" style={{
                                                             fontSize: '5rem', fontWeight: 'bold', fontFamily: "'Anton', sans-serif", margin: 0, lineHeight: 1,
                                                             color: result.analysis_data.avg_depth <= 135 ? 'var(--color-neon-green)' : 'var(--color-neon-pink)'
                                                         }}>
@@ -298,6 +385,8 @@ const RealTimeCoach = () => {
                         ) : (
                             <div style={{ width: '100%', height: '100%', position: 'relative' }}>
                                 <VideoPreview stream={previewStream} />
+                                {step === 'recording' && <ScanLine />}
+                                <CornerReticles />
 
                                 {/* Overlay UI */}
                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none' }}>
@@ -346,6 +435,7 @@ const RealTimeCoach = () => {
                                             <div style={{ marginTop: '2rem', pointerEvents: 'auto' }}>
                                                 <button
                                                     onClick={handleManualStop}
+                                                    className="action-button"
                                                     style={{
                                                         padding: '1.5rem 3rem',
                                                         fontSize: '1.5rem',

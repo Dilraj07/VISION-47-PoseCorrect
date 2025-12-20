@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, User, Lock, Bell, Shield, LogOut } from 'lucide-react';
+import { ChevronLeft, User, Lock, Bell, Shield, LogOut, Globe, Smartphone, Download, Trash2, Eye, HelpCircle, MessageSquare, Info } from 'lucide-react';
 
 const SettingsSection = ({ title, children }) => (
     <div style={{ marginBottom: '2rem' }}>
@@ -72,6 +72,9 @@ const SettingsItem = ({ icon: Icon, label, value, type = 'arrow', onClick, dange
 const Settings = () => {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState(true);
+    const [units, setUnits] = useState('imperial'); // imperial | metric
+    const [theme, setTheme] = useState('dark');
+    const [dataSaver, setDataSaver] = useState(false);
 
     return (
         <div style={{
@@ -89,13 +92,16 @@ const Settings = () => {
                 marginBottom: '2rem'
             }}>
                 <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/')}
                     style={{
                         background: 'none',
                         border: 'none',
                         color: 'white',
                         cursor: 'pointer',
-                        padding: 0
+                        padding: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
                     }}
                 >
                     <ChevronLeft size={28} />
@@ -112,19 +118,14 @@ const Settings = () => {
 
             <div style={{ maxWidth: '600px', margin: '0 auto' }}>
 
-                {/* Account Section - Login Info */}
+                {/* Account Section */}
                 <SettingsSection title="Account">
-                    <SettingsItem icon={User} label="Profile" value="Edit" onClick={() => navigate('/profile')} />
-                    <SettingsItem icon={Lock} label="Security" type="arrow" />
-                    <SettingsItem
-                        icon={Shield}
-                        label="Login Information"
-                        type="text"
-                        value="demo@gymbro.app"
-                    />
+                    <SettingsItem icon={User} label="Profile Details" value="Edit" onClick={() => navigate('/profile')} />
+                    <SettingsItem icon={Shield} label="Subscription" type="text" value="PRO PLAN" />
+                    <SettingsItem icon={Lock} label="Password & Security" type="arrow" />
                 </SettingsSection>
 
-                {/* Preferences */}
+                {/* App Preferences */}
                 <SettingsSection title="Preferences">
                     <SettingsItem
                         icon={Bell}
@@ -133,10 +134,37 @@ const Settings = () => {
                         value={notifications}
                         onClick={() => setNotifications(!notifications)}
                     />
-                    <SettingsItem icon={User} label="Language" type="text" value="English" />
+                    <SettingsItem
+                        icon={Globe}
+                        label="Units System"
+                        type="text"
+                        value={units === 'imperial' ? 'LBS / FT' : 'KG / M'}
+                        onClick={() => setUnits(units === 'imperial' ? 'metric' : 'imperial')}
+                    />
+                    <SettingsItem
+                        icon={Smartphone}
+                        label="Data Saver Mode"
+                        type="toggle"
+                        value={dataSaver}
+                        onClick={() => setDataSaver(!dataSaver)}
+                    />
                 </SettingsSection>
 
-                {/* Login/Logout Section */}
+                {/* Data & Privacy */}
+                <SettingsSection title="Data & Privacy">
+                    <SettingsItem icon={Download} label="Export Workout Data" type="arrow" />
+                    <SettingsItem icon={Trash2} label="Clear Cache" type="arrow" />
+                    <SettingsItem icon={Eye} label="Privacy Policy" type="arrow" onClick={() => navigate('/privacy')} />
+                </SettingsSection>
+
+                {/* Support */}
+                <SettingsSection title="Support">
+                    <SettingsItem icon={HelpCircle} label="Help Center" type="arrow" onClick={() => navigate('/help')} />
+                    <SettingsItem icon={MessageSquare} label="Contact Support" type="arrow" onClick={() => navigate('/contact')} />
+                    <SettingsItem icon={Info} label="About GymBro" type="text" value="v1.4.0 (Beta)" onClick={() => navigate('/about')} />
+                </SettingsSection>
+
+                {/* Session */}
                 <SettingsSection title="Session">
                     <SettingsItem
                         icon={LogOut}
@@ -145,48 +173,12 @@ const Settings = () => {
                         danger={true}
                         onClick={() => navigate('/')}
                     />
-                    <div style={{ padding: '1.5rem', borderTop: '1px solid #222' }}>
-                        <h4 style={{ margin: '0 0 1rem 0', color: '#888' }}>Login to another account</h4>
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            style={{
-                                width: '100%',
-                                padding: '1rem',
-                                backgroundColor: '#222',
-                                border: 'none',
-                                borderRadius: '0.5rem',
-                                color: 'white',
-                                marginBottom: '0.5rem'
-                            }}
-                        />
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            style={{
-                                width: '100%',
-                                padding: '1rem',
-                                backgroundColor: '#222',
-                                border: 'none',
-                                borderRadius: '0.5rem',
-                                color: 'white',
-                                marginBottom: '1rem'
-                            }}
-                        />
-                        <button style={{
-                            width: '100%',
-                            padding: '1rem',
-                            backgroundColor: 'var(--color-neon-blue)',
-                            color: 'black',
-                            border: 'none',
-                            borderRadius: '0.5rem',
-                            fontWeight: 'bold',
-                            cursor: 'pointer'
-                        }}>
-                            Log In
-                        </button>
-                    </div>
                 </SettingsSection>
+
+                <div style={{ textAlign: 'center', marginTop: '2rem', color: '#444', fontSize: '0.8rem' }}>
+                    User ID: 8f92-3a1b-4c5d<br />
+                    © 2024 GYMBRO AI Inc.
+                </div>
 
             </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAudio } from '../context/AudioContext';
-import { Dumbbell, X, Activity, Flame, Timer, User } from 'lucide-react';
+import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];
@@ -41,38 +41,65 @@ const Navbar = () => {
     );
 
     const NavLinks = () => (
-        <>
-            {!user ? (
-                <Link to="/auth" className="mobile-nav-link" onClick={closeMenu}>Join Gymbro</Link>
-            ) : (
-                <Link to="/dashboard" className="mobile-nav-link" onClick={closeMenu}>Dashboard</Link>
-            )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%' }}>
+            {/* MAIN */}
+            <div>
+                <h3 style={{ color: '#666', fontSize: '0.8rem', letterSpacing: '2px', marginBottom: '1rem' }}>MAIN</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <Link to="/" className="mobile-nav-link" onClick={closeMenu}>Homepage</Link>
+                    <Link to="/dashboard" className="mobile-nav-link" onClick={closeMenu}>Dashboard</Link>
+                    <Link to="/academy" className="mobile-nav-link" onClick={closeMenu}>Academy</Link>
+                </div>
+            </div>
 
-            <Link to="/" className="mobile-nav-link" onClick={closeMenu}>Homepage</Link>
-
-            <Link to="/about" className="mobile-nav-link" onClick={closeMenu}>About Us</Link>
-            <Link to="/contact" className="mobile-nav-link" onClick={closeMenu}>Contact Us</Link>
-            <Link to="/privacy" className="mobile-nav-link" onClick={closeMenu}>Privacy</Link>
-            <Link to="/help" className="mobile-nav-link" onClick={closeMenu}>Help</Link>
-
-            {user && (
-                <>
+            {/* TOOLS */}
+            <div>
+                <h3 style={{ color: '#666', fontSize: '0.8rem', letterSpacing: '2px', marginBottom: '1rem' }}>TOOLS</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <Link to="/history" className="mobile-nav-link" onClick={closeMenu}>History</Link>
-                    <Link to="/profile" className="mobile-nav-link" onClick={closeMenu}>Profile</Link>
-                    <Link to="/leaderboard" className="mobile-nav-link" onClick={closeMenu}>Leaderboard</Link>
                     <Link to="/schedule" className="mobile-nav-link" onClick={closeMenu}>Schedule</Link>
+                    <Link to="/leaderboard" className="mobile-nav-link" onClick={closeMenu}>Leaderboard</Link>
+                </div>
+            </div>
 
-                    <button
-                        onClick={() => { signOut(); closeMenu(); }}
-                        className="mobile-nav-link"
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'center' }}
-                    >
-                        Log Out
-                    </button>
-                    <p style={{ marginTop: '1rem', color: '#666', fontSize: '0.9rem' }}>Signed in as<br />{user.email}</p>
-                </>
+            {/* SUPPORT & ACCOUNT */}
+            <div>
+                <h3 style={{ color: '#666', fontSize: '0.8rem', letterSpacing: '2px', marginBottom: '1rem' }}>SYSTEM</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <Link to="/profile" className="mobile-nav-link" onClick={closeMenu}>Profile</Link>
+                    <Link to="/settings" className="mobile-nav-link" onClick={closeMenu}>Settings</Link>
+                    <Link to="/about" className="mobile-nav-link" onClick={closeMenu}>About Us</Link>
+                    <Link to="/help" className="mobile-nav-link" onClick={closeMenu}>Help</Link>
+                </div>
+            </div>
+
+            {user ? (
+                <button
+                    onClick={() => { signOut(); closeMenu(); }}
+                    style={{
+                        marginTop: '1rem',
+                        padding: '1rem',
+                        border: '1px solid #333',
+                        background: 'rgba(255,0,0,0.1)',
+                        color: 'var(--color-tac-alert)',
+                        cursor: 'pointer',
+                        fontSize: '1rem',
+                        fontWeight: 'bold'
+                    }}
+                >
+                    LOG OUT
+                </button>
+            ) : (
+                <Link
+                    to="/auth"
+                    className="mobile-nav-link"
+                    onClick={closeMenu}
+                    style={{ color: 'var(--color-neon-green)' }}
+                >
+                    JOIN GYMBRO
+                </Link>
             )}
-        </>
+        </div>
     );
 
     return (
@@ -99,6 +126,24 @@ const Navbar = () => {
                     title={user ? "Profile" : "Join Gymbro"}
                 >
                     <User size={24} />
+                </button>
+
+                {/* Academy Icon */}
+                <button
+                    onClick={() => navigate('/academy')}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '0.5rem'
+                    }}
+                    title="Academy"
+                >
+                    <BookOpen size={24} />
                 </button>
 
                 {/* Music Visualizer (Click to Toggle Mute) */}

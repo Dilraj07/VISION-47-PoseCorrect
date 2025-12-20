@@ -55,10 +55,52 @@ const Profile = () => {
             padding: '2rem',
             paddingBottom: '6rem'
         }}>
+            <style>{`
+                .profile-container {
+                    padding: 1rem;
+                }
+                .profile-header {
+                    margin-bottom: 2rem;
+                }
+                .profile-info {
+                    flex-direction: column;
+                    text-align: center;
+                    gap: 1.5rem;
+                }
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                }
+                .charts-grid {
+                    grid-template-columns: 1fr;
+                }
+                .stat-card {
+                    min-width: 100%;
+                }
+                
+                @media (min-width: 768px) {
+                    .profile-container {
+                        padding: 2rem;
+                    }
+                    .profile-info {
+                        flex-direction: row;
+                        text-align: left;
+                    }
+                    .stats-grid {
+                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    }
+                    .charts-grid {
+                        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                    }
+                    .stat-card {
+                        min-width: 200px;
+                    }
+                }
+            `}</style>
+
             {/* Header */}
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/')}
                     style={{
                         display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666', fontSize: '0.9rem',
                         background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold'
@@ -72,7 +114,7 @@ const Profile = () => {
             </header>
 
             {/* Profile Info */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem' }}>
+            <div className="profile-info" style={{ display: 'flex', alignItems: 'center', marginBottom: '3rem' }}>
                 <div style={{
                     width: '100px',
                     height: '100px',
@@ -83,13 +125,14 @@ const Profile = () => {
                     justifyContent: 'center',
                     fontSize: '2.5rem',
                     fontWeight: 'bold',
-                    color: '#000'
+                    color: '#000',
+                    boxShadow: '0 0 20px rgba(0, 255, 204, 0.3)'
                 }}>
                     AB
                 </div>
                 <div>
                     <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Arya Bro</h1>
-                    <div style={{ display: 'flex', items: 'center', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
                         <span style={{
                             backgroundColor: 'rgba(255, 215, 0, 0.1)',
                             color: '#FFD700',
@@ -107,14 +150,14 @@ const Profile = () => {
             </div>
 
             {/* Stats Grid */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem' }}>
+            <div className="stats-grid" style={{ display: 'grid', gap: '1rem', marginBottom: '3rem' }}>
                 <StatCard icon={Zap} label="Current Streak" value="12 Days" color="#FFD700" />
                 <StatCard icon={Trophy} label="Total Reps" value="1,245" color="#00ffcc" />
                 <StatCard icon={Calendar} label="Workouts" value="48" color="#ff0099" />
             </div>
 
             {/* Charts */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+            <div className="charts-grid" style={{ display: 'grid', gap: '2rem' }}>
 
                 {/* Form Consistency Chart */}
                 <motion.div
@@ -125,11 +168,11 @@ const Profile = () => {
                         backgroundColor: '#111',
                         border: '1px solid #333',
                         borderRadius: '1.5rem',
-                        padding: '2rem'
+                        padding: '1.5rem'
                     }}
                 >
                     <h2 style={{ marginBottom: '2rem', fontSize: '1.2rem', color: '#ccc' }}>Form Consistency Score</h2>
-                    <div style={{ height: '300px', width: '100%' }}>
+                    <div style={{ height: '250px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={data}>
                                 <defs>
@@ -139,8 +182,8 @@ const Profile = () => {
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
-                                <XAxis dataKey="name" stroke="#666" tickLine={false} axisLine={false} dy={10} />
-                                <YAxis stroke="#666" tickLine={false} axisLine={false} dx={-10} domain={[0, 100]} />
+                                <XAxis dataKey="name" stroke="#666" tickLine={false} axisLine={false} dy={10} tick={{ fontSize: 12 }} />
+                                <YAxis stroke="#666" tickLine={false} axisLine={false} dx={-10} domain={[0, 100]} tick={{ fontSize: 12 }} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '0.5rem' }}
                                     itemStyle={{ color: '#fff' }}
@@ -160,16 +203,16 @@ const Profile = () => {
                         backgroundColor: '#111',
                         border: '1px solid #333',
                         borderRadius: '1.5rem',
-                        padding: '2rem'
+                        padding: '1.5rem'
                     }}
                 >
                     <h2 style={{ marginBottom: '2rem', fontSize: '1.2rem', color: '#ccc' }}>Weekly Volume</h2>
-                    <div style={{ height: '300px', width: '100%' }}>
+                    <div style={{ height: '250px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={data}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
-                                <XAxis dataKey="name" stroke="#666" tickLine={false} axisLine={false} dy={10} />
-                                <YAxis stroke="#666" tickLine={false} axisLine={false} dx={-10} />
+                                <XAxis dataKey="name" stroke="#666" tickLine={false} axisLine={false} dy={10} tick={{ fontSize: 12 }} />
+                                <YAxis stroke="#666" tickLine={false} axisLine={false} dx={-10} tick={{ fontSize: 12 }} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '0.5rem' }}
                                     itemStyle={{ color: '#fff' }}

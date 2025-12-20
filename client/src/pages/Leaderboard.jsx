@@ -89,7 +89,7 @@ const Leaderboard = () => {
             {/* Header */}
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
                 <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/')}
                     style={{
                         display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666', fontSize: '0.9rem',
                         background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold'

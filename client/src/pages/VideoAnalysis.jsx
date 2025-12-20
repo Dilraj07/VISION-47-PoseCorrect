@@ -151,7 +151,7 @@ const VideoAnalysis = () => {
                 }
             `}</style>
             <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/')}
                 className="back-button"
                 style={{
                     display: 'flex',
@@ -164,7 +164,7 @@ const VideoAnalysis = () => {
                     cursor: 'pointer'
                 }}
             >
-                <ArrowLeft size={20} /> Back to Dashboard
+                <ArrowLeft size={20} /> Back to Home
             </button>
 
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>

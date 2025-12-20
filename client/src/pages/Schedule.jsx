@@ -184,14 +184,30 @@ const Schedule = () => {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-black)', color: '#fff', paddingBottom: '4rem' }}>
-      <header style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid #333' }}>
-        <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>
+      <style>{`
+        .schedule-header {
+            padding: 1rem !important;
+        }
+        .schedule-main {
+            padding: 1rem !important;
+        }
+        @media (min-width: 768px) {
+            .schedule-header {
+                padding: 2rem !important;
+            }
+            .schedule-main {
+                padding: 2rem !important;
+            }
+        }
+      `}</style>
+      <header className="schedule-header" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid #333' }}>
+        <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>
           <ArrowLeft size={24} />
         </button>
         <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '900', letterSpacing: '0.1em' }}>SCHEDULE & ACTIVITY</h1>
       </header>
 
-      <main style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
+      <main className="schedule-main" style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
 
         {/* Weekly Planner */}
         <section style={{ marginBottom: '4rem' }}>
