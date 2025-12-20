@@ -30,6 +30,23 @@ const LandingPage = ({ onStart }) => {
             fontFamily: "var(--font-primary)",
             overflowX: 'hidden'
         }}>
+            <style>{`
+                .section-padding {
+                    padding: 4rem 1.5rem !important;
+                }
+                .hero-title {
+                    font-size: clamp(3rem, 10vw, 8rem) !important;
+                }
+                @media (min-width: 768px) {
+                    .section-padding {
+                        padding: 8rem 2rem !important;
+                    }
+                    .hero-title {
+                        font-size: clamp(3.5rem, 12vw, 10rem) !important;
+                    }
+                }
+            `}</style>
+
             {/* HERO SECTION */}
             <HeroSection onStart={onStart} handleDemo={handleDemo} scrollProgress={scrollYProgress} />
 
@@ -87,8 +104,7 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
             </div>
 
             <motion.div style={{ y: yText, opacity: opacityText, scale: scaleText, zIndex: 1, textAlign: 'center' }}>
-                <h1 style={{
-                    fontSize: 'clamp(3.5rem, 12vw, 10rem)',
+                <h1 className="hero-title" style={{
                     lineHeight: 0.9,
                     margin: 0,
                     textTransform: 'uppercase',
@@ -141,7 +157,7 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
 
 const EcosystemSection = () => {
     return (
-        <section style={{ padding: '8rem 2rem', position: 'relative' }}>
+        <section className="section-padding" style={{ position: 'relative' }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 <SectionHeader title="THE ECOSYSTEM" subtitle="YOUR PERSONAL PERFORMANCE LAB" />
 
@@ -175,7 +191,7 @@ const EcosystemSection = () => {
 
 const ProtocolSection = () => {
     return (
-        <section style={{ padding: '8rem 2rem', backgroundColor: '#0a0a0a' }}>
+        <section className="section-padding" style={{ backgroundColor: '#0a0a0a' }}>
             <div style={{ maxWidth: '800px', margin: '0 auto' }}>
                 <SectionHeader title="THE PROTOCOL" subtitle="SYSTEMATIC OPTIMIZATION" center />
 
