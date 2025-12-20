@@ -109,16 +109,56 @@ const VideoAnalysis = () => {
     };
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-black)', padding: '2rem' }}>
+        <div className="page-container" style={{ minHeight: '100vh', backgroundColor: 'var(--color-black)' }}>
+            <style>{`
+                .page-container {
+                    padding: 1rem;
+                }
+                .page-title {
+                    font-size: 2rem;
+                    text-transform: uppercase;
+                    margin-bottom: 0.5rem;
+                }
+                .page-subtitle {
+                    color: #aaa;
+                    margin-bottom: 2rem;
+                    font-size: 0.9rem;
+                }
+                .back-button {
+                    margin-bottom: 1.5rem;
+                }
+                .upload-area {
+                    padding: 3rem 1.5rem !important;
+                }
+                @media (min-width: 768px) {
+                    .page-container {
+                        padding: 2rem;
+                    }
+                    .page-title {
+                        font-size: 3rem;
+                        margin-bottom: 1rem;
+                    }
+                    .page-subtitle {
+                        margin-bottom: 3rem;
+                        font-size: 1rem;
+                    }
+                    .back-button {
+                        margin-bottom: 2rem;
+                    }
+                    .upload-area {
+                        padding: 6rem 2rem !important;
+                    }
+                }
+            `}</style>
             <button
                 onClick={() => navigate('/dashboard')}
+                className="back-button"
                 style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
                     color: '#888',
                     fontSize: '1rem',
-                    marginBottom: '2rem',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer'
@@ -128,10 +168,10 @@ const VideoAnalysis = () => {
             </button>
 
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                <h1 style={{ fontSize: '3rem', marginBottom: '1rem', textTransform: 'uppercase' }}>
+                <h1 className="page-title">
                     UPLOAD <span style={{ color: 'var(--color-neon-pink)' }}>{selectedExercise}</span>
                 </h1>
-                <p style={{ color: '#aaa', marginBottom: '3rem' }}>Get a detailed breakdown of your {selectedExercise} form.</p>
+                <p className="page-subtitle">Get a detailed breakdown of your {selectedExercise} form.</p>
 
                 {!file && !analyzing && !result && (
                     <motion.div
@@ -139,10 +179,10 @@ const VideoAnalysis = () => {
                             borderColor: isDragging ? 'var(--color-neon-pink)' : '#333',
                             backgroundColor: isDragging ? 'rgba(255, 0, 153, 0.1)' : 'var(--color-dark-gray)'
                         }}
+                        className="upload-area"
                         style={{
                             border: '2px dashed #333',
                             borderRadius: '2rem',
-                            padding: '6rem 2rem',
                             textAlign: 'center',
                             cursor: 'pointer',
                             display: 'flex',
@@ -198,7 +238,7 @@ const VideoAnalysis = () => {
                     .analysis-grid {
                         display: grid;
                         grid-template-columns: 1fr;
-                        gap: 3rem;
+                        gap: 2rem;
                         align-items: start;
                     }
                     .video-column {
@@ -209,20 +249,41 @@ const VideoAnalysis = () => {
                     .stats-grid {
                          display: grid;
                          grid-template-columns: 1fr;
-                         gap: 1.5rem;
-                         auto-rows: minmax(180px, auto);
+                         gap: 1rem;
+                         auto-rows: minmax(140px, auto);
                     }
                     .button-grid {
                          display: grid;
                          grid-template-columns: 1fr;
-                         gap: 1rem;
+                         gap: 0.8rem;
                     }
+                    .main-card {
+                        padding: 1.5rem !important;
+                    }
+                    .coach-card, .improve-card {
+                        grid-column: span 1 !important;
+                        padding: 1.5rem !important;
+                    }
+                    
                     @media (min-width: 768px) {
                          .stats-grid {
                              grid-template-columns: 1fr 1fr;
+                             gap: 1.5rem;
+                             auto-rows: minmax(180px, auto);
                          }
                          .button-grid {
                              grid-template-columns: 1fr 1fr;
+                             gap: 1rem;
+                         }
+                         .main-card {
+                            padding: 3rem !important;
+                         }
+                         .coach-card, .improve-card {
+                            grid-column: span 2 !important;
+                            padding: 2.5rem !important;
+                         }
+                         .analysis-grid {
+                             gap: 3rem;
                          }
                     }
                     @media (min-width: 1024px) {
@@ -238,10 +299,10 @@ const VideoAnalysis = () => {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, ease: "easeOut" }}
+                            className="main-card"
                             style={{
                                 backgroundColor: '#0a0a0a',
-                                borderRadius: '2.5rem',
-                                padding: '3rem',
+                                borderRadius: '2rem',
                                 maxWidth: '100%',
                                 width: '100%',
                                 margin: '0 auto',
@@ -250,20 +311,20 @@ const VideoAnalysis = () => {
                                 boxSizing: 'border-box'
                             }}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginBottom: '3rem', paddingLeft: '0.5rem' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginBottom: '2rem', paddingLeft: '0.2rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                     <div style={{
-                                        width: '56px', height: '56px',
+                                        width: '48px', height: '48px',
                                         borderRadius: '50%',
                                         backgroundColor: 'rgba(57, 255, 20, 0.1)',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         border: '1px solid var(--color-neon-green)'
                                     }}>
-                                        <CheckCircle size={32} color="var(--color-neon-green)" />
+                                        <CheckCircle size={24} color="var(--color-neon-green)" />
                                     </div>
                                     <div>
-                                        <h3 style={{ fontSize: '1.8rem', color: '#fff', fontWeight: '800', letterSpacing: '-0.02em', margin: 0 }}>ANALYSIS COMPLETE</h3>
-                                        <p style={{ color: '#666', margin: 0, fontSize: '1rem', marginTop: '0.3rem', fontWeight: '500' }}>{result.original_file}</p>
+                                        <h3 style={{ fontSize: '1.4rem', color: '#fff', fontWeight: '800', letterSpacing: '-0.02em', margin: 0 }}>ANALYSIS COMPLETE</h3>
+                                        <p style={{ color: '#666', margin: 0, fontSize: '0.9rem', marginTop: '0.2rem', fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }}>{result.original_file}</p>
                                     </div>
                                 </div>
                             </div>
@@ -275,7 +336,7 @@ const VideoAnalysis = () => {
                                         backgroundColor: '#000',
                                         borderRadius: '1.5rem',
                                         overflow: 'hidden',
-                                        marginBottom: '2rem',
+                                        marginBottom: '1.5rem',
                                         boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
                                         border: '1px solid #333',
                                         position: 'relative'
@@ -302,22 +363,23 @@ const VideoAnalysis = () => {
                                             href={result.download_url}
                                             download
                                             style={{
-                                                padding: '1.2rem',
+                                                padding: '1rem',
                                                 backgroundColor: '#111',
                                                 color: '#fff',
-                                                borderRadius: '1.2rem',
+                                                borderRadius: '1rem',
                                                 fontWeight: 'bold',
                                                 textAlign: 'center',
                                                 textDecoration: 'none',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
-                                                gap: '0.8rem',
+                                                gap: '0.5rem',
                                                 border: '1px solid #333',
-                                                transition: 'all 0.2s'
+                                                transition: 'all 0.2s',
+                                                fontSize: '0.9rem'
                                             }}
                                         >
-                                            <FileVideo size={20} color="var(--color-neon-blue)" />
+                                            <FileVideo size={18} color="var(--color-neon-blue)" />
                                             <span>Download</span>
                                         </motion.a>
                                         <motion.button
@@ -328,16 +390,17 @@ const VideoAnalysis = () => {
                                                 setResult(null);
                                             }}
                                             style={{
-                                                padding: '1.2rem',
+                                                padding: '1rem',
                                                 background: 'linear-gradient(135deg, var(--color-neon-pink) 0%, #b3006b 100%)',
                                                 color: '#fff',
-                                                borderRadius: '1.2rem',
+                                                borderRadius: '1rem',
                                                 fontWeight: '800',
                                                 border: 'none',
                                                 cursor: 'pointer',
                                                 boxShadow: '0 10px 20px rgba(255, 0, 153, 0.3)',
                                                 textTransform: 'uppercase',
-                                                letterSpacing: '0.05em'
+                                                letterSpacing: '0.05em',
+                                                fontSize: '0.9rem'
                                             }}
                                         >
                                             New Scan
@@ -355,8 +418,8 @@ const VideoAnalysis = () => {
                                                 whileHover={{ y: -5 }}
                                                 style={{
                                                     backgroundColor: '#111',
-                                                    padding: '2rem',
-                                                    borderRadius: '2rem',
+                                                    padding: '1.5rem',
+                                                    borderRadius: '1.5rem',
                                                     display: 'flex',
                                                     flexDirection: 'column',
                                                     justifyContent: 'space-between',
@@ -365,18 +428,18 @@ const VideoAnalysis = () => {
                                                     overflow: 'hidden'
                                                 }}
                                             >
-                                                <h4 style={{ color: '#666', margin: 0, fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                                                <h4 style={{ color: '#666', margin: 0, fontSize: '0.8rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                                                     {selectedExercise === 'plank' ? 'HOLD TIME' : 'TOTAL REPS'}
                                                 </h4>
                                                 <div>
-                                                    <span style={{ fontSize: '4rem', fontWeight: '900', color: '#fff', lineHeight: 1 }}>
+                                                    <span style={{ fontSize: '3.5rem', fontWeight: '900', color: '#fff', lineHeight: 1 }}>
                                                         {selectedExercise === 'plank'
                                                             ? (result.analysis_data.hold_time ? parseFloat(result.analysis_data.hold_time).toFixed(1) : '0')
                                                             : result.analysis_data.reps_count}
                                                     </span>
-                                                    {selectedExercise === 'plank' && <span style={{ fontSize: '1.5rem', color: '#666', marginLeft: '0.5rem' }}>s</span>}
+                                                    {selectedExercise === 'plank' && <span style={{ fontSize: '1.2rem', color: '#666', marginLeft: '0.5rem' }}>s</span>}
                                                 </div>
-                                                <div style={{ height: '4px', width: '100%', backgroundColor: '#222', borderRadius: '2px', marginTop: '1rem' }}>
+                                                <div style={{ height: '4px', width: '100%', backgroundColor: '#222', borderRadius: '2px', marginTop: '0.5rem' }}>
                                                     <div style={{ height: '100%', width: '100%', backgroundColor: 'var(--color-neon-green)', borderRadius: '2px' }} />
                                                 </div>
                                             </motion.div>
@@ -386,8 +449,8 @@ const VideoAnalysis = () => {
                                                 whileHover={{ y: -5 }}
                                                 style={{
                                                     backgroundColor: '#111',
-                                                    padding: '2rem',
-                                                    borderRadius: '2rem',
+                                                    padding: '1.5rem',
+                                                    borderRadius: '1.5rem',
                                                     display: 'flex',
                                                     flexDirection: 'column',
                                                     justifyContent: 'space-between',
@@ -396,7 +459,7 @@ const VideoAnalysis = () => {
                                                     overflow: 'hidden'
                                                 }}
                                             >
-                                                <h4 style={{ color: '#666', margin: 0, fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                                                <h4 style={{ color: '#666', margin: 0, fontSize: '0.8rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                                                     {selectedExercise === 'pullup' || selectedExercise === 'shoulder_press' || selectedExercise === 'bicep_curl' ? 'AVG EXTENSION' :
                                                         selectedExercise === 'deadlift' ? 'HIP EXTENSION' :
                                                             selectedExercise === 'plank' ? 'AVG ALIGNMENT' :
@@ -404,7 +467,7 @@ const VideoAnalysis = () => {
                                                 </h4>
                                                 <div>
                                                     <span style={{
-                                                        fontSize: '4rem',
+                                                        fontSize: '3.5rem',
                                                         fontWeight: '900',
                                                         lineHeight: 1,
                                                         color: (() => {
@@ -427,42 +490,41 @@ const VideoAnalysis = () => {
                                                         {result.analysis_data.avg_depth}°
                                                     </span>
                                                 </div>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' }}>
-                                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-neon-blue)' }} />
-                                                    <span style={{ color: '#888', fontSize: '0.8rem' }}>Biomechanics Score</span>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+                                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-neon-blue)' }} />
+                                                    <span style={{ color: '#888', fontSize: '0.75rem' }}>Biomechanics Score</span>
                                                 </div>
                                             </motion.div>
 
                                             {/* Card 3: Coach Feedback (Full Width) */}
                                             <motion.div
                                                 whileHover={{ y: -5 }}
+                                                className="coach-card"
                                                 style={{
-                                                    gridColumn: 'span 2',
                                                     backgroundColor: '#111',
-                                                    padding: '2.5rem',
-                                                    borderRadius: '2rem',
+                                                    borderRadius: '1.5rem',
                                                     border: '1px solid #222',
                                                     position: 'relative'
                                                 }}
                                             >
-                                                <h4 style={{ color: '#fff', marginBottom: '1.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontWeight: '800' }}>
-                                                    <span style={{ width: '30px', height: '30px', borderRadius: '8px', backgroundColor: 'rgba(0, 204, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-neon-blue)' }} />
+                                                <h4 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontWeight: '800' }}>
+                                                    <span style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(0, 204, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-neon-blue)' }} />
                                                     </span>
                                                     COACH NOTES
                                                 </h4>
-                                                <div style={{ display: 'grid', gap: '1rem' }}>
+                                                <div style={{ display: 'grid', gap: '0.8rem' }}>
                                                     {result.analysis_data.feedback.map((item, index) => (
                                                         <div key={index} style={{
                                                             backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                                                            padding: '1.2rem 1.5rem',
-                                                            borderRadius: '1rem',
+                                                            padding: '1rem 1.25rem',
+                                                            borderRadius: '0.8rem',
                                                             borderLeft: '3px solid var(--color-neon-blue)',
                                                             display: 'flex',
                                                             alignItems: 'center',
-                                                            gap: '1rem'
+                                                            gap: '0.8rem'
                                                         }}>
-                                                            <p style={{ color: '#ddd', margin: 0, lineHeight: '1.6', fontSize: '1.05rem' }}>{item}</p>
+                                                            <p style={{ color: '#ddd', margin: 0, lineHeight: '1.5', fontSize: '1rem' }}>{item}</p>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -472,32 +534,31 @@ const VideoAnalysis = () => {
                                             {result.analysis_data.corrections.length > 0 && (
                                                 <motion.div
                                                     whileHover={{ y: -5 }}
+                                                    className="improve-card"
                                                     style={{
-                                                        gridColumn: 'span 2',
                                                         backgroundColor: '#111',
-                                                        padding: '2.5rem',
-                                                        borderRadius: '2rem',
+                                                        borderRadius: '1.5rem',
                                                         border: '1px solid #222'
                                                     }}
                                                 >
-                                                    <h4 style={{ color: 'var(--color-neon-pink)', marginBottom: '1.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontWeight: '800' }}>
-                                                        <span style={{ width: '30px', height: '30px', borderRadius: '8px', backgroundColor: 'rgba(255, 0, 153, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-neon-pink)' }} />
+                                                    <h4 style={{ color: 'var(--color-neon-pink)', marginBottom: '1rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontWeight: '800' }}>
+                                                        <span style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(255, 0, 153, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-neon-pink)' }} />
                                                         </span>
                                                         AREAS TO IMPROVE
                                                     </h4>
-                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.8rem' }}>
                                                         {result.analysis_data.corrections.map((item, index) => (
                                                             <div key={index} style={{
                                                                 backgroundColor: 'rgba(255, 0, 153, 0.05)',
-                                                                padding: '1rem 1.5rem',
-                                                                borderRadius: '1rem',
+                                                                padding: '0.8rem 1.25rem',
+                                                                borderRadius: '0.8rem',
                                                                 display: 'flex',
                                                                 alignItems: 'start',
-                                                                gap: '1rem'
+                                                                gap: '0.8rem'
                                                             }}>
-                                                                <span style={{ color: 'var(--color-neon-pink)', fontSize: '1.2rem', marginTop: '-2px' }}>•</span>
-                                                                <p style={{ color: '#ccc', margin: 0, lineHeight: '1.5' }}>{item}</p>
+                                                                <span style={{ color: 'var(--color-neon-pink)', fontSize: '1.2rem', marginTop: '-4px' }}>•</span>
+                                                                <p style={{ color: '#ccc', margin: 0, lineHeight: '1.4' }}>{item}</p>
                                                             </div>
                                                         ))}
                                                     </div>
@@ -511,7 +572,7 @@ const VideoAnalysis = () => {
                     </>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 
