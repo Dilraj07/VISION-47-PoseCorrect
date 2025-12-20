@@ -27,7 +27,7 @@ const VideoAnalysis = () => {
         if (analyzing) {
             interval = setInterval(() => {
                 setLoadingIconIndex((prev) => (prev + 1) % LOADING_ICONS.length);
-            }, 800);
+            }, 1000);
         }
         return () => clearInterval(interval);
     }, [analyzing]);
@@ -170,14 +170,15 @@ const VideoAnalysis = () => {
 
                 {analyzing && (
                     <div style={{ textAlign: 'center', padding: '4rem' }}>
-                        <div style={{ height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
-                            <AnimatePresence mode="wait">
+                        <div style={{ height: '60px', width: '60px', position: 'relative', margin: '0 auto 2rem' }}>
+                            <AnimatePresence>
                                 <motion.div
                                     key={loadingIconIndex}
-                                    initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.5, y: -10 }}
-                                    transition={{ duration: 0.3 }}
+                                    style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                    initial={{ opacity: 0, rotate: -180, scale: 0.5 }}
+                                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                    exit={{ opacity: 0, rotate: 180, scale: 0.5 }}
+                                    transition={{ duration: 0.6, ease: "easeInOut" }}
                                 >
                                     {React.createElement(LOADING_ICONS[loadingIconIndex], {
                                         size: 48,
