@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../supabaseClient';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 
@@ -26,9 +27,22 @@ const Auth = () => {
                 if (error) throw error;
                 navigate('/dashboard');
             } else {
-                const { error } = await signUp({ email, password });
+                const { data, error } = await signUp({ email, password });
                 if (error) throw error;
-                alert("Check your email for the confirmation link!");
+
+                // If session is created inside data, they are logged in!
+                // Check if profile exists
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('id', data.session.user.id)
+                    .single();
+
+                if (profile) {
+                    navigate('/dashboard');
+                } else {
+                    navigate('/onboarding');
+                }
             }
         } catch (error) {
             setError(error.message);

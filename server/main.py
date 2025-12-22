@@ -3,16 +3,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import shutil
 import os
 import sys
 import time
 import uuid
+import json
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
-from pymongo import MongoClient
+from supabase import create_client, Client
 from openai import OpenAI
 
 load_dotenv()
@@ -32,15 +33,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MongoDB Setup
-MONGO_URL = os.environ.get("MONGO_URL", "mongodb://localhost:27017/gymbro")
-client = MongoClient(MONGO_URL)
-db = client.gymbro
-workouts_collection = db.workouts
-chats_collection = db.chats
-users_collection = db.users
+# Supabase Setup
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
-# OpenAI Setup (Emergent LLM Key)
+if not SUPABASE_URL or not SUPABASE_KEY:
+    print("WARNING: Supabase credentials missing. Database features will fail.")
+    supabase: Client = None
+else:
+    try:
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print("Connected to Supabase")
+    except Exception as e:
+        print(f"Failed to connect to Supabase: {e}")
+        supabase = None
+
+# OpenAI Setup
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 openai_client = OpenAI(
     api_key=EMERGENT_LLM_KEY,
@@ -67,14 +75,17 @@ class WorkoutLog(BaseModel):
     exercise_type: str
     reps: int
     feedback: List[str]
-    avg_depth: Optional[int] = 0
-    session_duration: Optional[int] = 0
+    avg_depth: Optional[float] = 0.0
 
-class WorkoutPlan(BaseModel):
-    name: str
-    exercises: List[dict]
-    duration_minutes: int
-    difficulty: str
+class ScheduleData(BaseModel):
+    user_id: str
+    schedule: Dict[str, str]
+
+class UserSettings(BaseModel):
+    user_id: str
+    theme: str
+    units: str
+    notifications: bool
 
 # ============ ROUTES ============
 @app.get("/")
@@ -83,7 +94,8 @@ async def root_path():
 
 @app.get("/api/health")
 async def health_check():
-    return {"status": "healthy", "service": "GYMBRO AI Backend v2.0"}
+    db_status = "connected" if supabase else "disconnected"
+    return {"status": "healthy", "service": "GYMBRO AI Backend v2.0", "database": db_status}
 
 @app.get("/api/")
 async def root():
@@ -180,12 +192,6 @@ Your personality:
 - Keep responses concise but informative
 - Always prioritize safety and proper form
 - Be enthusiastic about fitness!
-
-When giving advice:
-1. Be specific with exercise cues
-2. Explain the "why" behind recommendations
-3. Offer alternatives when appropriate
-4. Encourage progressive overload safely
 """
 
 @app.post("/api/chat")
@@ -207,14 +213,7 @@ async def chat_with_coach(request: ChatRequest):
         
         assistant_message = response.choices[0].message.content
         
-        # Save chat to DB
-        if request.user_id:
-            chats_collection.insert_one({
-                "user_id": request.user_id,
-                "messages": [m.dict() for m in request.messages] + [{"role": "assistant", "content": assistant_message}],
-                "timestamp": datetime.utcnow()
-            })
-        
+        # We don't save chats to SQL yet to keep schema simple
         return {"response": assistant_message}
     
     except Exception as e:
@@ -224,43 +223,136 @@ async def chat_with_coach(request: ChatRequest):
 # ============ WORKOUT LOGGING ============
 @app.post("/api/workouts")
 async def log_workout(workout: WorkoutLog):
-    workout_data = workout.dict()
-    workout_data["id"] = str(uuid.uuid4())
-    workout_data["timestamp"] = datetime.utcnow()
-    workouts_collection.insert_one(workout_data)
-    return {"status": "saved", "id": workout_data["id"]}
+    if not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+        
+    try:
+        data = {
+            "user_id": workout.user_id,
+            "exercise_type": workout.exercise_type,
+            "reps": workout.reps,
+            "feedback": workout.feedback,
+            "avg_depth": workout.avg_depth
+        }
+        res = supabase.table("workouts").insert(data).execute()
+        return {"status": "saved", "data": res.data}
+    except Exception as e:
+        print(f"DB Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save workout. Check RLS policies or Backend Key.")
 
 @app.get("/api/workouts/{user_id}")
 async def get_workouts(user_id: str, limit: int = 50):
-    workouts = list(workouts_collection.find(
-        {"user_id": user_id},
-        {"_id": 0}
-    ).sort("timestamp", -1).limit(limit))
-    return {"workouts": workouts}
+    if not supabase:
+        return {"workouts": []}
+    
+    try:
+        res = supabase.table("workouts").select("*").eq("user_id", user_id).order("created_at", desc=True).limit(limit).execute()
+        return {"workouts": res.data}
+    except Exception as e:
+        print(f"DB Error: {e}")
+        return {"workouts": []}
 
 @app.get("/api/stats/{user_id}")
 async def get_user_stats(user_id: str):
-    pipeline = [
-        {"$match": {"user_id": user_id}},
-        {"$group": {
-            "_id": "$exercise_type",
-            "total_reps": {"$sum": "$reps"},
-            "sessions": {"$sum": 1},
-            "avg_depth": {"$avg": "$avg_depth"}
-        }}
-    ]
-    stats = list(workouts_collection.aggregate(pipeline))
+    if not supabase:
+        return {"total_workouts": 0, "total_reps": 0, "by_exercise": []}
     
-    total_workouts = workouts_collection.count_documents({"user_id": user_id})
-    total_reps = sum(s.get("total_reps", 0) for s in stats)
-    
-    return {
-        "total_workouts": total_workouts,
-        "total_reps": total_reps,
-        "by_exercise": stats
-    }
+    try:
+        # Get all workouts for user
+        res = supabase.table("workouts").select("*").eq("user_id", user_id).execute()
+        workouts = res.data
+        
+        total_workouts = len(workouts)
+        total_reps = sum(w['reps'] for w in workouts)
+        
+        # Group by exercise
+        stats_map = {}
+        for w in workouts:
+            etype = w['exercise_type']
+            if etype not in stats_map:
+                stats_map[etype] = {"total_reps": 0, "sessions": 0, "avg_depth": 0, "depth_sum": 0, "depth_count": 0}
+            
+            s = stats_map[etype]
+            s['total_reps'] += w['reps']
+            s['sessions'] += 1
+            if w.get('avg_depth'):
+                s['depth_sum'] += w['avg_depth']
+                s['depth_count'] += 1
+        
+        by_exercise = []
+        for etype, s in stats_map.items():
+            avg_depth = s['depth_sum'] / s['depth_count'] if s['depth_count'] > 0 else 0
+            by_exercise.append({
+                "_id": etype,
+                "total_reps": s['total_reps'],
+                "sessions": s['sessions'],
+                "avg_depth": avg_depth
+            })
+            
+        return {
+            "total_workouts": total_workouts,
+            "total_reps": total_reps,
+            "by_exercise": by_exercise
+        }
+    except Exception as e:
+        print(f"DB Error: {e}")
+        return {"total_workouts": 0, "total_reps": 0, "by_exercise": []}
 
-# ============ WORKOUT PLANS ============
+# ============ SCHEDULE & SETTINGS ============
+@app.post("/api/schedule")
+async def save_schedule(data: ScheduleData):
+    if not supabase: raise HTTPException(status_code=503, detail="DB unavailable")
+    try:
+        # Upsert schedule
+        payload = {
+            "user_id": data.user_id,
+            "data": data.schedule,
+            "updated_at": "now()"
+        }
+        res = supabase.table("schedules").upsert(payload).execute()
+        return {"status": "saved"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/schedule/{user_id}")
+async def get_schedule(user_id: str):
+    if not supabase: return {}
+    try:
+        res = supabase.table("schedules").select("data").eq("user_id", user_id).execute()
+        if res.data:
+            return res.data[0]["data"]
+        return {}
+    except Exception as e:
+        return {}
+
+@app.post("/api/settings")
+async def save_settings(data: UserSettings):
+    if not supabase: raise HTTPException(status_code=503, detail="DB unavailable")
+    try:
+        payload = {
+            "user_id": data.user_id,
+            "theme": data.theme,
+            "units": data.units,
+            "notifications": data.notifications,
+            "updated_at": "now()"
+        }
+        res = supabase.table("user_settings").upsert(payload).execute()
+        return {"status": "saved"}
+    except Exception as e:
+         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/settings/{user_id}")
+async def get_settings(user_id: str):
+    if not supabase: return {}
+    try:
+        res = supabase.table("user_settings").select("*").eq("user_id", user_id).execute()
+        if res.data:
+            return res.data[0]
+        return {}
+    except Exception as e:
+        return {}
+
+# ============ WORKOUT PLANS (STATIC) ============
 WORKOUT_PLANS = [
     {
         "id": "push",

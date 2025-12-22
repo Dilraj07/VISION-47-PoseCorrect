@@ -18,6 +18,7 @@ import History from './pages/History';
 import Profile from './pages/Profile';
 import Leaderboard from './pages/Leaderboard';
 import Schedule from './pages/Schedule';
+import Onboarding from './pages/Onboarding';
 import Settings from './pages/Settings';
 import Academy from './pages/Academy';
 import { AuthProvider } from './context/AuthContext';
@@ -61,6 +62,7 @@ const AppContent = () => {
           <Route path="/leaderboard" element={<><Navbar /><Leaderboard /></>} />
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/academy" element={<><Navbar /><Academy /></>} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       )}

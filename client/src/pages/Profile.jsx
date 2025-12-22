@@ -1,18 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { User, Trophy, Calendar, Zap, ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
+import { useAuth } from '../context/AuthContext';
+import { format } from 'date-fns';
 
-const data = [
-    { name: 'Mon', score: 65, reps: 10 },
-    { name: 'Tue', score: 68, reps: 15 },
-    { name: 'Wed', score: 75, reps: 12 },
-    { name: 'Thu', score: 72, reps: 20 },
-    { name: 'Fri', score: 85, reps: 25 },
-    { name: 'Sat', score: 82, reps: 30 },
-    { name: 'Sun', score: 90, reps: 35 },
-];
+
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
     <motion.div
@@ -46,6 +41,50 @@ const StatCard = ({ icon: Icon, label, value, color }) => (
 
 const Profile = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState({
+        totalReps: 0,
+        totalWorkouts: 0,
+        chartData: [
+            { name: 'Mon', score: 0, reps: 0 },
+            { name: 'Tue', score: 0, reps: 0 },
+            { name: 'Wed', score: 0, reps: 0 },
+            { name: 'Thu', score: 0, reps: 0 },
+            { name: 'Fri', score: 0, reps: 0 },
+            { name: 'Sat', score: 0, reps: 0 },
+            { name: 'Sun', score: 0, reps: 0 },
+        ]
+    });
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (!user) return;
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error) throw error;
+                setProfile(data);
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProfile();
+    }, [user]);
+
+    if (loading) return <div style={{ color: '#fff', padding: '2rem' }}>Loading profile...</div>;
+
+    const joinedDate = profile ? format(new Date(profile.created_at), 'MMM yyyy') : '...';
+    const initials = profile?.full_name
+        ? profile.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+        : 'GB';
 
     return (
         <div style={{
@@ -108,7 +147,10 @@ const Profile = () => {
                 >
                     <ArrowLeft size={16} /> BACK
                 </button>
-                <button style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer' }}>
+                <button
+                    onClick={() => navigate('/settings')}
+                    style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer' }}
+                >
                     <Settings size={20} />
                 </button>
             </header>
@@ -128,10 +170,12 @@ const Profile = () => {
                     color: '#000',
                     boxShadow: '0 0 20px rgba(0, 255, 204, 0.3)'
                 }}>
-                    AB
+                    {initials}
                 </div>
                 <div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Arya Bro</h1>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
+                        {profile?.full_name || 'GYM BRO'}
+                    </h1>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
                         <span style={{
                             backgroundColor: 'rgba(255, 215, 0, 0.1)',
@@ -142,23 +186,24 @@ const Profile = () => {
                             fontWeight: 'bold',
                             border: '1px solid rgba(255, 215, 0, 0.2)'
                         }}>
-                            PRO MEMBER
+                            {profile?.experience_level?.toUpperCase() || 'MEMBER'}
                         </span>
-                        <span style={{ color: '#888' }}>Joined Dec 2025</span>
+                        <span style={{ color: '#888' }}>Joined {joinedDate}</span>
                     </div>
                 </div>
             </div>
 
             {/* Stats Grid */}
             <div className="stats-grid" style={{ display: 'grid', gap: '1rem', marginBottom: '3rem' }}>
-                <StatCard icon={Zap} label="Current Streak" value="12 Days" color="#FFD700" />
-                <StatCard icon={Trophy} label="Total Reps" value="1,245" color="#00ffcc" />
-                <StatCard icon={Calendar} label="Workouts" value="48" color="#ff0099" />
+                <StatCard icon={Zap} label="Goal" value={profile?.primary_goal?.toUpperCase() || "FITNESS"} color="#FFD700" />
+                <StatCard icon={Trophy} label="Total Reps" value={stats.totalReps.toLocaleString()} color="#00ffcc" />
+                <StatCard icon={Calendar} label="Workouts" value={stats.totalWorkouts} color="#ff0099" />
             </div>
 
             {/* Charts */}
             <div className="charts-grid" style={{ display: 'grid', gap: '2rem' }}>
 
+                {/* Form Consistency Chart */}
                 {/* Form Consistency Chart */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -174,7 +219,7 @@ const Profile = () => {
                     <h2 style={{ marginBottom: '2rem', fontSize: '1.2rem', color: '#ccc' }}>Form Consistency Score</h2>
                     <div style={{ height: '250px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data}>
+                            <AreaChart data={stats.chartData}>
                                 <defs>
                                     <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#00ffcc" stopOpacity={0.3} />
@@ -209,7 +254,7 @@ const Profile = () => {
                     <h2 style={{ marginBottom: '2rem', fontSize: '1.2rem', color: '#ccc' }}>Weekly Volume</h2>
                     <div style={{ height: '250px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={data}>
+                            <LineChart data={stats.chartData}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
                                 <XAxis dataKey="name" stroke="#666" tickLine={false} axisLine={false} dy={10} tick={{ fontSize: 12 }} />
                                 <YAxis stroke="#666" tickLine={false} axisLine={false} dx={-10} tick={{ fontSize: 12 }} />

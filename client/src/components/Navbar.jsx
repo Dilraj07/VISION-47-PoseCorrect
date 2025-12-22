@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useAudio } from '../context/AudioContext';
 import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '../supabaseClient';
 
 const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];
 const Navbar = () => {
@@ -11,6 +12,26 @@ const Navbar = () => {
     const { user, signOut } = useAuth();
     const { isPlaying, isMuted, toggleMute } = useAudio();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [initials, setInitials] = useState('');
+
+    useEffect(() => {
+        const getProfile = async () => {
+            if (user) {
+                const { data } = await supabase
+                    .from('profiles')
+                    .select('full_name')
+                    .eq('id', user.id)
+                    .single();
+
+                if (data?.full_name) {
+                    setInitials(data.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase());
+                }
+            } else {
+                setInitials('');
+            }
+        };
+        getProfile();
+    }, [user]);
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMenu = () => setIsMobileMenuOpen(false);
@@ -114,18 +135,23 @@ const Navbar = () => {
                 <button
                     onClick={() => user ? navigate('/profile') : navigate('/auth', { state: { isSignup: true } })}
                     style={{
-                        background: 'none',
+                        background: user ? 'var(--color-neon-blue)' : 'none',
                         border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
                         cursor: 'pointer',
-                        color: user ? 'var(--color-neon-blue)' : '#fff',
+                        color: user ? '#000' : '#fff',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '0.5rem'
+                        padding: 0,
+                        fontWeight: 'bold',
+                        fontSize: '0.8rem'
                     }}
                     title={user ? "Profile" : "Join Gymbro"}
                 >
-                    <User size={24} />
+                    {initials || <User size={20} />}
                 </button>
 
                 {/* Academy Icon */}
