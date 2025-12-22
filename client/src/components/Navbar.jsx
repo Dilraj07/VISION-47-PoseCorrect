@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAudio } from '../context/AudioContext';
-import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen } from 'lucide-react';
+import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen, Calendar, Trophy, Settings as SettingsIcon, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../supabaseClient';
 
@@ -61,61 +61,110 @@ const Navbar = () => {
         />
     );
 
+    // Icon mapping
+    const NavItem = ({ to, icon: Icon, label, onClick }) => (
+        <Link
+            to={to}
+            onClick={onClick}
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '1rem',
+                backgroundColor: '#1a1a1a',
+                borderBottom: '1px solid #222',
+                color: '#fff',
+                textDecoration: 'none',
+                fontSize: '0.95rem',
+                transition: 'background-color 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#222'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#1a1a1a'}
+        >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <Icon size={18} color="#888" />
+                <span style={{ fontWeight: '500' }}>{label}</span>
+            </div>
+            <ChevronRight size={16} color="#444" />
+        </Link>
+    );
+
+    const MenuSection = ({ title, children }) => (
+        <div style={{ width: '100%', marginBottom: '1.5rem' }}>
+            <h4 style={{
+                padding: '0 1rem 0.5rem',
+                color: '#666',
+                fontSize: '0.8rem',
+                fontWeight: '600',
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
+            }}>
+                {title}
+            </h4>
+            <div style={{
+                borderRadius: '12px',
+                overflow: 'hidden',
+                border: '1px solid #222'
+            }}>
+                {children}
+            </div>
+        </div>
+    );
+
     const NavLinks = () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%' }}>
-            {/* MAIN */}
-            <div>
-                <h3 style={{ color: '#666', fontSize: '0.8rem', letterSpacing: '2px', marginBottom: '1rem' }}>MAIN</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <Link to="/" className="mobile-nav-link" onClick={closeMenu}>Homepage</Link>
-                    <Link to="/dashboard" className="mobile-nav-link" onClick={closeMenu}>Dashboard</Link>
-                    <Link to="/academy" className="mobile-nav-link" onClick={closeMenu}>Academy</Link>
-                </div>
-            </div>
+        <div style={{ width: '100%', padding: '0 0.5rem' }}>
+            <MenuSection title="Main">
+                <NavItem to="/" icon={Flame} label="Homepage" onClick={closeMenu} />
+                <NavItem to="/dashboard" icon={Activity} label="Dashboard" onClick={closeMenu} />
+                <NavItem to="/academy" icon={BookOpen} label="Academy" onClick={closeMenu} />
+            </MenuSection>
 
-            {/* TOOLS */}
-            <div>
-                <h3 style={{ color: '#666', fontSize: '0.8rem', letterSpacing: '2px', marginBottom: '1rem' }}>TOOLS</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <Link to="/history" className="mobile-nav-link" onClick={closeMenu}>History</Link>
-                    <Link to="/schedule" className="mobile-nav-link" onClick={closeMenu}>Schedule</Link>
-                    <Link to="/leaderboard" className="mobile-nav-link" onClick={closeMenu}>Leaderboard</Link>
-                </div>
-            </div>
+            <MenuSection title="Tools">
+                <NavItem to="/history" icon={Timer} label="History" onClick={closeMenu} />
+                <NavItem to="/schedule" icon={Calendar} label="Schedule" onClick={closeMenu} />
+                <NavItem to="/leaderboard" icon={Trophy} label="Leaderboard" onClick={closeMenu} />
+            </MenuSection>
 
-            {/* SUPPORT & ACCOUNT */}
-            <div>
-                <h3 style={{ color: '#666', fontSize: '0.8rem', letterSpacing: '2px', marginBottom: '1rem' }}>SYSTEM</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <Link to="/profile" className="mobile-nav-link" onClick={closeMenu}>Profile</Link>
-                    <Link to="/settings" className="mobile-nav-link" onClick={closeMenu}>Settings</Link>
-                    <Link to="/about" className="mobile-nav-link" onClick={closeMenu}>About Us</Link>
-                    <Link to="/help" className="mobile-nav-link" onClick={closeMenu}>Help</Link>
-                </div>
-            </div>
+            <MenuSection title="System">
+                <NavItem to="/profile" icon={User} label="Profile" onClick={closeMenu} />
+                <NavItem to="/settings" icon={SettingsIcon} label="Settings" onClick={closeMenu} />
+            </MenuSection>
 
             {user ? (
                 <button
                     onClick={() => { signOut(); closeMenu(); }}
                     style={{
-                        marginTop: '1rem',
+                        width: '100%',
                         padding: '1rem',
-                        border: '1px solid #333',
-                        background: 'rgba(255,0,0,0.1)',
-                        color: 'var(--color-tac-alert)',
-                        cursor: 'pointer',
-                        fontSize: '1rem',
-                        fontWeight: 'bold'
+                        marginTop: '1rem',
+                        borderRadius: '12px',
+                        backgroundColor: 'rgba(255, 50, 50, 0.1)',
+                        color: '#ff4444',
+                        border: '1px solid rgba(255, 50, 50, 0.2)',
+                        fontWeight: '600',
+                        fontSize: '0.95rem',
+                        cursor: 'pointer'
                     }}
                 >
-                    LOG OUT
+                    Log Out
                 </button>
             ) : (
                 <Link
                     to="/auth"
-                    className="mobile-nav-link"
                     onClick={closeMenu}
-                    style={{ color: 'var(--color-neon-green)' }}
+                    style={{
+                        display: 'block',
+                        width: '100%',
+                        padding: '1rem',
+                        marginTop: '1rem',
+                        borderRadius: '12px',
+                        backgroundColor: 'var(--color-neon-green)',
+                        color: '#000',
+                        textAlign: 'center',
+                        textDecoration: 'none',
+                        fontWeight: '700',
+                        fontSize: '1rem'
+                    }}
                 >
                     JOIN GYMBRO
                 </Link>

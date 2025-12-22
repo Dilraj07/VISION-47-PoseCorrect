@@ -115,30 +115,34 @@ button {
 .mobile-menu-overlay {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
+    right: 0;
+    left: auto;
+    width: 33vw;
+    min-width: 320px;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     z-index: 200;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    padding: 2rem 1rem;
+    align-items: flex-start;
+    /* Align standard menu to top/left */
 }
 
 .mobile-menu-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     text-align: center;
+    width: 100%;
 }
 
 .close-menu-btn {
     position: absolute;
-    top: 2rem;
-    right: 2rem;
+    top: 1.5rem;
+    right: 1.5rem;
     background: none;
     border: none;
     cursor: pointer;
@@ -147,12 +151,14 @@ button {
 .mobile-nav-link {
     color: var(--color-white);
     text-decoration: none;
-    font-size: 2rem;
+    font-size: 1.1rem;
     font-weight: 800;
     font-family: var(--font-display);
     text-transform: uppercase;
     transition: color 0.3s;
 }
+
+
 
 .mobile-nav-link:hover {
     color: var(--color-neon-green);
@@ -176,7 +182,8 @@ button {
 @media (max-width: 768px) {
 
     /* Adjust font sizes for mobile if needed, but layout is now unified */
-    .mobile-nav-link {
-        font-size: 1.5rem;
+    .mobile-menu-overlay {
+        min-width: 80%;
+        /* Ensure it's not too narrow on mobile */
     }
 }
