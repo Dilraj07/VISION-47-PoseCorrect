@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAudio } from '../context/AudioContext';
-import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen, Calendar, Trophy, Settings as SettingsIcon, ChevronRight } from 'lucide-react';
+import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen, Calendar, Trophy, Settings as SettingsIcon, ChevronRight, HelpCircle, Mail, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../supabaseClient';
 
@@ -70,31 +70,31 @@ const Navbar = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '1rem',
+                padding: '0.6rem 0.8rem', // Compact padding
                 backgroundColor: '#1a1a1a',
                 borderBottom: '1px solid #222',
                 color: '#fff',
                 textDecoration: 'none',
-                fontSize: '0.95rem',
+                fontSize: '0.85rem', // Compact font size
                 transition: 'background-color 0.2s'
             }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#222'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#1a1a1a'}
         >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <Icon size={18} color="#888" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                <Icon size={16} color="#888" />
                 <span style={{ fontWeight: '500' }}>{label}</span>
             </div>
-            <ChevronRight size={16} color="#444" />
+            <ChevronRight size={14} color="#444" />
         </Link>
     );
 
     const MenuSection = ({ title, children }) => (
-        <div style={{ width: '100%', marginBottom: '1.5rem' }}>
+        <div style={{ width: '100%', marginBottom: '0.8rem' }}> {/* Reduced margin */}
             <h4 style={{
-                padding: '0 1rem 0.5rem',
+                padding: '0 0.8rem 0.4rem',
                 color: '#666',
-                fontSize: '0.8rem',
+                fontSize: '0.7rem',
                 fontWeight: '600',
                 textTransform: 'uppercase',
                 letterSpacing: '1px'
@@ -102,7 +102,7 @@ const Navbar = () => {
                 {title}
             </h4>
             <div style={{
-                borderRadius: '12px',
+                borderRadius: '8px', // Slightly smaller radius
                 overflow: 'hidden',
                 border: '1px solid #222'
             }}>
@@ -112,22 +112,28 @@ const Navbar = () => {
     );
 
     const NavLinks = () => (
-        <div style={{ width: '100%', padding: '0 0.5rem' }}>
+        <div style={{ width: '100%', padding: '0 0.5rem' }}> {/* Removed scroll container */}
             <MenuSection title="Main">
                 <NavItem to="/" icon={Flame} label="Homepage" onClick={closeMenu} />
                 <NavItem to="/dashboard" icon={Activity} label="Dashboard" onClick={closeMenu} />
                 <NavItem to="/academy" icon={BookOpen} label="Academy" onClick={closeMenu} />
             </MenuSection>
 
-            <MenuSection title="Tools">
-                <NavItem to="/history" icon={Timer} label="History" onClick={closeMenu} />
+            <MenuSection title="Training">
                 <NavItem to="/schedule" icon={Calendar} label="Schedule" onClick={closeMenu} />
+                <NavItem to="/history" icon={Timer} label="History" onClick={closeMenu} />
                 <NavItem to="/leaderboard" icon={Trophy} label="Leaderboard" onClick={closeMenu} />
             </MenuSection>
 
             <MenuSection title="System">
                 <NavItem to="/profile" icon={User} label="Profile" onClick={closeMenu} />
                 <NavItem to="/settings" icon={SettingsIcon} label="Settings" onClick={closeMenu} />
+            </MenuSection>
+
+            <MenuSection title="Support">
+                <NavItem to="/help" icon={HelpCircle} label="Help Center" onClick={closeMenu} />
+                <NavItem to="/contact" icon={Mail} label="Contact Us" onClick={closeMenu} />
+                <NavItem to="/privacy" icon={Shield} label="Privacy Policy" onClick={closeMenu} />
             </MenuSection>
 
             {user ? (
