@@ -56,7 +56,7 @@ const LandingPage = ({ onStart }) => {
                         padding: 8rem 2rem !important;
                     }
                     .hero-title {
-                        font-size: 8rem !important;
+                        font-size: 10rem !important;
                     }
                     .cta-container {
                         flex-direction: row !important;
@@ -98,7 +98,7 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
 
     return (
         <section style={{
-            height: '100vh',
+            height: '65vh',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -127,14 +127,25 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
                 </motion.div>
             </div>
 
-            <motion.div style={{ y: yText, opacity: opacityText, scale: scaleText, zIndex: 1, textAlign: 'center', width: '100%' }}>
+            <motion.div style={{
+                y: yText,
+                opacity: opacityText,
+                scale: scaleText,
+                zIndex: 1,
+                textAlign: 'center',
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
                 <h1 className="hero-title" style={{
                     margin: 0,
                     textTransform: 'uppercase',
                     fontFamily: "var(--font-display)",
                     fontWeight: '900',
                     letterSpacing: '-2px',
-                    marginBottom: '2rem'
+                    marginBottom: '3rem'
                 }}>
                     <span style={{ display: 'block', color: 'var(--color-white)' }}>TRAIN</span>
                     <span style={{
@@ -145,12 +156,15 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
                     }}>SMARTER</span>
                 </h1>
 
-                <div className="cta-container" style={{ marginTop: '0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <div className="cta-btn" style={{ display: 'contents' }}>
-                        <GlowButton onClick={onStart} className="cta-btn">
-                            Start Training <ArrowRight size={20} />
-                        </GlowButton>
-                    </div>
+                <div className="cta-container" style={{
+                    marginTop: '0',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <GlowButton onClick={onStart} className="cta-btn">
+                        START TRAINING <ArrowRight size={20} />
+                    </GlowButton>
 
                     <button
                         onClick={handleDemo}
@@ -163,14 +177,25 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
                             cursor: 'pointer',
                             textTransform: 'uppercase',
                             letterSpacing: '1px',
+                            fontWeight: '600',
                             transition: 'all 0.3s',
                             borderRadius: '4px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.5rem'
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            fontFamily: 'inherit'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.borderColor = '#666';
+                            e.target.style.color = '#fff';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.borderColor = '#333';
+                            e.target.style.color = '#888';
                         }}
                     >
-                        Try Demo
+                        TRY DEMO
                     </button>
                 </div>
             </motion.div>
@@ -196,7 +221,7 @@ const EcosystemSection = () => {
                     <FeatureCard
                         icon={Brain}
                         color="var(--color-neon-pink)"
-                        title="AI COACH"
+                        title="REAL-TIME COACH"
                         desc="Precision targeting algorithms analyze your weak points and adjust volume automatically."
                         delay={0.1}
                     />
@@ -257,7 +282,7 @@ const Footer = ({ navigate }) => (
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '2rem' }}>
             <div>
                 <h2 style={{ margin: 0, fontSize: '1.5rem' }}>GYMBRO</h2>
-                <p style={{ color: '#666', marginTop: '0.5rem' }}>BETA v1.4</p>
+                <p style={{ color: '#666', marginTop: '0.5rem' }}>BETA v1.6</p>
                 <p style={{ color: '#666', fontSize: '0.8rem', marginTop: '0.5rem' }}>aryawadhwa2@gmail.com</p>
             </div>
             <div style={{ display: 'flex', gap: '2rem' }}>

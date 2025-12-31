@@ -21,7 +21,7 @@ load_dotenv()
 # Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-app = FastAPI(title="GYMBRO AI Backend", version="2.0")
+app = FastAPI(title="GYMBRO Backend", version="2.0")
 
 # CORS Setup
 origins = ["*"]
@@ -90,16 +90,16 @@ class UserSettings(BaseModel):
 # ============ ROUTES ============
 @app.get("/")
 async def root_path():
-    return {"message": "GYMBRO AI Backend is running. Access API at /api/"}
+    return {"message": "GYMBRO Backend is running. Access API at /api/"}
 
 @app.get("/api/health")
 async def health_check():
     db_status = "connected" if supabase else "disconnected"
-    return {"status": "healthy", "service": "GYMBRO AI Backend v2.0", "database": db_status}
+    return {"status": "healthy", "service": "GYMBRO Backend v2.0", "database": db_status}
 
 @app.get("/api/")
 async def root():
-    return {"status": "online", "message": "GYMBRO AI Backend is running"}
+    return {"status": "online", "message": "GYMBRO Backend is running"}
 
 # ============ VIDEO ANALYSIS ============
 @app.post("/api/analyze")
@@ -178,8 +178,8 @@ async def download_file(filename: str):
         return FileResponse(file_path, media_type="video/mp4", filename=filename)
     raise HTTPException(status_code=404, detail="File not found")
 
-# ============ AI COACHING CHAT ============
-SYSTEM_PROMPT = """You are GYMBRO, an expert AI fitness coach with deep knowledge of:
+# ============ COACHING CHAT ============
+SYSTEM_PROMPT = """You are GYMBRO, an expert fitness coach with deep knowledge of:
 - Exercise form and biomechanics (NSCA/ACSM standards)
 - Workout programming and periodization
 - Nutrition for muscle building and fat loss
@@ -197,7 +197,7 @@ Your personality:
 @app.post("/api/chat")
 async def chat_with_coach(request: ChatRequest):
     if not openai_client:
-        raise HTTPException(status_code=500, detail="AI Coach not configured")
+        raise HTTPException(status_code=500, detail="Coach not configured")
     
     try:
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -460,3 +460,96 @@ async def generate_voice_feedback(feedback_type: str = Form("encouragement")):
     import random
     texts = feedbacks.get(feedback_type, feedbacks["encouragement"])
     return {"text": random.choice(texts)}
+
+# ============ MOVEMENT MASTERY (ACADEMY) ============
+# NOTE: Academy endpoints temporarily disabled - needs migration to Supabase
+# MongoDB references removed to fix server startup
+
+# class AcademyCue(BaseModel):
+#     title: str
+#     text: str
+
+# class AcademyExercise(BaseModel):
+#     id: str
+#     title: str
+#     difficulty: str
+#     muscles: str
+#     color: str
+#     description: str
+#     cues: List[AcademyCue]
+
+# class MasteryLog(BaseModel):
+#     user_id: str
+#     exercise_id: str
+#     status: str = "mastered" # started, mastered
+#     timestamp: datetime = datetime.utcnow()
+
+# Initial Data (From Frontend)
+INITIAL_EXERCISES = [
+    {
+        "id": "squat",
+        "title": "BARBELL SQUAT",
+        "difficulty": "INTERMEDIATE",
+        "muscles": "LEGS / CORE",
+        "color": "var(--color-neon-pink)",
+        "description": "The king of all exercises. Builds massive leg strength and core stability.",
+        "cues": [
+            { "title": "Stance", "text": "Feet shoulder-width apart, toes slightly out." },
+            { "title": "Brace", "text": "Deep breath into your belly, tighten core." },
+            { "title": "Descent", "text": "Hinge hips back, then bend knees simultaneously." },
+            { "title": "Depth", "text": "Go until thighs are at least parallel to floor." },
+            { "title": "Drive", "text": "Push through mid-foot, chest up, hips forward." }
+        ]
+    },
+    {
+        "id": "deadlift",
+        "title": "DEADLIFT",
+        "difficulty": "ADVANCED",
+        "muscles": "BACK / LEGS",
+        "color": "var(--color-neon-green)",
+        "description": "Total body power. Teaches proper hip hinge mechanics.",
+        "cues": [
+            { "title": "Setup", "text": "Bar over mid-foot. Shins touching bar." },
+            { "title": "Grip", "text": "Hands just outside legs. Arms straight." },
+            { "title": "Tension", "text": "Squeeze armpits down, pull \"slack\" out." },
+            { "title": "Lift", "text": "Push the floor away. Hips and shoulders rise together." }
+        ]
+    },
+    {
+        "id": "bench",
+        "title": "BENCH PRESS",
+        "difficulty": "INTERMEDIATE",
+        "muscles": "CHEST / ARMS",
+        "color": "var(--color-neon-blue)",
+        "description": "Upper body strength standard. Develops pushing power.",
+        "cues": [
+            { "title": "Arch", "text": "Retract scapula, slight arch in lower back." },
+            { "title": "Plant", "text": "Feet planted firmly on the ground." },
+            { "title": "Path", "text": "Lower bar to lower chest/sternum." },
+            { "title": "Press", "text": "Drive bar up and slightly back toward face." }
+        ]
+    }
+]
+
+@app.get("/api/academy/exercises")
+async def get_academy_exercises():
+    """Return static exercise data - TODO: migrate to Supabase"""
+    return {"exercises": INITIAL_EXERCISES}
+
+# @app.post("/api/academy/seed")
+# async def seed_academy():
+#     """Populate database with initial exercises if empty"""
+#     # TODO: Migrate to Supabase
+#     return {"status": "disabled", "message": "Academy seed endpoint disabled - needs Supabase migration"}
+
+# @app.post("/api/academy/mastery")
+# async def track_mastery(log: MasteryLog):
+#     """Mark an exercise as mastered by a user"""
+#     # TODO: Migrate to Supabase
+#     return {"status": "disabled", "message": "Mastery tracking disabled - needs Supabase migration"}
+
+# @app.get("/api/academy/mastery/{user_id}")
+# async def get_user_mastery(user_id: str):
+#     """Get list of mastered exercise IDs for a user"""
+#     # TODO: Migrate to Supabase
+#     return {"mastered_ids": []}

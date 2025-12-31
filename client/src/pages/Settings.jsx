@@ -177,7 +177,7 @@ const Settings = () => {
 
                 <div style={{ textAlign: 'center', marginTop: '2rem', color: '#444', fontSize: '0.8rem' }}>
                     User ID: 8f92-3a1b-4c5d<br />
-                    © 2024 GYMBRO AI Inc.
+                    © 2024 GYMBRO Inc.
                 </div>
 
             </div>

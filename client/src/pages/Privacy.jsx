@@ -47,7 +47,7 @@ const Privacy = () => {
                     <Section
                         icon={<ServerOff size={32} color="var(--color-neon-pink)" />}
                         title="Local Processing Only"
-                        content="All A.I. analysis happens directly on your device. We do not use cloud servers to process your video feed. This means your data never leaves your computer."
+                        content="All analysis happens directly on your device. We do not use cloud servers to process your video feed. This means your data never leaves your computer."
                     />
 
                     <Section

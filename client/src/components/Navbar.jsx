@@ -36,30 +36,7 @@ const Navbar = () => {
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMenu = () => setIsMobileMenuOpen(false);
 
-    // Visualizer Bar Component
-    const AudioBar = ({ delay }) => (
-        <motion.div
-            animate={
-                isPlaying && !isMuted
-                    ? {
-                        height: [4, 16, 8, 24, 4],
-                        backgroundColor: ['#fff', 'var(--color-neon-pink)', 'var(--color-neon-green)', '#fff']
-                    }
-                    : { height: 4, backgroundColor: isMuted ? '#444' : '#666' }
-            }
-            transition={{
-                duration: 0.8,
-                repeat: Infinity,
-                delay: delay,
-                ease: "easeInOut"
-            }}
-            style={{
-                width: '4px',
-                backgroundColor: isMuted ? '#444' : '#666',
-                borderRadius: '2px'
-            }}
-        />
-    );
+
 
     // Icon mapping
     const NavItem = ({ to, icon: Icon, label, onClick }) => (
@@ -197,7 +174,6 @@ const Navbar = () => {
                         height: '32px',
                         cursor: 'pointer',
                         color: user ? '#000' : '#fff',
-                        display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         padding: 0,
@@ -209,15 +185,15 @@ const Navbar = () => {
                     {initials || <User size={20} />}
                 </button>
 
-                {/* Academy Icon */}
+                {/* Academy Icon - Desktop Only */}
                 <button
+                    className="desktop-only"
                     onClick={() => navigate('/academy')}
                     style={{
                         background: 'none',
                         border: 'none',
                         cursor: 'pointer',
                         color: '#fff',
-                        display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         padding: '0.5rem'
@@ -227,26 +203,7 @@ const Navbar = () => {
                     <BookOpen size={24} />
                 </button>
 
-                {/* Music Visualizer (Click to Toggle Mute) */}
-                <div
-                    onClick={toggleMute}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '3px',
-                        height: '24px',
-                        cursor: 'pointer',
-                        padding: '0.5rem',
-                        borderRadius: '4px',
-                        backgroundColor: 'rgba(255,255,255,0.05)'
-                    }}
-                    title={isMuted ? "Unmute Music" : "Mute Music"}
-                >
-                    <AudioBar delay={0} />
-                    <AudioBar delay={0.2} />
-                    <AudioBar delay={0.4} />
-                    <AudioBar delay={0.1} />
-                </div>
+
 
                 {/* Menu Toggle (Visible on all screens) */}
                 <div className="mobile-toggle" onClick={toggleMenu} style={{ display: 'block' }}>
@@ -264,21 +221,41 @@ const Navbar = () => {
             {/* Menu Overlay */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, x: '100%' }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: '100%' }}
-                        transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="mobile-menu-overlay"
-                    >
-                        <button className="close-menu-btn" onClick={closeMenu}>
-                            <X size={32} color="#fff" />
-                        </button>
-                        <div className="mobile-menu-content">
-                            <h2 style={{ marginBottom: '2rem', color: 'var(--color-neon-green)' }}>MENU</h2>
-                            <NavLinks />
-                        </div>
-                    </motion.div>
+                    <>
+                        {/* Backdrop to close menu on outside click */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                width: '100vw',
+                                height: '100vh',
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                zIndex: 150,
+                                backdropFilter: 'blur(3px)'
+                            }}
+                            onClick={closeMenu}
+                        />
+
+                        <motion.div
+                            initial={{ opacity: 0, x: '100%' }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: '100%' }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="mobile-menu-overlay"
+                        >
+                            <button className="close-menu-btn" onClick={closeMenu}>
+                                <X size={32} color="#fff" />
+                            </button>
+                            <div className="mobile-menu-content">
+                                <h2 style={{ marginBottom: '2rem', color: 'var(--color-neon-green)' }}>MENU</h2>
+                                <NavLinks />
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
         </nav>

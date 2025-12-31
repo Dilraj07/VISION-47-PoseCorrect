@@ -17,8 +17,8 @@ const Help = () => {
       answer: "Yes. Your videos are processed for analysis and then immediately discarded or stored securely only if you choose to save them to your history."
     },
     {
-      question: "How does the AI Coach work?",
-      answer: "The AI Coach uses advanced computer vision to track your joints in real-time. It compares your angles to biomechanical gold standards to give you instant feedback."
+      question: "How does the Coach work?",
+      answer: "The Coach uses advanced computer vision to track your joints in real-time. It compares your angles to biomechanical gold standards to give you instant feedback."
     }
   ];
 

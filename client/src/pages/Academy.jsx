@@ -57,12 +57,14 @@ const Academy = () => {
     return (
         <div style={{
             minHeight: '100vh',
-            padding: '6rem 2rem 2rem 2rem',
+            height: '100vh',
+            overflow: 'auto',
+            padding: '6rem 1rem 2rem 1rem',
             backgroundColor: 'var(--color-black)',
             color: 'var(--color-white)',
             fontFamily: "var(--font-primary)"
         }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '2rem' }}>
 
                 <AnimatePresence mode="wait">
                     {!selectedExercise ? (
@@ -186,12 +188,22 @@ const TutorialView = ({ exercise, onBack, onPractice }) => (
             <ArrowLeft size={20} /> BACK TO ACADEMY
         </button>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem' }}>
+        <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+            gap: '2rem'
+        }}>
             {/* Visual Side */}
             <div>
                 <motion.h2
                     layoutId={`card-${exercise.id}`}
-                    style={{ fontFamily: "var(--font-display)", fontSize: '4rem', margin: '0 0 1rem 0', color: exercise.color }}
+                    style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: 'clamp(2rem, 8vw, 4rem)',
+                        margin: '0 0 1rem 0',
+                        color: exercise.color,
+                        lineHeight: '1.1'
+                    }}
                 >
                     {exercise.title}
                 </motion.h2>
@@ -202,7 +214,7 @@ const TutorialView = ({ exercise, onBack, onPractice }) => (
                 {/* Placeholder for 3D/Video */}
                 <div style={{
                     width: '100%',
-                    height: '300px',
+                    height: 'clamp(200px, 40vh, 300px)',
                     borderRadius: '16px',
                     backgroundColor: '#1a1a1a',
                     border: `1px solid ${exercise.color}`,

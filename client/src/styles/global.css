@@ -193,3 +193,22 @@ button {
         /* Ensure it's not too narrow on mobile */
     }
 }
+
+/* Responsive Utilities */
+.desktop-only {
+    display: flex !important;
+}
+
+.mobile-only {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-only {
+        display: block !important;
+    }
+}

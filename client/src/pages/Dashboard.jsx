@@ -304,6 +304,8 @@ const Dashboard = () => {
     return (
         <div style={{
             minHeight: '100vh',
+            height: '100vh',
+            overflow: 'auto',
             backgroundColor: '#000',
             color: '#fff',
             display: 'flex',
@@ -331,7 +333,7 @@ const Dashboard = () => {
                     padding: 2rem !important;
                 }
                 .dashboard-header {
-                    padding: 1rem !important;
+                    padding: 1.5rem 1rem !important;
                 }
                  .category-header {
                     padding: 1.5rem 1rem 0.5rem 1rem;
@@ -340,6 +342,15 @@ const Dashboard = () => {
                     top: 0;
                     z-index: 10;
                     border-bottom: 1px solid #222;
+                }
+                .header-title-row {
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                }
+                .header-title {
+                    font-size: 2rem;
+                    font-weight: 900;
+                    letter-spacing: -1px;
                 }
                 @media (min-width: 768px) {
                     .exercise-strip {
@@ -363,16 +374,23 @@ const Dashboard = () => {
                         padding: 3rem !important;
                     }
                     .dashboard-header {
-                        padding: 2rem !important;
+                        padding: 2rem 3rem !important;
                     }
                      .category-header {
-                        padding: 2rem 2rem 1rem 2rem;
+                        padding: 2rem 3rem 1rem 3rem;
+                    }
+                    .header-title-row {
+                        margin-top: 2rem;
+                        margin-bottom: 1.5rem;
+                    }
+                    .header-title {
+                        font-size: 3rem;
                     }
                 }
             `}</style>
 
             {/* Header */}
-            <header className="dashboard-header" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid #222' }}>
+            <header className="dashboard-header" style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid #222' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                     <button
                         onClick={() => navigate('/')}
@@ -383,17 +401,23 @@ const Dashboard = () => {
                     >
                         <ArrowLeft size={16} /> BACK
                     </button>
-                    <div style={{ fontSize: '0.9rem', color: '#444', letterSpacing: '0.1em' }}>SELECT EXERCISE</div>
+
                     <button
                         onClick={() => navigate('/schedule')}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',
                             background: '#222', border: '1px solid #333', cursor: 'pointer',
-                            padding: '0.5rem 1rem', borderRadius: '2rem', fontSize: '0.9rem', fontWeight: 'bold'
+                            padding: '0.5rem 1rem', borderRadius: '2rem', fontSize: '0.85rem', fontWeight: 'bold'
                         }}
                     >
-                        <Calendar size={16} color="var(--color-neon-blue)" /> SCHEDULE
+                        <Calendar size={14} color="var(--color-neon-blue)" /> SCHEDULE
                     </button>
+                </div>
+
+                <div className="header-title-row">
+                    <h1 className="header-title" style={{ margin: 0, textTransform: 'uppercase' }}>
+                        SELECT EXERCISE
+                    </h1>
                 </div>
 
                 {/* Search Bar */}
