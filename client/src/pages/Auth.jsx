@@ -210,7 +210,7 @@ const Auth = () => {
                             marginTop: '1rem',
                             padding: '1.25rem',
                             backgroundColor: isLogin ? 'var(--color-neon-blue)' : 'var(--color-neon-green)',
-                            color: isLogin ? '#fff' : '#000',
+                            color: '#000',
                             border: 'none',
                             borderRadius: '1rem',
                             fontSize: '1.1rem',
