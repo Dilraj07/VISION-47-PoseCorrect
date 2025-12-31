@@ -76,22 +76,10 @@ const AppContent = () => {
 };
 
 const App = () => {
-  /* Audio Playlist */
-  const SONGS = [
-    '/pump-it-up.mp3',
-    '/we-are-gymbro.mp3'
-  ];
-
-  /* Select random song on mount - maintained here to pass to provider */
-  const [currentSong] = useState(() => {
-    const randomIndex = Math.floor(Math.random() * SONGS.length);
-    return SONGS[randomIndex];
-  });
-
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <AuthProvider>
-        <AudioProvider url={currentSong}>
+        <AudioProvider>
           <AppContent />
         </AudioProvider>
       </AuthProvider>

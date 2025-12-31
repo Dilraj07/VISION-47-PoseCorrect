@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, Play, Pause, Music } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, Music, SkipForward } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
 import { useLocation } from 'react-router-dom';
 
 const MusicFlow = () => {
-    const { isPlaying, isMuted, toggleMute, play, stop } = useAudio();
+    const { isPlaying, isMuted, toggleMute, play, stop, nextSong } = useAudio();
     const location = useLocation();
     const isHome = location.pathname === '/';
     const [isHovered, setIsHovered] = useState(false);
@@ -116,8 +116,6 @@ const MusicFlow = () => {
                         justify-content: space-between;
                         padding: 0.5rem 1.2rem;
                     }
-                    /* On mobile, keep mini unless tapped? For now, standard hover behavior works on tap for some devices, 
-                       but let's keep it simple: Mini = Circle, Tap to Expand logic is implicit via hover */
                 }
             `}</style>
 
@@ -130,7 +128,6 @@ const MusicFlow = () => {
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => !isHome && setIsHovered(true)} // Tap to expand on mobile/tablet
             >
-                {/* Visualizer Animation */}
                 {/* Condition: Show Full Visualizer if Home or Hovered. Show Mini if collapsed */}
                 {(isHome || isHovered) ? (
                     <>
@@ -172,13 +169,23 @@ const MusicFlow = () => {
                             <button
                                 onClick={(e) => { e.stopPropagation(); isPlaying ? stop() : play(); }}
                                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
+                                title={isPlaying ? "Pause" : "Play"}
                             >
                                 {isPlaying ? <Pause size={18} /> : <Play size={18} />}
                             </button>
 
                             <button
+                                onClick={(e) => { e.stopPropagation(); nextSong(); }}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
+                                title="Next Song"
+                            >
+                                <SkipForward size={18} />
+                            </button>
+
+                            <button
                                 onClick={(e) => { e.stopPropagation(); toggleMute(); }}
                                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
+                                title={isMuted ? "Unmute" : "Mute"}
                             >
                                 {isMuted ? <VolumeX size={18} color="#FB7185" /> : <Volume2 size={18} />}
                             </button>
