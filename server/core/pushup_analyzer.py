@@ -62,34 +62,76 @@ def get_key_metrics(landmarks, width, height):
         metrics = {k: None for k in ['left_elbow', 'right_elbow', 'shoulder_angle', 'hip_drop', 'torso_angle']}
     return metrics
 
+def draw_neon_text(img, text, pos, font_scale, color, thickness=2):
+    # Glow effect (thick line underneath)
+    cv2.putText(img, text, pos, cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness + 4, lineType=cv2.LINE_AA)
+    # Main text (white or bright color on top)
+    # To simulate glow, we usually draw colored thick text then white thin text. 
+    # But here we just want sharp text. 
+    # Let's stick to simple sharp text for performance, maybe just standard cv2 putText with specific colors.
+    cv2.putText(img, text, pos, cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness, lineType=cv2.LINE_AA)
+
 def add_metric_overlays(image, metrics):
+    h, w = image.shape[:2]
+    # Create a side panel or overlay for metrics
+    overlay = image.copy()
+    
+    # Semi-transparent background for top-left stats
+    cv2.rectangle(overlay, (10, 10), (350, 130), (0, 0, 0), -1)
+    cv2.addWeighted(overlay, 0.6, image, 0.4, 0, image)
+    
     y_pos = 40
+    # Neon Colors (BGR)
+    NEON_GREEN = (57, 255, 20)   # #14FF39
+    NEON_BLUE = (255, 243, 0)    # #00F3FF (Cyan)
+    NEON_PINK = (147, 20, 255)   # #FF1493
+    
     if metrics['left_elbow'] is not None:
-        if 80 <= metrics['left_elbow'] <= 100: color = (0, 255, 0)
-        elif 100 < metrics['left_elbow'] <= 120: color = (0, 165, 255)
-        else: color = (0, 0, 255)
-        cv2.putText(image, f"Elbow: {metrics['left_elbow']} (NSCA: 90)", (20, y_pos), cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+        if 80 <= metrics['left_elbow'] <= 100: color = NEON_GREEN
+        elif 100 < metrics['left_elbow'] <= 120: color = NEON_BLUE
+        else: color = NEON_PINK
+        cv2.putText(image, f"Elbow: {metrics['left_elbow']} (Goal: 90)", (20, y_pos), cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2, cv2.LINE_AA)
+
     if metrics['shoulder_angle'] is not None:
-        shoulder_color = (0, 255, 0) if 40 <= metrics['shoulder_angle'] <= 50 else (0, 165, 255)
-        cv2.putText(image, f"Shoulder: {metrics['shoulder_angle']} (Opt: 45)", (20, y_pos + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, shoulder_color, 2)
+        color = NEON_GREEN if 40 <= metrics['shoulder_angle'] <= 50 else NEON_BLUE
+        cv2.putText(image, f"Shoulder: {metrics['shoulder_angle']} (Opt: 45)", (20, y_pos + 35), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 1, cv2.LINE_AA)
+
     if metrics['hip_drop'] is not None:
-        hip_color = (0, 255, 0) if metrics['hip_drop'] < 20 else (0, 165, 255)
-        cv2.putText(image, f"Hip Drop: {metrics['hip_drop']}px", (20, y_pos + 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, hip_color, 2)
+        color = NEON_PINK if metrics['hip_drop'] > 20 else NEON_GREEN
+        cv2.putText(image, f"Hip Drop: {metrics['hip_drop']}px", (20, y_pos + 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 1, cv2.LINE_AA)
+        
     return image
 
 def add_info_panel(image, frame, total_frames, fps, reps, current_elbow_angle, hip_drop):
     h, w = image.shape[:2]
-    panel_height = 100
-    panel = np.zeros((panel_height, w, 3), dtype=np.uint8)
-    panel[:, :] = (40, 40, 40)
-    image_with_panel = np.vstack([image, panel])
-    new_h = h + panel_height
-    cv2.putText(image_with_panel, f"Frame: {frame}/{total_frames}", (20, new_h - 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-    cv2.putText(image_with_panel, f"Reps: {reps}", (w//2 - 100, new_h - 70), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
-    cv2.putText(image_with_panel, f"Elbow: {current_elbow_angle}", (w//2 - 100, new_h - 45), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 200, 0), 1)
-    cv2.putText(image_with_panel, "NSCA Standard:", (w - 250, new_h - 70), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 255), 1)
-    cv2.putText(image_with_panel, " Elbows at 90", (w - 250, new_h - 50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (150, 255, 150), 1)
-    return image_with_panel
+    
+    # HUD Bottom Bar (Overlay instead of append)
+    overlay = image.copy()
+    cv2.rectangle(overlay, (0, h - 80), (w, h), (0, 0, 0), -1) # Bottom bar background
+    cv2.addWeighted(overlay, 0.7, image, 0.3, 0, image)
+    
+    # Colors
+    NEON_GREEN = (57, 255, 20)
+    NEON_BLUE = (255, 243, 0)
+    WHITE = (255, 255, 255)
+    
+    # Text Placement
+    # Frame Counter
+    cv2.putText(image, f"FRAME {frame}/{total_frames}", (20, h - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150, 150, 150), 1, cv2.LINE_AA)
+    
+    # Center Rep Counter (Big)
+    rep_text = f"REPS: {reps}"
+    text_size = cv2.getTextSize(rep_text, cv2.FONT_HERSHEY_SIMPLEX, 1.2, 3)[0]
+    center_x = (w - text_size[0]) // 2
+    cv2.putText(image, rep_text, (center_x, h - 25), cv2.FONT_HERSHEY_SIMPLEX, 1.2, NEON_BLUE, 3, cv2.LINE_AA)
+    
+    # Right Side Status
+    status_text = "GOOD FORM" if (current_elbow_angle <= 100 and hip_drop < 20) else "ADJUST FORM"
+    status_color = NEON_GREEN if status_text == "GOOD FORM" else (147, 20, 255) # Pink
+    
+    cv2.putText(image, status_text, (w - 200, h - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, status_color, 2, cv2.LINE_AA)
+    
+    return image
 
 def analyze_pushup_video(video_path, output_path=None):
     if not os.path.exists(video_path): return {"error": "Video not found"}
