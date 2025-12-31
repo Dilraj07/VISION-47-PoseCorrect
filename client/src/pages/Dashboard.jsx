@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
+import MuscleHeatmap from '../components/MuscleHeatmap'; // Import Heatmap
 
 const exerciseCategories = [
     {
@@ -439,6 +440,9 @@ const Dashboard = () => {
                     onFocus={(e) => e.target.style.borderColor = '#666'}
                     onBlur={(e) => e.target.style.borderColor = '#333'}
                 />
+
+                {/* Muscle Heatmap */}
+                <MuscleHeatmap muscles={userStats} />
             </header>
 
             {/* List */}
