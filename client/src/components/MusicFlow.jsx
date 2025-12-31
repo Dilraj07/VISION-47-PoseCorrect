@@ -123,81 +123,89 @@ const MusicFlow = () => {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 50 }}
+                layout // Enable automatic layout animation
+                transition={{ type: "spring", stiffness: 300, damping: 30 }} // Smooth spring
                 className={`music-flow-container ${isHome || isHovered ? 'music-flow-expanded' : 'music-flow-mini'}`}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => !isHome && setIsHovered(true)} // Tap to expand on mobile/tablet
             >
                 {/* Condition: Show Full Visualizer if Home or Hovered. Show Mini if collapsed */}
-                {(isHome || isHovered) ? (
-                    <>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '3px',
-                            height: '24px',
-                            marginRight: '0.5rem'
-                        }}>
-                            <AudioBar delay={0} />
-                            <AudioBar delay={0.2} />
-                            <AudioBar delay={0.4} />
-                            <AudioBar delay={0.1} />
-                        </div>
-
-                        {/* Song Label */}
+                <AnimatePresence mode="popLayout">
+                    {(isHome || isHovered) ? (
                         <motion.div
-                            initial={{ opacity: 0, width: 0 }}
-                            animate={{ opacity: 1, width: 'auto' }}
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginRight: '0.5rem', overflow: 'hidden' }}
-                        >
-                            <span style={{ fontSize: '0.8rem', color: '#ccc', fontWeight: 600, whiteSpace: 'nowrap' }}>GYMBRO FM</span>
-                        </motion.div>
-
-                        <motion.div
+                            key="expanded"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            style={{ width: '1px', height: '20px', backgroundColor: '#333' }}
-                        />
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}
+                        >
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '3px',
+                                height: '24px',
+                            }}>
+                                <AudioBar delay={0} />
+                                <AudioBar delay={0.2} />
+                                <AudioBar delay={0.4} />
+                                <AudioBar delay={0.1} />
+                            </div>
 
-                        {/* Controls */}
+                            {/* Song Label */}
+                            <motion.div
+                                layout="position"
+                                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                            >
+                                <span style={{ fontSize: '0.8rem', color: '#ccc', fontWeight: 600 }}>GYMBRO FM</span>
+                            </motion.div>
+
+                            <div style={{ width: '1px', height: '20px', backgroundColor: '#333' }} />
+
+                            {/* Controls */}
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); isPlaying ? stop() : play(); }}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
+                                    title={isPlaying ? "Pause" : "Play"}
+                                >
+                                    {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+                                </button>
+
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); nextSong(); }}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
+                                    title="Next Song"
+                                >
+                                    <SkipForward size={18} />
+                                </button>
+
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); toggleMute(); }}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
+                                    title={isMuted ? "Unmute" : "Mute"}
+                                >
+                                    {isMuted ? <VolumeX size={18} color="#FB7185" /> : <Volume2 size={18} />}
+                                </button>
+                            </div>
+                        </motion.div>
+                    ) : (
+                        // Mini State Content
                         <motion.div
+                            key="mini"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            style={{ display: 'flex', gap: '0.5rem' }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '2px', width: '100%', justifyContent: 'center' }}
                         >
-                            <button
-                                onClick={(e) => { e.stopPropagation(); isPlaying ? stop() : play(); }}
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
-                                title={isPlaying ? "Pause" : "Play"}
-                            >
-                                {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-                            </button>
-
-                            <button
-                                onClick={(e) => { e.stopPropagation(); nextSong(); }}
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
-                                title="Next Song"
-                            >
-                                <SkipForward size={18} />
-                            </button>
-
-                            <button
-                                onClick={(e) => { e.stopPropagation(); toggleMute(); }}
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
-                                title={isMuted ? "Unmute" : "Mute"}
-                            >
-                                {isMuted ? <VolumeX size={18} color="#FB7185" /> : <Volume2 size={18} />}
-                            </button>
+                            <MiniAudioBar delay={0} />
+                            <MiniAudioBar delay={0.2} />
+                            <MiniAudioBar delay={0.4} />
                         </motion.div>
-                    </>
-                ) : (
-                    // Mini State Content
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                        <MiniAudioBar delay={0} />
-                        <MiniAudioBar delay={0.2} />
-                        <MiniAudioBar delay={0.4} />
-                    </div>
-                )}
+                    )}
+                </AnimatePresence>
             </motion.div>
         </>
     );
