@@ -150,7 +150,6 @@ const MusicFlow = () => {
                             animate={{ opacity: 1, width: 'auto' }}
                             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginRight: '0.5rem', overflow: 'hidden' }}
                         >
-                            <Music size={14} color="#888" />
                             <span style={{ fontSize: '0.8rem', color: '#ccc', fontWeight: 600, whiteSpace: 'nowrap' }}>GYMBRO FM</span>
                         </motion.div>
 
