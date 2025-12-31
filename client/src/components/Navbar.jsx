@@ -5,6 +5,7 @@ import { useAudio } from '../context/AudioContext';
 import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen, Calendar, Trophy, Settings as SettingsIcon, ChevronRight, HelpCircle, Mail, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../supabaseClient';
+import StreakFlame from './StreakFlame';
 
 const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];
 const Navbar = () => {
@@ -13,6 +14,7 @@ const Navbar = () => {
     const { isPlaying, isMuted, toggleMute } = useAudio();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [initials, setInitials] = useState('');
+    const [streak] = useState(12); // Mock Streak
 
     useEffect(() => {
         const getProfile = async () => {
@@ -35,8 +37,6 @@ const Navbar = () => {
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMenu = () => setIsMobileMenuOpen(false);
-
-
 
     // Icon mapping
     const NavItem = ({ to, icon: Icon, label, onClick }) => (
@@ -155,125 +155,113 @@ const Navbar = () => {
         </div>
     );
 
-    import StreakFlame from './StreakFlame';
+    return (
+        <nav className="navbar">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <Link to="/" className="navbar-brand">
+                    <h2>GYMBRO</h2>
+                </Link>
+                {/* Streak Flame */}
+                <StreakFlame streak={streak} />
+            </div>
 
-    // ... (existing imports)
+            {/* Right Side: Visualizer + Menu Toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {/* Profile Icon */}
+                <button
+                    onClick={() => user ? navigate('/profile') : navigate('/auth', { state: { isSignup: true } })}
+                    style={{
+                        background: user ? 'var(--color-neon-blue)' : 'none',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        cursor: 'pointer',
+                        color: user ? '#000' : '#fff',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0,
+                        fontWeight: 'bold',
+                        fontSize: '0.8rem'
+                    }}
+                    title={user ? "Profile" : "Join Gymbro"}
+                >
+                    {initials || <User size={20} />}
+                </button>
 
-    const Navbar = () => {
-        // ... (existing hooks)
-        const [streak] = useState(12); // Mock Streak: 12 Days (Pink Flame)
+                {/* Academy Icon - Desktop Only */}
+                <button
+                    className="desktop-only"
+                    onClick={() => navigate('/academy')}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#fff',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '0.5rem'
+                    }}
+                    title="Academy"
+                >
+                    <BookOpen size={24} />
+                </button>
 
-        // ... (existing useEffect and helpers)
-
-        return (
-            <nav className="navbar">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <Link to="/" className="navbar-brand">
-                        <h2>GYMBRO</h2>
-                    </Link>
-                    {/* Streak Flame */}
-                    <StreakFlame streak={streak} />
+                {/* Menu Toggle (Visible on all screens) */}
+                <div className="mobile-toggle" onClick={toggleMenu} style={{ display: 'block' }}>
+                    <Dumbbell
+                        size={32}
+                        color="var(--color-neon-green)"
+                        style={{
+                            transform: isMobileMenuOpen ? 'rotate(45deg)' : 'none',
+                            transition: 'transform 0.3s'
+                        }}
+                    />
                 </div>
+            </div>
 
-                {/* Right Side: Visualizer + Menu Toggle */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    {/* Profile Icon */}
-                    <button
-                        onClick={() => user ? navigate('/profile') : navigate('/auth', { state: { isSignup: true } })}
-                        style={{
-                            background: user ? 'var(--color-neon-blue)' : 'none',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '32px',
-                            height: '32px',
-                            cursor: 'pointer',
-                            color: user ? '#000' : '#fff',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: 0,
-                            fontWeight: 'bold',
-                            fontSize: '0.8rem'
-                        }}
-                        title={user ? "Profile" : "Join Gymbro"}
-                    >
-                        {initials || <User size={20} />}
-                    </button>
-
-                    {/* Academy Icon - Desktop Only */}
-                    <button
-                        className="desktop-only"
-                        onClick={() => navigate('/academy')}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: '#fff',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: '0.5rem'
-                        }}
-                        title="Academy"
-                    >
-                        <BookOpen size={24} />
-                    </button>
-
-
-
-                    {/* Menu Toggle (Visible on all screens) */}
-                    <div className="mobile-toggle" onClick={toggleMenu} style={{ display: 'block' }}>
-                        <Dumbbell
-                            size={32}
-                            color="var(--color-neon-green)"
+            {/* Menu Overlay */}
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <>
+                        {/* Backdrop to close menu on outside click */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             style={{
-                                transform: isMobileMenuOpen ? 'rotate(45deg)' : 'none',
-                                transition: 'transform 0.3s'
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                width: '100vw',
+                                height: '100vh',
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                zIndex: 150,
+                                backdropFilter: 'blur(3px)'
                             }}
+                            onClick={closeMenu}
                         />
-                    </div>
-                </div>
 
-                {/* Menu Overlay */}
-                <AnimatePresence>
-                    {isMobileMenuOpen && (
-                        <>
-                            {/* Backdrop to close menu on outside click */}
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                style={{
-                                    position: 'fixed',
-                                    top: 0,
-                                    left: 0,
-                                    width: '100vw',
-                                    height: '100vh',
-                                    backgroundColor: 'rgba(0,0,0,0.5)',
-                                    zIndex: 150,
-                                    backdropFilter: 'blur(3px)'
-                                }}
-                                onClick={closeMenu}
-                            />
+                        <motion.div
+                            initial={{ opacity: 0, x: '100%' }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: '100%' }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="mobile-menu-overlay"
+                        >
+                            <button className="close-menu-btn" onClick={closeMenu}>
+                                <X size={32} color="#fff" />
+                            </button>
+                            <div className="mobile-menu-content">
+                                <h2 style={{ marginBottom: '2rem', color: 'var(--color-neon-green)' }}>MENU</h2>
+                                <NavLinks />
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+        </nav>
+    );
+};
 
-                            <motion.div
-                                initial={{ opacity: 0, x: '100%' }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: '100%' }}
-                                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                                className="mobile-menu-overlay"
-                            >
-                                <button className="close-menu-btn" onClick={closeMenu}>
-                                    <X size={32} color="#fff" />
-                                </button>
-                                <div className="mobile-menu-content">
-                                    <h2 style={{ marginBottom: '2rem', color: 'var(--color-neon-green)' }}>MENU</h2>
-                                    <NavLinks />
-                                </div>
-                            </motion.div>
-                        </>
-                    )}
-                </AnimatePresence>
-            </nav>
-        );
-    };
-
-    export default Navbar;
+export default Navbar;
