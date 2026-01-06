@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 

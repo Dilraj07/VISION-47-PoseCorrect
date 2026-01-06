@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useAudio } from '../context/AudioContext';
 import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen, Calendar, Trophy, Settings as SettingsIcon, ChevronRight, HelpCircle, Mail, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 import StreakFlame from './StreakFlame';
 
 const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];

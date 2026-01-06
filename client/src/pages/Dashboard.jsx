@@ -421,15 +421,8 @@ const Dashboard = () => {
             {/* Header */}
             <header className="dashboard-header" style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid #222' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                    <button
-                        onClick={() => navigate('/')}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666', fontSize: '0.9rem',
-                            background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold'
-                        }}
-                    >
-                        <ArrowLeft size={16} /> BACK
-                    </button>
+                    {/* Back Button Removed for Seamless Flow */}
+                    <div /> {/* Spacer to keep layout if needed, or just empty */}
 
                     <button
                         onClick={() => navigate('/schedule')}
@@ -469,8 +462,7 @@ const Dashboard = () => {
                     onBlur={(e) => e.target.style.borderColor = '#333'}
                 />
 
-                {/* Muscle Heatmap */}
-                <MuscleHeatmap muscles={userStats} />
+                {/* Muscle Heatmap Moved to Profile */}
             </header>
 
             {/* List */}
@@ -543,67 +535,114 @@ const Dashboard = () => {
                         onClick={() => setSelectedExercise(null)}
                     >
                         <motion.div
-                            initial={{ scale: 0.9, y: 20 }}
+                            initial={{ scale: 0.9, y: 30 }}
                             animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.9, y: 20 }}
+                            exit={{ scale: 0.9, y: 30 }}
                             onClick={e => e.stopPropagation()}
-                            className="modal-grid"
                             style={{
                                 width: '100%',
-                                maxWidth: '800px',
+                                maxWidth: '500px',
                                 display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                                gap: '2rem'
+                                gridTemplateColumns: '1fr',
+                                gap: '1rem',
+                                padding: '0 1rem'
                             }}
                         >
+                            <h2 style={{
+                                color: '#fff',
+                                marginBottom: '1rem',
+                                textAlign: 'center',
+                                fontSize: '1.5rem',
+                                fontWeight: '800',
+                                textTransform: 'uppercase',
+                                letterSpacing: '-0.5px'
+                            }}>
+                                Select Mode
+                            </h2>
+
+                            {/* Real-Time Coach Card */}
                             <div
                                 onClick={() => handleModeSelect('coach')}
-                                className="modal-card"
                                 style={{
-                                    backgroundColor: '#111',
+                                    backgroundColor: 'rgba(20, 20, 20, 0.6)',
+                                    borderRadius: '1.5rem',
+                                    padding: '2rem',
                                     border: `1px solid ${selectedExercise.accentColor}`,
-                                    borderRadius: '1rem',
-                                    padding: '3rem',
                                     cursor: 'pointer',
                                     display: 'flex',
-                                    flexDirection: 'column',
                                     alignItems: 'center',
                                     gap: '1.5rem',
-                                    transition: 'transform 0.2s'
-                                }}
-                                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
-                                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                            >
-                                <Camera size={48} color={selectedExercise.accentColor} />
-                                <h2 style={{ fontSize: '1.5rem', margin: 0, textAlign: 'center' }}>REAL-TIME COACH</h2>
-                            </div>
-
-                            <div
-                                onClick={() => handleModeSelect('upload')}
-                                className="modal-card"
-                                style={{
-                                    backgroundColor: '#111',
-                                    border: '1px solid #333',
-                                    borderRadius: '1rem',
-                                    padding: '3rem',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    gap: '1.5rem',
-                                    transition: 'transform 0.2s'
+                                    backdropFilter: 'blur(10px)',
+                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                                    boxShadow: `0 0 20px ${selectedExercise.accentColor}20`
                                 }}
                                 onMouseEnter={e => {
-                                    e.currentTarget.style.transform = 'scale(1.02)';
-                                    e.currentTarget.style.borderColor = selectedExercise.accentColor;
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.boxShadow = `0 10px 30px ${selectedExercise.accentColor}40`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
                                 }}
                                 onMouseLeave={e => {
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                    e.currentTarget.style.borderColor = '#333';
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
                                 }}
                             >
-                                <Video size={48} color="#666" />
-                                <h2 style={{ fontSize: '1.5rem', margin: 0, color: '#888', textAlign: 'center' }}>VIDEO UPLOAD</h2>
+                                <div style={{
+                                    padding: '1rem',
+                                    backgroundColor: `${selectedExercise.accentColor}20`,
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
+                                    <Camera size={28} color={selectedExercise.accentColor} />
+                                </div>
+                                <div>
+                                    <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700' }}>Real-Time Coach</h3>
+                                    <p style={{ margin: '0.3rem 0 0', color: '#888', fontSize: '0.9rem' }}>Live feedback via webcam</p>
+                                </div>
+                            </div>
+
+                            {/* Video Upload Card */}
+                            <div
+                                onClick={() => handleModeSelect('upload')}
+                                style={{
+                                    backgroundColor: 'rgba(20, 20, 20, 0.6)',
+                                    borderRadius: '1.5rem',
+                                    padding: '2rem',
+                                    border: '1px solid #333',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '1.5rem',
+                                    backdropFilter: 'blur(10px)',
+                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                                }}
+                                onMouseEnter={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.borderColor = '#666';
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                }}
+                                onMouseLeave={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.borderColor = '#333';
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                }}
+                            >
+                                <div style={{
+                                    padding: '1rem',
+                                    backgroundColor: '#222',
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
+                                    <Video size={28} color="#fff" />
+                                </div>
+                                <div>
+                                    <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700' }}>Video Upload</h3>
+                                    <p style={{ margin: '0.3rem 0 0', color: '#888', fontSize: '0.9rem' }}>Analyze pre-recorded videos</p>
+                                </div>
                             </div>
                         </motion.div>
                     </motion.div>

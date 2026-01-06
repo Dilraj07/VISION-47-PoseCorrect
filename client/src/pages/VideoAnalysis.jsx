@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Upload, FileVideo, CheckCircle, Dumbbell, Activity, Utensils, Trophy } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { API_URL } from '../config';
-import { supabase } from '../supabaseClient';
+import { API_URL } from '../lib/config';
+import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 
 const LOADING_ICONS = [Dumbbell, Activity, Utensils, Trophy];

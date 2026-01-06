@@ -70,51 +70,51 @@ const MusicFlow = () => {
                     z-index: 1000;
                     display: flex;
                     align-items: center;
-                    background-color: rgba(0, 0, 0, 0.6);
-                    backdrop-filter: blur(10px);
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+                    background-color: rgba(5, 5, 5, 0.85); /* Darker, more premium background */
+                    backdrop-filter: blur(15px);
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08); /* Glow + Border trick */
                     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
                     overflow: hidden;
+                    border-radius: 999px; /* Perfect pill */
                 }
                 
                 /* Expanded Mode (Home) */
                 .music-flow-expanded {
-                     padding: 0.5rem 1rem;
-                     border-radius: 50px;
-                     border: 1px solid #333;
-                     gap: 0.5rem;
+                     padding: 0.6rem 1.2rem;
+                     gap: 0.8rem;
                 }
                 
                 /* Mini Mode (Other Pages) */
                 .music-flow-mini {
-                    width: 48px;
-                    height: 48px;
+                    width: 42px;
+                    height: 42px;
                     border-radius: 50%;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
                     justify-content: center;
                     padding: 0;
                     cursor: pointer;
+                    opacity: 0.8;
                 }
 
                 .music-flow-mini:hover {
                     width: auto;
-                    padding: 0.5rem 1rem;
-                    border-radius: 50px;
-                    border-color: #333;
-                    gap: 0.5rem;
+                    padding: 0.6rem 1.2rem;
+                    border-radius: 999px;
+                    gap: 0.8rem;
+                    opacity: 1;
                 }
 
-                /* Mobile Override (Always Center Bottom, but logic handles styling) */
+                /* Mobile Override */
                 @media (max-width: 768px) {
                     .music-flow-container {
-                        bottom: 1.5rem;
+                        bottom: 2rem; /* Give it space from bottom edge */
                         left: 50%; 
                         transform: translateX(-50%) !important;
                     }
                     .music-flow-expanded {
-                        min-width: 280px;
-                        justify-content: space-between;
+                        min-width: unset; /* Remove fixed width to shrink wrap content */
+                        width: auto;
                         padding: 0.5rem 1.2rem;
+                        gap: 1rem;
                     }
                 }
             `}</style>

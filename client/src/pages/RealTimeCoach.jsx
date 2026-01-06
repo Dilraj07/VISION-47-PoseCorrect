@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Activity, CheckCircle, Video, Loader } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useReactMediaRecorder } from "react-media-recorder";
-import { API_URL } from '../config';
-import { supabase } from '../supabaseClient';
+import { API_URL } from '../lib/config';
+import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 
 // Component to render the preview stream
