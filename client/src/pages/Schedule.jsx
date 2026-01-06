@@ -23,7 +23,7 @@ import {
   Timer,
   Zap
 } from 'lucide-react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 
 const WORKOUT_TYPES = [

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { Calendar, Activity, ArrowRight } from 'lucide-react';
