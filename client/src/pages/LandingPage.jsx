@@ -170,29 +170,32 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
                         onClick={handleDemo}
                         className="cta-btn"
                         style={{
-                            border: '1px solid #333',
-                            color: '#888',
-                            background: 'rgba(0,0,0,0.5)',
-                            backdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            color: '#fff',
+                            background: 'transparent',
                             cursor: 'pointer',
                             textTransform: 'uppercase',
-                            letterSpacing: '1px',
-                            fontWeight: '600',
-                            transition: 'all 0.3s',
-                            borderRadius: '4px',
+                            letterSpacing: '2px',
+                            fontWeight: '700',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            borderRadius: '0', /* Brutalist sharp edges */
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '0.5rem',
-                            fontFamily: 'inherit'
+                            gap: '0.8rem',
+                            fontFamily: "var(--font-display)",
+                            position: 'relative',
+                            overflow: 'hidden'
                         }}
                         onMouseEnter={(e) => {
-                            e.target.style.borderColor = '#666';
-                            e.target.style.color = '#fff';
+                            e.target.style.borderColor = '#fff';
+                            e.target.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.2)';
+                            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
                         }}
                         onMouseLeave={(e) => {
-                            e.target.style.borderColor = '#333';
-                            e.target.style.color = '#888';
+                            e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                            e.target.style.boxShadow = 'none';
+                            e.target.style.background = 'transparent';
                         }}
                     >
                         TRY DEMO
