@@ -64,9 +64,25 @@ const values = [
 
 const teamMembers = [
     {
+        name: 'Arya Wadhwa',
+        role: 'Co-Founder',
+        color: '#FDE047', // Bright Yellow
+        borderColor: 'rgba(253, 224, 71, 0.3)',
+        image: '/team/arya.jpeg',
+        linkedin: 'https://www.linkedin.com/in/aryawadhwa'
+    },
+    {
+        name: 'Dilraj Singh',
+        role: 'Co-Founder',
+        color: '#A78BFA', // Bright Purple
+        borderColor: 'rgba(167, 139, 250, 0.3)',
+        image: '/team/dilraj.jpg',
+        linkedin: 'https://www.linkedin.com/in/dilraj-singh-cos007/'
+    },
+    {
         name: 'Shlokk Sikka',
         role: 'Co-Founder',
-        color: 'rgba(74, 222, 128, 0.1)', // Translucent Green
+        color: '#4ADE80', // Bright Green
         borderColor: 'rgba(74, 222, 128, 0.3)',
         image: '/team/shlokk.jpg',
         linkedin: 'https://www.linkedin.com/in/shlokk-sikka-127334391/'
@@ -74,7 +90,7 @@ const teamMembers = [
     {
         name: 'Anirudha M',
         role: 'Co-Founder',
-        color: 'rgba(251, 113, 133, 0.1)', // Translucent Red
+        color: '#FB7185', // Bright Red
         borderColor: 'rgba(251, 113, 133, 0.3)',
         image: '/team/anirudh.jpeg',
         linkedin: 'https://www.linkedin.com/in/anirudha-mahesha-6262a2399/'
@@ -82,7 +98,7 @@ const teamMembers = [
     {
         name: 'Ashwin Acharya',
         role: 'Co-Founder',
-        color: 'rgba(34, 211, 238, 0.1)', // Translucent Cyan
+        color: '#22D3EE', // Bright Cyan
         borderColor: 'rgba(34, 211, 238, 0.3)',
         image: '/team/ashwin.jpeg',
         linkedin: 'https://www.linkedin.com/'
@@ -248,128 +264,7 @@ const About = () => {
                 </div>
             </div>
 
-            {/* Founders Section (Merged Group) */}
-            <div style={{ maxWidth: '800px', margin: '0 auto 6rem' }}>
-                <motion.h2
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    style={{
-                        fontSize: 'clamp(2.5rem, 4vw, 4rem)',
-                        fontWeight: '800',
-                        textAlign: 'center',
-                        marginBottom: '3rem',
-                        letterSpacing: '-2px'
-                    }}
-                >
-                    Founders
-                </motion.h2>
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                    gap: '3rem',
-                    justifyContent: 'center'
-                }}>
-                    {/* Arya Wadhwa */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            textAlign: 'center',
-                            background: 'rgba(255, 255, 255, 0.03)',
-                            borderRadius: '2rem',
-                            padding: '3rem 2rem',
-                            border: '1px solid #333',
-                            backdropFilter: 'blur(10px)'
-                        }}
-                    >
-                        <div style={{
-                            width: '200px',
-                            height: '200px',
-                            borderRadius: '50%',
-                            overflow: 'hidden',
-                            marginBottom: '2rem',
-                            border: '4px solid #FDE047',
-                            boxShadow: '0 0 30px rgba(253, 224, 71, 0.2)'
-                        }}>
-                            <img
-                                src="/team/arya.jpeg"
-                                alt="Arya Wadhwa"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
-                                onError={(e) => {
-                                    e.target.style.display = 'none';
-                                    e.target.parentElement.style.backgroundColor = '#222';
-                                }}
-                            />
-                        </div>
-                        <h3 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, letterSpacing: '-1px' }}>Arya Wadhwa</h3>
-                        <p style={{ color: '#FDE047', fontWeight: '700', fontSize: '1.2rem', marginTop: '0.5rem', letterSpacing: '2px', textTransform: 'uppercase' }}>CEO & Co-Founder</p>
-                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                            <a href="https://www.linkedin.com/in/aryawadhwa" target="_blank" rel="noreferrer" style={{ color: '#ccc', padding: '0.5rem', border: '1px solid #444', borderRadius: '50%' }}><Linkedin size={24} /></a>
-                            <a href="https://github.com/aryawadhwa" target="_blank" rel="noreferrer" style={{ color: '#ccc', padding: '0.5rem', border: '1px solid #444', borderRadius: '50%' }}><Github size={24} /></a>
-                        </div>
-                    </motion.div>
-
-                    {/* Dilraj Singh */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            textAlign: 'center',
-                            background: 'rgba(255, 255, 255, 0.03)',
-                            borderRadius: '2rem',
-                            padding: '3rem 2rem',
-                            border: '1px solid #333',
-                            backdropFilter: 'blur(10px)'
-                        }}
-                    >
-                        <div style={{
-                            width: '200px',
-                            height: '200px',
-                            borderRadius: '50%',
-                            overflow: 'hidden',
-                            marginBottom: '2rem',
-                            border: '4px solid #A78BFA',
-                            boxShadow: '0 0 30px rgba(167, 139, 250, 0.2)'
-                        }}>
-                            <img
-                                src="/team/dilraj.jpg"
-                                alt="Dilraj Singh"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
-                                onError={(e) => {
-                                    e.target.style.display = 'none';
-                                    e.target.parentElement.style.backgroundColor = '#222';
-                                }}
-                            />
-                        </div>
-                        <h3 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, letterSpacing: '-1px' }}>Dilraj Singh</h3>
-                        <p style={{ color: '#A78BFA', fontWeight: '700', fontSize: '1.2rem', marginTop: '0.5rem', letterSpacing: '2px', textTransform: 'uppercase' }}>CTO & Co-Founder</p>
-                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                            <a href="https://www.linkedin.com/in/dilraj-singh-cos007/" target="_blank" rel="noreferrer" style={{ color: '#ccc', padding: '0.5rem', border: '1px solid #444', borderRadius: '50%' }}><Linkedin size={24} /></a>
-                            <a href="#" style={{ color: '#ccc', padding: '0.5rem', border: '1px solid #444', borderRadius: '50%' }}><Github size={24} /></a>
-                        </div>
-                    </motion.div>
-                </div>
-                <style>{`
-                    .divider { display: none; }
-                    @media (min-width: 600px) {
-                        .divider { display: block; }
-                    }
-                `}</style>
-            </div>
-
-            {/* The Team - New Style */}
+            {/* The Team - Unified */}
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                 <motion.h2
                     initial={{ opacity: 0 }}
@@ -379,20 +274,12 @@ const About = () => {
                         fontSize: 'clamp(2.5rem, 4vw, 4rem)',
                         fontWeight: '800',
                         textAlign: 'center',
-                        marginBottom: '1rem',
+                        marginBottom: '4rem',
                         letterSpacing: '-2px'
                     }}
                 >
                     The Team
                 </motion.h2>
-                <p style={{
-                    textAlign: 'center',
-                    color: '#888',
-                    marginBottom: '4rem',
-                    fontSize: '1.1rem'
-                }}>
-                    Engineering the future of fitness.
-                </p>
 
                 <div style={{
                     display: 'grid',
@@ -502,6 +389,7 @@ const About = () => {
                     ))}
                 </div>
             </div>
+
         </div>
     );
 };
