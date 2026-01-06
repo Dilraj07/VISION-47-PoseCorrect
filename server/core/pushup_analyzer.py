@@ -5,6 +5,11 @@ import os
 
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
+try:
+    from core.biomechanics import draw_angle_visualization
+except:
+    from biomechanics import draw_angle_visualization
+
 
 def calculate_angle(a, b, c):
     a = np.array(a)
@@ -183,6 +188,31 @@ def analyze_pushup_video(video_path, output_path=None):
                         rep_count += 1
                         rep_data.append({"rep": rep_count, "min_elbow_angle": min_elbow_angle, "max_hip_drop": max_hip_drop, "form_rating": get_form_rating(min_elbow_angle, max_hip_drop)})
                 
+                # Visual Overlays
+                try:
+                    def get_coord(idx):
+                        return (int(landmarks[idx].x * width), int(landmarks[idx].y * height))
+                    
+                    l_shoulder = get_coord(11)
+                    l_elbow = get_coord(13)
+                    l_wrist = get_coord(15)
+                    l_hip = get_coord(23)
+                    l_ankle = get_coord(27)
+                    
+                    # Draw Elbow Angle
+                    if metrics['left_elbow']:
+                        image_rgb = draw_angle_visualization(image_rgb, l_shoulder, l_elbow, l_wrist, metrics['left_elbow'])
+                    
+                    # Draw Torso Line/Angle
+                    # Use landmarks directly or the calculated midpoints if preferred. 
+                    # The metric uses midpoints, let's stick to left side for simplicity or calc midpoints
+                    # The image shows side view, so left side is fine.
+                    if metrics['torso_angle']:
+                         image_rgb = draw_angle_visualization(image_rgb, l_shoulder, l_hip, l_ankle, metrics['torso_angle'])
+                         
+                except Exception as e:
+                    print(f"Overlay error: {e}")
+
                 image_rgb = add_metric_overlays(image_rgb, metrics)
             
             final_image = add_info_panel(image_rgb, frame_count, total_frames, fps, rep_count, min_elbow_angle, max_hip_drop)

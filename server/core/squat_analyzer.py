@@ -5,6 +5,11 @@ import os
 
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
+try:
+    from core.biomechanics import draw_angle_visualization
+except:
+    from biomechanics import draw_angle_visualization
+
 
 def calculate_angle(a, b, c):
     a = np.array(a)
@@ -81,59 +86,65 @@ def add_angle_overlays(image, angles):
         cv2.putText(image, f"Torso: {angles['torso']} (Opt: 45)", (20, y_pos + 35), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 1, cv2.LINE_AA)
     return image
 
-def add_info_panel(image, frame, total_frames, fps, reps, current_knee_angle, last_vel="Ready", last_vel_val="--"):
+def add_info_panel(image, frame, total_frames, fps, reps, current_knee_angle, status, last_vel_val="--"):
     h, w = image.shape[:2]
     
-    # HUD Bottom Bar (Overlay)
-    overlay = image.copy()
-    cv2.rectangle(overlay, (0, h - 80), (w, h), (0, 0, 0), -1)
-    cv2.addWeighted(overlay, 0.7, image, 0.3, 0, image)
+    # Minimal Overlay - Top Right for Reps
+    # Transparent background for readability
+    cv2.putText(image, f"REPS: {reps}", (w - 180, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (57, 255, 20), 3, cv2.LINE_AA)
     
-    NEON_GREEN = (57, 255, 20)
-    NEON_BLUE = (255, 243, 0)
-    
-    # Frame Counter
-    cv2.putText(image, f"FRAME {frame}/{total_frames}", (20, h - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150, 150, 150), 1, cv2.LINE_AA)
-    
-    # Center Rep Counter
-    rep_text = f"REPS: {reps}"
-    text_size = cv2.getTextSize(rep_text, cv2.FONT_HERSHEY_SIMPLEX, 1.2, 3)[0]
+    # Status Indicator (Floating, Center Bottom)
+    if status != "Good Form":
+        color = (147, 20, 255) # Pink/Red for issues
+    else:
+        color = (57, 255, 20) # Green
+        
+    text_size = cv2.getTextSize(status, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
     center_x = (w - text_size[0]) // 2
-    cv2.putText(image, rep_text, (center_x, h - 25), cv2.FONT_HERSHEY_SIMPLEX, 1.2, NEON_BLUE, 3, cv2.LINE_AA)
-    
-    # Velocity (Left Side)
-    # cv2.putText(image, "VELOCITY", (center_x - 200, h - 45), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150,150,150), 1, cv2.LINE_AA)
-    cv2.putText(image, f"{last_vel}", (center_x - 250, h - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.7, NEON_GREEN, 2, cv2.LINE_AA)
-    
-    # Right Side Status
-    status_text = "GOOD DEPTH" if current_knee_angle <= 100 else "GO LOWER"
-    status_color = NEON_GREEN if status_text == "GOOD DEPTH" else (147, 20, 255) # Pink
-    
-    cv2.putText(image, status_text, (w - 200, h - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, status_color, 2, cv2.LINE_AA)
+    cv2.putText(image, status, (center_x, h - 50), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
     
     return image
 
+
 def analyze_squat_video(video_path, output_path=None):
+    import datetime
+    def log_debug(msg):
+        with open("analyzer_debug.log", "a") as f:
+            f.write(f"[{datetime.datetime.now()}] {msg}\n")
+            
+    log_debug(f"Starting analysis for {video_path}")
+
     if not os.path.exists(video_path):
+        log_debug("Video file not found")
         return {"error": "Video not found"}
     
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
+        log_debug("Cannot open video capture")
         return {"error": "Cannot open video"}
     
     fps = cap.get(cv2.CAP_PROP_FPS) or 30
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    log_debug(f"Video Info: {width}x{height} @ {fps}fps, {total_frames} frames")
     
+    # State variables for advanced tracking
+    # State variables for advanced tracking
+    start_descent_frame = 0
+    bottom_frame = 0
     output_frames = []
     rep_data = []
     in_squat = False
     rep_count = 0
     min_knee_angle = 180
     
+    # Rep history data
+    rep_history = [] 
+    
     with mp_pose.Pose(min_detection_confidence=0.7, min_tracking_confidence=0.7, model_complexity=1) as pose:
         frame_count = 0
+        log_debug("Entering frame loop")
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
@@ -156,72 +167,125 @@ def analyze_squat_video(video_path, output_path=None):
                 if angles['left_knee'] is not None:
                     current_angle_val = angles['left_knee']
                     
-                    # State Machine & Velocity Tracking
-                    if not in_squat and angles['left_knee'] < 160: # Threshold to start descent
+                    # --- State Machine ---
+                    # 1. Start Descent
+                    if not in_squat and angles['left_knee'] < 165:
                         in_squat = True
+                        start_descent_frame = frame_count
                         min_knee_angle = 180
-                        bottom_frame = frame_count
-                        # Get hip height (average of left/right hip Y coordinate)
+                        max_torso_lean = 0
+                        min_valgus_ratio = 2.0 # High start
+                        max_heel_lift = 0
+                        
+                        # Capture baseline heel Y (to check for lift)
                         try:
-                            l_hip_y = landmarks[23].y * height
-                            r_hip_y = landmarks[24].y * height
-                            bottom_hip_y = (l_hip_y + r_hip_y) / 2
+                            baseline_heel_y = landmarks[29].y * height # Left heel
                         except:
-                            bottom_hip_y = 0
-                            
+                            baseline_heel_y = 0
+
                     if in_squat:
-                        # Track bottom of squat
+                        # Track Bottom (Max Depth)
                         if angles['left_knee'] < min_knee_angle:
                             min_knee_angle = angles['left_knee']
                             bottom_frame = frame_count
-                            try:
-                                l_hip_y = landmarks[23].y * height
-                                r_hip_y = landmarks[24].y * height
-                                bottom_hip_y = (l_hip_y + r_hip_y) / 2
-                            except:
-                                pass
-                                
-                    # Rep Completion (Ascent finished)
-                    if in_squat and angles['left_knee'] > 165:
-                        in_squat = False
                         
-                        # Calculate Velocity
-                        concentric_frames = frame_count - bottom_frame
-                        if concentric_frames < 1: concentric_frames = 1
-                        concentric_time = concentric_frames / fps
-                        
+                        # Track Max Torso Lean (deviation from 180 vertical)
+                        if angles['torso']:
+                            # Torso angle here is calc'd against vertical: 0 is upright? 
+                            # logic in get_key_angles: vertical_point(hip_x, hip_y-100) -> hip -> shoulder.
+                            # So upright is ~0 or 180? calculate_angle usually returns inner angle (0-180).
+                            # If vertical point is UP, and shoulder is UP, angle is 0. 
+                            # Let's assume larger angle = more lean or vice versa. 
+                            # Actually, usually 0 is upright. Let's track the MAX value.
+                            if angles['torso'] > max_torso_lean:
+                                max_torso_lean = angles['torso']
+
+                        # Track Valgus (Knee Width / Hip Width)
                         try:
-                            current_hip_y = (landmarks[23].y * height + landmarks[24].y * height) / 2
-                            # Moving UP means Y decreases. Displacement = Bottom_Y - Constant_Top_Y? 
-                            # Actually just verify we moved up. 
-                            displacement_px = bottom_hip_y - current_hip_y
-                            if displacement_px < 0: displacement_px = 0 # Should count even if effective displacement is weird?
-                            
-                            velocity = displacement_px / concentric_time # pixels per second
+                             l_hip_x = landmarks[23].x
+                             r_hip_x = landmarks[24].x
+                             l_knee_x = landmarks[25].x
+                             r_knee_x = landmarks[26].x
+                             
+                             hip_width = abs(l_hip_x - r_hip_x)
+                             knee_width = abs(l_knee_x - r_knee_x)
+                             
+                             if hip_width > 0:
+                                 ratio = knee_width / hip_width
+                                 if ratio < min_valgus_ratio:
+                                     min_valgus_ratio = ratio
                         except:
-                            velocity = 0
+                            pass
+                            
+                        # Track Heel Lift
+                        try:
+                             current_heel_y = landmarks[29].y * height
+                             # If heel moves UP (y decreases), lift is positive
+                             lift = baseline_heel_y - current_heel_y
+                             if lift > max_heel_lift:
+                                 max_heel_lift = lift
+                        except:
+                            pass
+
+                    # 2. End Ascent (Rep Complete)
+                    if in_squat and angles['left_knee'] > 168:
+                        in_squat = False
+                        end_frame = frame_count
                         
-                        # Categorize Velocity
-                        # These thresholds are heuristic based on pixel movement
-                        if velocity > 250: vel_cat = "Fast (Power)"
-                        elif velocity > 100: vel_cat = "Solid"
-                        else: vel_cat = "Grind"
+                        # Calculate Phase Timings
+                        eccentric_frames = bottom_frame - start_descent_frame
+                        concentric_frames = end_frame - bottom_frame
+                        if eccentric_frames < 1: eccentric_frames = 1
+                        if concentric_frames < 1: concentric_frames = 1
+                        
+                        ecc_time = eccentric_frames / fps
+                        con_time = concentric_frames / fps
                         
                         rep_count += 1
+                        
+                        # Diagnosis
+                        issues = []
+                        if min_knee_angle > 100: issues.append("Shallow Depth")
+                        if min_valgus_ratio < 0.8: issues.append("Knee Valgus") # Knees narrower than hips
+                        if max_torso_lean > 50: issues.append("Excessive Lean")
+                        if max_heel_lift > 15: issues.append("Heels Lifting") # Threshold px
+                        if con_time > 1.5: issues.append("Slow Ascent")
+                        
                         rep_data.append({
-                            "rep": rep_count, 
-                            "min_angle": min_knee_angle, 
-                            "depth_rating": get_depth_rating(min_knee_angle),
-                            "velocity": f"{velocity:.1f} px/s",
-                            "velocity_category": vel_cat
+                            "rep": rep_count,
+                            "min_angle": min_knee_angle,
+                            "eccentric_time": ecc_time,
+                            "concentric_time": con_time,
+                            "valgus_ratio": min_valgus_ratio,
+                            "torso_angle": max_torso_lean,
+                            "heel_lift": max_heel_lift,
+                            "issues": issues
                         })
-                
+
+                # Visual Overlays
+                try:
+                    def get_coord(idx):
+                        return (int(landmarks[idx].x * width), int(landmarks[idx].y * height))
+                    
+                    l_hip = get_coord(23)
+                    l_knee = get_coord(25)
+                    l_ankle = get_coord(27)
+                    l_shoulder = get_coord(11)
+                    
+                    if angles['left_knee']:
+                        image_rgb = draw_angle_visualization(image_rgb, l_hip, l_knee, l_ankle, angles['left_knee'])
+                    if angles['torso']:
+                        vertical_point = (l_hip[0], l_hip[1] - 100)
+                        image_rgb = draw_angle_visualization(image_rgb, vertical_point, l_hip, l_shoulder, angles['torso'])
+                except Exception as e:
+                    pass
+
                 image_rgb = add_angle_overlays(image_rgb, angles)
             
-            # Pass velocity data to info panel
-            last_vel = rep_data[-1]["velocity_category"] if rep_data else "Ready"
-            last_vel_val = rep_data[-1]["velocity"] if rep_data else "--"
-            final_image = add_info_panel(image_rgb, frame_count, total_frames, fps, rep_count, min_knee_angle, last_vel, last_vel_val)
+            # Simple info on video
+            last_rep_issues = rep_data[-1]["issues"] if rep_data else []
+            status = last_rep_issues[0] if last_rep_issues else "Good Form"
+            final_image = add_info_panel(image_rgb, frame_count, total_frames, fps, rep_count, min_knee_angle if in_squat else 180, status, "--")
             output_frames.append(final_image)
     
     cap.release()
@@ -234,29 +298,83 @@ def analyze_squat_video(video_path, output_path=None):
             clip = ImageSequenceClip(output_frames, fps=fps)
             clip.write_videofile(output_path, codec='libx264', audio=False, logger=None, preset='ultrafast', threads=4)
         except Exception as e:
-            print(f"Error writing video: {e}")
             return {"error": str(e)}
     
-    avg_depth = 0
+    # --- Generate Professional Coach Notes ---
     feedback_summary = []
     corrections = []
     
     if rep_data:
-        avg_depth = np.mean([r["min_angle"] for r in rep_data])
-        if avg_depth > 100:
-            feedback_summary.append("Insufficient Depth")
-            corrections.append("Not reaching parallel (90° knee angle). Sit back deeper.")
-            corrections.append("Practice with a box or bench.")
-        elif 85 <= avg_depth <= 100:
-            feedback_summary.append("Good Depth (NSCA Standard)")
-            corrections.append("Great work hitting parallel.")
+        depths = [r["min_angle"] for r in rep_data]
+        valgus_ratios = [r["valgus_ratio"] for r in rep_data]
+        torso_angles = [r["torso_angle"] for r in rep_data]
+        heel_lifts = [r["heel_lift"] for r in rep_data]
+        ecc_times = [r["eccentric_time"] for r in rep_data]
+        con_times = [r["concentric_time"] for r in rep_data]
+        
+        avg_depth = np.mean(depths)
+        avg_depth_str = ""
+        
+        # 1. Depth Classification (Simplified)
+        if avg_depth > 105:
+            avg_depth_str = "Too Shallow"
+            corrections.append("You are not going down far enough.")
+        elif 95 < avg_depth <= 105:
+            avg_depth_str = "Almost Parallel"
+            corrections.append("Try to go a little lower.")
+        elif 80 <= avg_depth <= 95:
+            avg_depth_str = "Good Depth"
         else:
-            feedback_summary.append("Excellent Depth")
-            corrections.append("Great depth! Maintain control at bottom.")
+            avg_depth_str = "Deep Squat"
+        
+        feedback_summary.append(f"Depth: {avg_depth_str}")
+        
+        # 2. Knee Stability (Valgus) -> Simplified
+        min_v = np.min(valgus_ratios)
+        if min_v < 0.75:
+            feedback_summary.append("Knees: Caving In")
+            corrections.append("Your knees are collapsing inward. Push them out.")
+        elif min_v < 0.9:
+            feedback_summary.append("Knees: Slight Cave")
+            corrections.append("Keep your knees in line with your toes.")
+        else:
+            feedback_summary.append("Knees: Good & Stable")
             
-        # Velocity Feedback
-        avg_velocity_val = np.mean([float(r["velocity"].split()[0]) for r in rep_data])
-        feedback_summary.append(f"Avg Velocity: {avg_velocity_val:.0f} px/s")
+        # 3. Torso / Back Angle (Simplified)
+        max_lean = np.max(torso_angles)
+        if max_lean > 55:
+            feedback_summary.append("Back: Leaning Forward Too Much")
+            corrections.append("Keep your chest up and core tight.")
+        elif max_lean > 40:
+             feedback_summary.append("Back: Good Posture")
+        else:
+             feedback_summary.append("Back: Very Upright (Great)")
+             
+        # 4. Tempo & Speed (Simplified)
+        avg_ecc = np.mean(ecc_times)
+        avg_con = np.mean(con_times)
+        
+        tempo_str = "Controlled"
+        if avg_ecc < 0.8:
+            tempo_str = "Dropping Too Fast"
+            corrections.append("Go down slower to maintain control.")
+        elif avg_con > 1.5:
+             tempo_str = "Hard Push"
+             corrections.append("Good effort pushing back up.")
+        elif avg_con < 0.5:
+             tempo_str = "Fast & Powerful"
+        
+        feedback_summary.append(f"Speed: {tempo_str}")
+        
+        # 5. Consistency (Simplified)
+        depth_std = np.std(depths)
+        if depth_std < 3.0:
+            feedback_summary.append("Consistency: Perfect")
+        elif depth_std < 7.0:
+            feedback_summary.append("Consistency: Good")
+        else:
+            feedback_summary.append("Consistency: Uneven")
+            corrections.append("Try to squat to the same depth every time.")
 
     else:
         feedback_summary.append("No Reps Detected")
@@ -264,7 +382,7 @@ def analyze_squat_video(video_path, output_path=None):
     
     return {
         "reps_count": rep_count,
-        "avg_depth": int(avg_depth),
+        "avg_depth": int(avg_depth) if rep_data else 0,
         "feedback": feedback_summary,
         "corrections": corrections,
         "rep_details": rep_data

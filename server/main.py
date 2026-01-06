@@ -168,7 +168,11 @@ async def analyze_video(
         }
 
     except Exception as e:
-        print(f"Error: {str(e)}")
+        import traceback
+        error_msg = f"Error: {str(e)}\n{traceback.format_exc()}"
+        print(error_msg)
+        with open("server_error.log", "w") as f:
+            f.write(error_msg)
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/download/{filename}")
@@ -551,5 +555,5 @@ async def get_academy_exercises():
 # @app.get("/api/academy/mastery/{user_id}")
 # async def get_user_mastery(user_id: str):
 #     """Get list of mastered exercise IDs for a user"""
-#     # TODO: Migrate to Supabase
-#     return {"mastered_ids": []}
+# Trigger server reload 10
+

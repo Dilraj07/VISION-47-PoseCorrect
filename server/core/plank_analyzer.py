@@ -6,6 +6,11 @@ import os
 
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
+try:
+    from core.biomechanics import draw_angle_visualization
+except:
+    from biomechanics import draw_angle_visualization
+
 
 def calculate_angle(a, b, c):
     a = np.array(a)
@@ -174,6 +179,21 @@ def analyze_plank_video(video_path, output_path=None):
                         in_plank = False
                         total_plank_time += (frame_count - plank_start_frame) / fps
                 
+                # Visual Overlays
+                try:
+                    def get_coord(idx):
+                        return (int(landmarks[idx].x * width), int(landmarks[idx].y * height))
+                    
+                    l_shoulder = get_coord(11)
+                    l_hip = get_coord(23)
+                    l_ankle = get_coord(27)
+                    
+                    if metrics['body_alignment'] is not None:
+                        image_rgb = draw_angle_visualization(image_rgb, l_shoulder, l_hip, l_ankle, metrics['body_alignment'])
+                        
+                except Exception as e:
+                    print(f"Overlay error: {e}")
+
                 image_rgb = add_metric_overlays(image_rgb, metrics, elapsed_time)
             
             avg_alignment = int(np.mean(alignment_history)) if alignment_history else 0

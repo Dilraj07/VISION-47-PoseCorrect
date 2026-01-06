@@ -3,7 +3,7 @@ uvicorn>=0.23.0
 python-multipart>=0.0.6
 opencv-python-headless>=4.8.0
 numpy>=1.24.0
-mediapipe==0.10.14
+mediapipe==0.10.9
 moviepy>=1.0.3,<2.0.0
 supabase>=2.0.0
 openai>=1.0.0

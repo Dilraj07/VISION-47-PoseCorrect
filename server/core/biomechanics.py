@@ -4,6 +4,38 @@ Based on NSCA/ACSM standards
 """
 import numpy as np
 import mediapipe as mp
+import cv2
+
+def draw_angle_visualization(image, p1, p2, p3, angle, color=(255, 255, 255)):
+    """Draw lines p1-p2-p3 and angle text at p2"""
+    # Draw lines (White)
+    cv2.line(image, p1, p2, color, 2, cv2.LINE_AA)
+    cv2.line(image, p2, p3, color, 2, cv2.LINE_AA)
+    
+    # Draw joint circles
+    # End points Green
+    cv2.circle(image, p1, 8, (57, 255, 20), -1) 
+    cv2.circle(image, p1, 10, (255, 255, 255), 2) 
+    
+    cv2.circle(image, p3, 8, (57, 255, 20), -1)
+    cv2.circle(image, p3, 10, (255, 255, 255), 2)
+    
+    # Vertex Pink
+    cv2.circle(image, p2, 8, (147, 20, 255), -1)
+    cv2.circle(image, p2, 10, (255, 255, 255), 2)
+    
+    # Draw Angle Text
+    label = f"{int(angle)} degrees"
+    # Offset text slightly
+    text_pos = (p2[0] + 25, p2[1])
+    
+    # Text outline (black)
+    cv2.putText(image, label, text_pos, cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 4, cv2.LINE_AA)
+    # Text fill (white)
+    cv2.putText(image, label, text_pos, cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
+    
+    return image
+
 
 def calculate_angle(a, b, c):
     """Calculate angle at point b formed by a-b-c"""

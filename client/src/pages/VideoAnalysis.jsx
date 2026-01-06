@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Upload, FileVideo, CheckCircle, Dumbbell, Activity, Utensils, Trophy } from 'lucide-react';
+import { ArrowLeft, Upload, FileVideo, CheckCircle, Dumbbell, Activity, Utensils, Trophy, AlertTriangle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { API_URL } from '../lib/config';
 import { supabase } from '../lib/supabaseClient';
@@ -277,7 +277,7 @@ const VideoAnalysis = () => {
                          }
                          .main-card {
                             padding: 3rem !important;
-                         }
+                        }
                          .coach-card, .improve-card {
                             grid-column: span 2 !important;
                             padding: 2.5rem !important;
@@ -504,29 +504,36 @@ const VideoAnalysis = () => {
                                                     backgroundColor: '#111',
                                                     borderRadius: '1.5rem',
                                                     border: '1px solid #222',
-                                                    position: 'relative'
+                                                    position: 'relative',
+                                                    overflow: 'hidden'
                                                 }}
                                             >
-                                                <h4 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontWeight: '800' }}>
-                                                    <span style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(0, 204, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-neon-blue)' }} />
-                                                    </span>
-                                                    COACH NOTES
-                                                </h4>
-                                                <div style={{ display: 'grid', gap: '0.8rem' }}>
-                                                    {result.analysis_data.feedback.map((item, index) => (
-                                                        <div key={index} style={{
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                                                            padding: '1rem 1.25rem',
-                                                            borderRadius: '0.8rem',
-                                                            borderLeft: '3px solid var(--color-neon-blue)',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.8rem'
-                                                        }}>
-                                                            <p style={{ color: '#ddd', margin: 0, lineHeight: '1.5', fontSize: '1rem' }}>{item}</p>
-                                                        </div>
-                                                    ))}
+                                                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                                                    <h4 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontWeight: '800' }}>
+                                                        <span style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(0, 204, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-neon-blue)' }} />
+                                                        </span>
+                                                        COACH NOTES
+                                                    </h4>
+
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                                        {result.analysis_data.feedback.map((item, index) => (
+                                                            <div key={index} style={{
+                                                                backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                                                                padding: '0.6rem 1rem',
+                                                                borderRadius: '0.6rem',
+                                                                borderLeft: '2px solid var(--color-neon-blue)',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'space-between'
+                                                            }}>
+                                                                <p style={{ color: '#ddd', margin: 0, fontSize: '0.9rem', fontWeight: '500' }}>
+                                                                    {item.split(":")[0]}
+                                                                    {item.includes(":") && <span style={{ color: '#888', fontWeight: 'normal' }}>: {item.split(":")[1]}</span>}
+                                                                </p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </motion.div>
 
