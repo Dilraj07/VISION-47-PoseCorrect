@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
-import MuscleHeatmap from '../components/MuscleHeatmap'; // Import Heatmap
+import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
+import MuscleHeatmap from '../components/MuscleHeatmap3D'; // Import 3D Heatmap
 
 const exerciseCategories = [
     {
@@ -272,15 +274,41 @@ const SkeletonStrip = () => (
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [hoveredId, setHoveredId] = useState(null);
     const [selectedExercise, setSelectedExercise] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [userStats, setUserStats] = useState({});
 
-    // Simulate load
+    // Simulate load and fetch stats
     useEffect(() => {
-        setTimeout(() => setIsLoading(false), 800);
-    }, []);
+        const loadData = async () => {
+            // Simulate UI load
+            await new Promise(r => setTimeout(r, 800));
+            setIsLoading(false);
+
+            if (user) {
+                try {
+                    const res = await fetch(`${API_URL}/api/stats/${user.id}`);
+                    const data = await res.json();
+                    // Transformation logic could go here, for now use raw or empty
+                    // transformStats(data);
+                    // Mock data for visual pop if empty
+                    setUserStats({
+                        legs: 0.1,
+                        arms: 0.1,
+                        chest: 0.1,
+                        abs: 0.1,
+                        shoulders: 0.1
+                    });
+                } catch (e) {
+                    console.error("Failed to load stats", e);
+                }
+            }
+        };
+        loadData();
+    }, [user]);
 
     const handleModeSelect = (mode) => {
         const targetPath = mode === 'upload' ? '/upload' : '/coach';
