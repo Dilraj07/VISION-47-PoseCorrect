@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { API_URL } from '../config';
+import { API_URL } from '../lib/config';
 import MuscleHeatmap from '../components/MuscleHeatmap3D'; // Import 3D Heatmap
 
 const exerciseCategories = [
