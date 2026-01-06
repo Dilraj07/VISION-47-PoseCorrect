@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
-// import IntroAnimation from './components/IntroAnimation';
 import MusicFlow from './components/MusicFlow'; // Import MusicFlow
 import { AudioProvider, useAudio } from './context/AudioContext';
 import LandingPage from './pages/LandingPage';
@@ -27,8 +26,6 @@ import { AuthProvider } from './context/AuthContext';
 const AppContent = () => {
   const { play, toggleMute, isMuted, isLoading } = useAudio();
   const navigate = useNavigate();
-
-  // Removed Intro Logic
 
   const handleStart = () => {
     navigate('/dashboard');
