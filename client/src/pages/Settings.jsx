@@ -69,8 +69,11 @@ const SettingsItem = ({ icon: Icon, label, value, type = 'arrow', onClick, dange
     </div>
 );
 
+import { useAuth } from '../context/AuthContext';
+
 const Settings = () => {
     const navigate = useNavigate();
+    const { user, loginDemo, signOut } = useAuth();
     const [notifications, setNotifications] = useState(true);
     const [units, setUnits] = useState('imperial'); // imperial | metric
     const [theme, setTheme] = useState('dark');
@@ -127,6 +130,16 @@ const Settings = () => {
 
                 {/* App Preferences */}
                 <SettingsSection title="Preferences">
+                    <SettingsItem
+                        icon={Smartphone}
+                        label="Demo / Ghost Mode"
+                        type="toggle"
+                        value={user?.isDemo || false}
+                        onClick={() => {
+                            if (user?.isDemo) signOut();
+                            else loginDemo();
+                        }}
+                    />
                     <SettingsItem
                         icon={Bell}
                         label="Push Notifications"

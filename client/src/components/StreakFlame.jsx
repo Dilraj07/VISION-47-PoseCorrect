@@ -3,12 +3,16 @@ import { motion } from 'framer-motion';
 import { Flame } from 'lucide-react';
 
 const StreakFlame = ({ streak = 0 }) => {
-    if (streak < 3) return null; // No flame for < 3 days
-
-    // Determine Flame Style
-    let color = 'var(--color-neon-blue)'; // Default 3+ days
-    let shadow = '0 0 10px var(--color-neon-blue)';
+    // Default Style (Streak < 3) - Dormant Flame
+    let color = '#333';
+    let shadow = 'none';
     let scale = 1;
+
+    // 3+ Days: Blue Flame (Ignited)
+    if (streak >= 3) {
+        color = 'var(--color-neon-blue)';
+        shadow = '0 0 10px var(--color-neon-blue)';
+    }
 
     // 7+ Days: Raging Pink
     if (streak >= 7) {
@@ -17,29 +21,31 @@ const StreakFlame = ({ streak = 0 }) => {
         scale = 1.1;
     }
 
-    // 30+ Days: Inferno (Multi-color simulated with gradient text clip or complex shadow)
-    // For "light scale", we'll use a dynamic gold/orange glow
+    // 30+ Days: Inferno (Gold + Orange)
     if (streak >= 30) {
         color = '#FFD700'; // Gold
-        shadow = '0 0 20px #FFD700, 0 0 40px #FF4500'; // Gold + Orange glow
+        shadow = '0 0 20px #FFD700, 0 0 40px #FF4500';
         scale = 1.25;
     }
 
+    // Calculate opacity based on streak to show "warming up"
+    const opacity = streak > 0 ? 1 : 0.3;
+
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginLeft: '0.5rem', cursor: 'help' }} title={`${streak} Day Streak!`}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginLeft: '0.5rem', cursor: 'help', opacity }} title={streak > 0 ? `${streak} Day Streak!` : "Start a streak!"}>
             <motion.div
-                animate={{
+                animate={streak >= 3 ? {
                     opacity: [0.8, 1, 0.8],
                     scale: [scale, scale * 1.05, scale],
                     filter: [`drop-shadow(${shadow})`, `drop-shadow(${shadow}) blur(1px)`, `drop-shadow(${shadow})`]
-                }}
+                } : {}}
                 transition={{
                     duration: 1.5,
                     repeat: Infinity,
                     ease: "easeInOut"
                 }}
             >
-                <Flame size={20} color={color} fill={streak >= 30 ? "orange" : "currentColor"} fillOpacity={0.2} />
+                <Flame size={20} color={color} fill={streak >= 30 ? "orange" : "currentColor"} fillOpacity={streak >= 3 ? 0.2 : 0} />
             </motion.div>
 
             <motion.span
@@ -49,7 +55,7 @@ const StreakFlame = ({ streak = 0 }) => {
                     fontSize: '0.9rem',
                     fontWeight: '800',
                     color: color,
-                    textShadow: `0 0 5px ${color}`
+                    textShadow: streak >= 3 ? `0 0 5px ${color}` : 'none'
                 }}
             >
                 {streak}
