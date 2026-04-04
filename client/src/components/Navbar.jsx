@@ -47,71 +47,48 @@ const Navbar = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '0.6rem 0.8rem', // Compact padding
-                backgroundColor: '#1a1a1a',
-                borderBottom: '1px solid #222',
+                padding: '0.8rem 0',
                 color: '#fff',
                 textDecoration: 'none',
-                fontSize: '0.85rem', // Compact font size
-                transition: 'background-color 0.2s'
+                fontFamily: 'var(--font-display, Outfit, sans-serif)',
+                fontWeight: '900',
+                fontSize: '1.4rem',
+                textTransform: 'uppercase',
+                transition: 'color 0.2s',
+                width: '100%'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#222'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#1a1a1a'}
+            onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--color-neon-green)';
+                e.currentTarget.children[0].children[0].style.color = 'var(--color-neon-green)';
+                e.currentTarget.children[1].style.color = 'var(--color-neon-green)';
+            }}
+            onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#fff';
+                e.currentTarget.children[0].children[0].style.color = '#888';
+                e.currentTarget.children[1].style.color = '#444';
+            }}
         >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                <Icon size={16} color="#888" />
-                <span style={{ fontWeight: '500' }}>{label}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <Icon size={24} color="#888" strokeWidth={2.5} style={{ transition: 'color 0.2s' }} />
+                <span>{label}</span>
             </div>
-            <ChevronRight size={14} color="#444" />
+            <ChevronRight size={20} color="#444" strokeWidth={3} style={{ transition: 'color 0.2s' }} />
         </Link>
     );
 
-    const MenuSection = ({ title, children }) => (
-        <div style={{ width: '100%', marginBottom: '0.8rem' }}> {/* Reduced margin */}
-            <h4 style={{
-                padding: '0 0.8rem 0.4rem',
-                color: '#666',
-                fontSize: '0.7rem',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '1px'
-            }}>
-                {title}
-            </h4>
-            <div style={{
-                borderRadius: '8px', // Slightly smaller radius
-                overflow: 'hidden',
-                border: '1px solid #222'
-            }}>
-                {children}
-            </div>
-        </div>
-    );
-
     const NavLinks = () => (
-        <div style={{ width: '100%', padding: '0 0.5rem' }}> {/* Removed scroll container */}
-            <MenuSection title="Main">
-                <NavItem to="/" icon={Flame} label="Homepage" onClick={closeMenu} />
-                <NavItem to="/dashboard" icon={Activity} label="Dashboard" onClick={closeMenu} />
-                <NavItem to="/academy" icon={BookOpen} label="Academy" onClick={closeMenu} />
-            </MenuSection>
+        <div style={{ 
+            width: '100%', 
+            padding: '0 1rem', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '0.5rem' 
+        }}>
+            <NavItem to="/dashboard" icon={Activity} label="Dashboard" onClick={closeMenu} />
+            <NavItem to="/schedule" icon={Calendar} label="Schedule" onClick={closeMenu} />
+            <NavItem to="/profile" icon={User} label="Profile" onClick={closeMenu} />
+            <NavItem to="/settings" icon={SettingsIcon} label="Settings" onClick={closeMenu} />
 
-            <MenuSection title="Training">
-                <NavItem to="/schedule" icon={Calendar} label="Schedule" onClick={closeMenu} />
-                <NavItem to="/history" icon={Timer} label="History" onClick={closeMenu} />
-                <NavItem to="/leaderboard" icon={Trophy} label="Leaderboard" onClick={closeMenu} />
-            </MenuSection>
-
-            <MenuSection title="System">
-                <NavItem to="/profile" icon={User} label="Profile" onClick={closeMenu} />
-                <NavItem to="/settings" icon={SettingsIcon} label="Settings" onClick={closeMenu} />
-            </MenuSection>
-
-            <MenuSection title="Support">
-                <NavItem to="/help" icon={HelpCircle} label="Help Center" onClick={closeMenu} />
-                <NavItem to="/contact" icon={Mail} label="Contact Us" onClick={closeMenu} />
-                <NavItem to="/privacy" icon={Shield} label="Privacy Policy" onClick={closeMenu} />
-            </MenuSection>
 
             {user ? (
                 <button
@@ -120,13 +97,16 @@ const Navbar = () => {
                         width: '100%',
                         padding: '1rem',
                         marginTop: '1rem',
-                        borderRadius: '12px',
-                        backgroundColor: 'rgba(255, 50, 50, 0.1)',
+                        backgroundColor: 'transparent',
                         color: '#ff4444',
-                        border: '1px solid rgba(255, 50, 50, 0.2)',
-                        fontWeight: '600',
-                        fontSize: '0.95rem',
-                        cursor: 'pointer'
+                        border: '2px solid #ff4444',
+                        fontWeight: '900',
+                        fontSize: '1.2rem',
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-display, Outfit, sans-serif)',
+                        textTransform: 'uppercase',
+                        borderRadius: 0,
+                        boxShadow: '4px 4px 0px #ff4444'
                     }}
                 >
                     Log Out
@@ -135,18 +115,14 @@ const Navbar = () => {
                 <Link
                     to="/auth"
                     onClick={closeMenu}
+                    className="button-51"
                     style={{
                         display: 'block',
                         width: '100%',
-                        padding: '1rem',
-                        marginTop: '1rem',
-                        borderRadius: '12px',
-                        backgroundColor: 'var(--color-neon-green)',
-                        color: '#000',
                         textAlign: 'center',
                         textDecoration: 'none',
-                        fontWeight: '700',
-                        fontSize: '1rem'
+                        marginTop: '1.5rem',
+                        marginBottom: '1rem'
                     }}
                 >
                     JOIN GYMBRO
@@ -248,12 +224,27 @@ const Navbar = () => {
                             exit={{ opacity: 0, x: '100%' }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
                             className="mobile-menu-overlay"
+                            style={{ 
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                backgroundColor: '#0a0a0a' 
+                            }}
                         >
-                            <button className="close-menu-btn" onClick={closeMenu}>
-                                <X size={32} color="#fff" />
-                            </button>
-                            <div className="mobile-menu-content">
-                                <h2 style={{ marginBottom: '2rem', color: 'var(--color-neon-green)' }}>MENU</h2>
+                            <div style={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between', 
+                                alignItems: 'center', 
+                                width: '100%', 
+                                marginBottom: '2.5rem',
+                                padding: '0 1rem'
+                            }}>
+                                <h2 style={{ color: 'var(--color-neon-green)', margin: 0, fontSize: '2.5rem', fontFamily: 'var(--font-display)', letterSpacing: '2px' }}>MENU</h2>
+                                <button onClick={closeMenu} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                                    <X size={36} color="#fff" strokeWidth={3} style={{ transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-neon-green)'} onMouseLeave={(e) => e.currentTarget.style.color = '#fff'} />
+                                </button>
+                            </div>
+                            
+                            <div className="mobile-menu-content" style={{ overflowY: 'auto', flex: 1, paddingBottom: '2rem' }}>
                                 <NavLinks />
                             </div>
                         </motion.div>

@@ -10,11 +10,14 @@ import sys
 import time
 import uuid
 import json
+import cv2
+import numpy as np
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from openai import OpenAI
+import mediapipe as mp
 
 load_dotenv()
 
@@ -87,6 +90,12 @@ class UserSettings(BaseModel):
     units: str
     notifications: bool
 
+class UserProfile(BaseModel):
+    user_id: str
+    height_cm: float = 175.0
+    weight_kg: float = 70.0
+    age: int = 25
+
 # ============ ROUTES ============
 @app.get("/")
 async def root_path():
@@ -106,7 +115,9 @@ async def root():
 async def analyze_video(
     request: Request,
     file: UploadFile = File(...),
-    exercise_type: str = Form("squat")
+    exercise_type: str = Form("squat"),
+    user_height: Optional[float] = Form(None),
+    user_weight: Optional[float] = Form(None),
 ):
     try:
         file_id = str(uuid.uuid4())[:8]
@@ -158,6 +169,21 @@ async def analyze_video(
         if "error" in analysis_result:
             raise HTTPException(status_code=500, detail=analysis_result["error"])
 
+        # Transcode the mp4v file into web-friendly H.264
+        try:
+            print("Transcoding video for browser compatibility...")
+            from moviepy.editor import VideoFileClip
+            temp_path = output_path.replace(".mp4", "_temp.mp4")
+            clip = VideoFileClip(output_path)
+            # OpenCV sometimes fails to write metadata, causing clip.fps to be None
+            target_fps = clip.fps if clip.fps else 30
+            clip.write_videofile(temp_path, codec="libx264", audio=False, fps=target_fps, logger=None)
+            clip.close()
+            os.replace(temp_path, output_path)
+            print("Transcoding complete.")
+        except Exception as tc_err:
+            print(f"Warning: Transcoding failed. Video may not play in browser. Error: {tc_err}")
+
         base_url = str(request.base_url).rstrip('/')
         return {
             "status": "success",
@@ -181,6 +207,92 @@ async def download_file(filename: str):
     if os.path.exists(file_path):
         return FileResponse(file_path, media_type="video/mp4", filename=filename)
     raise HTTPException(status_code=404, detail="File not found")
+
+# ============ CALIBRATION & USER PROFILE ============
+@app.post("/api/calibrate")
+async def calibrate_user(file: UploadFile = File(...)):
+    """
+    Accept a single T-pose image, extract body proportions, return CalibrationProfile.
+    """
+    try:
+        from core.calibration import extract_proportions_from_tpose, CalibrationProfile
+
+        file_id = str(uuid.uuid4())[:8]
+        file_path = os.path.join(UPLOAD_DIR, f"tpose_{file_id}_{file.filename}")
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        # Read image and run pose detection
+        image = cv2.imread(file_path)
+        if image is None:
+            raise HTTPException(status_code=400, detail="Cannot read image file")
+
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        mp_pose = mp.solutions.pose
+        with mp_pose.Pose(
+            static_image_mode=True,
+            min_detection_confidence=0.5,
+            model_complexity=2,
+        ) as pose:
+            results = pose.process(image_rgb)
+
+        if not results.pose_landmarks:
+            raise HTTPException(status_code=422, detail="No pose detected in T-pose image. Ensure full body is visible.")
+
+        profile = extract_proportions_from_tpose(results.pose_landmarks.landmark)
+
+        # Cleanup
+        try:
+            os.remove(file_path)
+        except:
+            pass
+
+        return {"status": "success", "calibration_profile": profile.to_dict()}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        raise HTTPException(status_code=500, detail=f"Calibration failed: {str(e)}")
+
+
+@app.post("/api/user-profile")
+async def save_user_profile(profile: UserProfile):
+    """
+    Store user height/weight/age. Returns CalibrationProfile derived from anthropometrics.
+    """
+    try:
+        from core.calibration import CalibrationProfile
+
+        cal_profile = CalibrationProfile(
+            height_cm=profile.height_cm,
+            weight_kg=profile.weight_kg,
+            age=profile.age,
+        )
+
+        # Optionally persist to Supabase
+        if supabase:
+            try:
+                payload = {
+                    "user_id": profile.user_id,
+                    "height_cm": profile.height_cm,
+                    "weight_kg": profile.weight_kg,
+                    "age": profile.age,
+                    "bmi": cal_profile.bmi,
+                    "updated_at": "now()",
+                }
+                supabase.table("user_profiles").upsert(payload).execute()
+            except Exception as db_err:
+                print(f"DB save warning (non-fatal): {db_err}")
+
+        return {
+            "status": "success",
+            "calibration_profile": cal_profile.to_dict(),
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ============ COACHING CHAT ============
 SYSTEM_PROMPT = """You are GYMBRO, an expert fitness coach with deep knowledge of:

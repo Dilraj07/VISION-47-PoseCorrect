@@ -8,7 +8,7 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 
 // Component to render the preview stream
-const VideoPreview = ({ stream }) => {
+const VideoPreview = ({ stream, streamError }) => {
     const videoRef = useRef(null);
 
     useEffect(() => {
@@ -17,11 +17,37 @@ const VideoPreview = ({ stream }) => {
         }
     }, [stream]);
 
-    if (!stream) {
-        return <div style={{ color: '#666', marginTop: '2rem' }}>Waiting for camera permission...</div>;
+    if (streamError) {
+        return (
+            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-neon-pink)', padding: '2rem', textAlign: 'center' }}>
+                <h3 style={{ fontFamily: 'Anton, sans-serif', fontSize: '2.5rem' }}>HARDWARE REJECTED</h3>
+                <p style={{ fontFamily: 'Outfit, sans-serif', fontSize: '1.2rem', marginBottom: '1rem' }}>The browser or OS rejected the camera request.</p>
+                <div style={{ backgroundColor: '#222', padding: '1rem', border: '1px solid #555', color: '#fff', fontFamily: 'monospace' }}>
+                    ERROR: {streamError}
+                </div>
+                <p style={{ fontFamily: 'Outfit, sans-serif', marginTop: '2rem', color: '#aaa', maxWidth: '600px' }}>
+                    <strong>Common Fixes:</strong><br/>
+                    1. Check the URL bar for a strict "Blocked Camera" icon and allow it.<br/>
+                    2. Check if another app (Zoom, OBS) is currently using the camera.<br/>
+                    3. Unplug and replug your USB webcam.
+                </p>
+            </div>
+        );
     }
 
-    return <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} autoPlay muted />;
+    if (!stream) {
+        if (!navigator.mediaDevices) {
+            return (
+                <div style={{ position: 'relative', width: '100%', height: '100%', color: 'var(--color-neon-pink)', marginTop: '2rem', textAlign: 'center', padding: '2rem' }}>
+                    <h3 style={{ fontFamily: 'Anton, sans-serif', fontSize: '2rem' }}>CAMERA BLOCKED</h3>
+                    <p style={{ fontFamily: 'Outfit, sans-serif' }}>Your browser is blocking the camera because this device is not on a secure connection.<br/><br/>You MUST use <strong>http://localhost:5173</strong> or an <strong>https://</strong> URL.</p>
+                </div>
+            );
+        }
+        return <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666', marginTop: '2rem' }}>Waiting for camera permission...</div>;
+    }
+
+    return <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} autoPlay muted playsInline />;
 };
 
 // Pro Visual Components
@@ -63,8 +89,42 @@ const RealTimeCoach = () => {
     const [recordTime, setRecordTime] = useState(60);
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
+    const [localStream, setLocalStream] = useState(null);
+    const [streamError, setStreamError] = useState(null);
 
-    const { status, startRecording, stopRecording, mediaBlobUrl, previewStream } = useReactMediaRecorder({ video: true, audio: false });
+    // Secure context check
+    const isSecureContext = window.isSecureContext || navigator.mediaDevices !== undefined;
+
+    // Explicitly request camera permissions to bypass hook deadlock
+    useEffect(() => {
+        let activeStream = null;
+        async function initCamera() {
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    activeStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    setLocalStream(activeStream);
+                } else {
+                    setStreamError("navigator.mediaDevices is undefined");
+                }
+            } catch (err) {
+                console.error("Camera access denied or unavailable:", err);
+                setStreamError(err.name || err.message || "Unknown hardware error");
+            }
+        }
+        initCamera();
+
+        return () => {
+            if (activeStream) {
+                activeStream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
+
+    const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ 
+        video: true, 
+        audio: false,
+        customMediaStream: localStream 
+    });
 
     // Countdown Logic
     useEffect(() => {
@@ -258,7 +318,7 @@ const RealTimeCoach = () => {
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     {step === 'recording' && (
                         <div style={{
-                            color: 'var(--color-neon-pink)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            color: 'var(--color-neon-pink)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative',
                             padding: '0.5rem 1rem', border: '1px solid var(--color-neon-pink)', backgroundColor: 'rgba(255, 0, 153, 0.1)'
                         }}>
                             <motion.div
@@ -384,14 +444,14 @@ const RealTimeCoach = () => {
                             </div>
                         ) : (
                             <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-                                <VideoPreview stream={previewStream} />
+                                <VideoPreview stream={localStream} streamError={streamError} />
                                 {step === 'recording' && <ScanLine />}
                                 <CornerReticles />
 
                                 {/* Overlay UI */}
                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none' }}>
                                     {step === 'countdown' && (
-                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', position: 'relative' }}>
                                             <motion.div
                                                 key={countdown}
                                                 initial={{ scale: 0.5, opacity: 0 }}

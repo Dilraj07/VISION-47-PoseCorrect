@@ -1,9 +1,5 @@
-Error: cannot access local variable 'in_squat' where it is not associated with a value
+Error: 500: must be real number, not NoneType
 Traceback (most recent call last):
-  File "C:\Users\Dillu\Desktop\EL\Vision47\VISION-47-PoseCorrect\server\main.py", line 127, in analyze_video
-    analysis_result = analyze_squat_video(file_path, output_path)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dillu\Desktop\EL\Vision47\VISION-47-PoseCorrect\server\core\squat_analyzer.py", line 179, in analyze_squat_video
-    if not in_squat and angles['left_knee'] < 165:
-           ^^^^^^^^
-UnboundLocalError: cannot access local variable 'in_squat' where it is not associated with a value
+  File "C:\Users\Dillu\Desktop\EL\Vision47\VISION-47-PoseCorrect\server\main.py", line 170, in analyze_video
+    raise HTTPException(status_code=500, detail=analysis_result["error"])
+fastapi.exceptions.HTTPException: 500: must be real number, not NoneType

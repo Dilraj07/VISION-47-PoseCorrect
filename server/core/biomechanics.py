@@ -105,3 +105,45 @@ def get_exercise_angles(exercise_name):
 
 def get_exercise_errors(exercise_name):
     return {}
+
+import collections
+
+class TemporalSmoother:
+    """Smooths landmark coordinates over time to reduce jitter using Exponential Moving Average."""
+    def __init__(self, alpha=0.5, history_size=5):
+        self.alpha = alpha
+        self.history = collections.deque(maxlen=history_size)
+        self.last_smoothed = None
+
+    def smooth(self, current_landmarks):
+        if self.last_smoothed is None:
+            self.last_smoothed = current_landmarks
+            return current_landmarks
+        
+        smoothed = {}
+        for k, v in current_landmarks.items():
+            # If the value exists in both current and previous, smooth it
+            if v is not None and k in self.last_smoothed and self.last_smoothed[k] is not None:
+                # Expecting (x, y) tuple
+                sx = int(self.alpha * v[0] + (1 - self.alpha) * self.last_smoothed[k][0])
+                sy = int(self.alpha * v[1] + (1 - self.alpha) * self.last_smoothed[k][1])
+                smoothed[k] = (sx, sy)
+            else:
+                smoothed[k] = v
+                
+        self.last_smoothed = smoothed
+        return smoothed
+
+class PersonalizedThresholds:
+    """Factory to adjust and provide exercise thresholds based on user physique."""
+    def __init__(self, height_cm=175.0, weight_kg=70.0):
+        self.height = height_cm
+        self.weight = weight_kg
+        self.scale_factor = height_cm / 175.0 # For spatial pixel constraints later
+
+    def get_exercise_angles(self, exercise_name):
+        # We can dynamically influence ideal joint angles based on biomechanics,
+        # but for now, serve the standard baseline angles.
+        base_angles = EXERCISE_BIOMECHANICS.get(exercise_name, {}).get("ideal_angles", {})
+        return base_angles
+
