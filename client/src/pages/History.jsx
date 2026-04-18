@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { getWorkouts } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { Calendar, Activity, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const History = () => {
-    const { user } = useAuth();
+    const { user, getToken } = useAuth();
     const navigate = useNavigate();
     const [workouts, setWorkouts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,17 +18,14 @@ const History = () => {
         }
 
         const fetchWorkouts = async () => {
-            const { data, error } = await supabase
-                .from('workouts')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) {
+            try {
+                const data = await getWorkouts(getToken);
+                setWorkouts(data.workouts || []);
+            } catch (error) {
                 console.error('Error fetching workouts:', error);
-            } else {
-                setWorkouts(data || []);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         fetchWorkouts();

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { API_URL } from '../lib/config';
+import { getStats } from '../lib/api';
 
 
 const exerciseCategories = [
@@ -274,7 +274,7 @@ const SkeletonStrip = () => (
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, getToken } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [hoveredId, setHoveredId] = useState(null);
     const [selectedExercise, setSelectedExercise] = useState(null);
@@ -290,18 +290,10 @@ const Dashboard = () => {
 
             if (user) {
                 try {
-                    const res = await fetch(`${API_URL}/api/stats/${user.id}`);
-                    const data = await res.json();
-                    // Transformation logic could go here, for now use raw or empty
-                    // transformStats(data);
-                    // Mock data for visual pop if empty
-                    setUserStats({
-                        legs: 0.1,
-                        arms: 0.1,
-                        chest: 0.1,
-                        abs: 0.1,
-                        shoulders: 0.1
-                    });
+                    const data = await getStats(getToken);
+                    if (data) {
+                        setUserStats(data);
+                    }
                 } catch (e) {
                     console.error("Failed to load stats", e);
                 }
@@ -421,8 +413,15 @@ const Dashboard = () => {
             {/* Header */}
             <header className="dashboard-header" style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid #222' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                    {/* Back Button Removed for Seamless Flow */}
-                    <div /> {/* Spacer to keep layout if needed, or just empty */}
+                    <button
+                        onClick={() => navigate('/')}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',
+                            background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 'bold'
+                        }}
+                    >
+                        <ArrowLeft size={20} /> EXIT
+                    </button>
 
                     <button
                         onClick={() => navigate('/schedule')}

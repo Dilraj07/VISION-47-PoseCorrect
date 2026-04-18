@@ -73,7 +73,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Settings = () => {
     const navigate = useNavigate();
-    const { user, loginDemo, signOut } = useAuth();
+    const { user, signOut } = useAuth();
     const [notifications, setNotifications] = useState(true);
     const [units, setUnits] = useState('imperial'); // imperial | metric
     const [theme, setTheme] = useState('dark');
@@ -130,16 +130,7 @@ const Settings = () => {
 
                 {/* App Preferences */}
                 <SettingsSection title="Preferences">
-                    <SettingsItem
-                        icon={Smartphone}
-                        label="Demo / Ghost Mode"
-                        type="toggle"
-                        value={user?.isDemo || false}
-                        onClick={() => {
-                            if (user?.isDemo) signOut();
-                            else loginDemo();
-                        }}
-                    />
+                    {/* Demo mode removed */}
                     <SettingsItem
                         icon={Bell}
                         label="Push Notifications"
@@ -184,12 +175,12 @@ const Settings = () => {
                         label="Log Out"
                         type="arrow"
                         danger={true}
-                        onClick={() => navigate('/')}
+                        onClick={() => { signOut(); navigate('/'); }}
                     />
                 </SettingsSection>
 
                 <div style={{ textAlign: 'center', marginTop: '2rem', color: '#444', fontSize: '0.8rem' }}>
-                    User ID: 8f92-3a1b-4c5d<br />
+                    User ID: {user?.id || 'N/A'}<br />
                     © 2024 GYMBRO Inc.
                 </div>
 

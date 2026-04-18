@@ -1,5 +1,0 @@
-Error: 500: must be real number, not NoneType
-Traceback (most recent call last):
-  File "C:\Users\Dillu\Desktop\EL\Vision47\VISION-47-PoseCorrect\server\main.py", line 170, in analyze_video
-    raise HTTPException(status_code=500, detail=analysis_result["error"])
-fastapi.exceptions.HTTPException: 500: must be real number, not NoneType

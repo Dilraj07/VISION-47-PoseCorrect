@@ -106,7 +106,9 @@ def analyze_shoulder_press_video(video_path, output_path=None):
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened(): return {"error": "Cannot open video"}
 
-    fps = cap.get(cv2.CAP_PROP_FPS) or 30
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    if not fps or fps <= 0 or fps > 120:
+        fps = 30.0
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))

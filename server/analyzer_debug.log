@@ -1,70 +1,9 @@
-[2026-01-06 15:21:57.936610] Starting analysis for uploads\55f8e45f_squat.mp4
-[2026-01-06 15:21:58.375275] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 15:21:58.592104] Entering frame loop
-[2026-01-06 15:23:09.975690] Writing output video to outputs\analyzed_55f8e45f.mp4 with 491 frames
-[2026-01-06 15:23:13.384774] Video writing complete
-[2026-01-06 15:29:08.199769] Starting analysis for uploads\425aea14_squat.mp4
-[2026-01-06 15:29:08.314043] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 15:29:08.403068] Entering frame loop
-[2026-01-06 15:30:19.894910] Writing output video to outputs\analyzed_425aea14.mp4 with 491 frames
-[2026-01-06 15:30:28.282603] Video writing complete
-[2026-01-06 15:41:44.173207] Starting analysis for uploads\d0fc9187_squat.mp4
-[2026-01-06 15:41:44.299315] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 15:41:44.378984] Entering frame loop
-[2026-01-06 15:45:57.922830] Starting analysis for uploads\36f52e57_squat.mp4
-[2026-01-06 15:45:58.030453] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 15:45:58.201058] Entering frame loop
-[2026-01-06 15:49:46.004634] Starting analysis for uploads\efbd04ca_squat.mp4
-[2026-01-06 15:49:46.199931] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 15:49:46.396667] Entering frame loop
-[2026-01-06 15:58:45.866984] Starting analysis for uploads\b45a3144_squat.mp4
-[2026-01-06 15:58:46.175213] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 15:58:47.845540] Entering frame loop
-[2026-01-06 16:09:19.367742] Starting analysis for uploads\a1384cfc_squat.mp4
-[2026-01-06 16:09:19.726874] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 16:09:19.982303] Entering frame loop
-[2026-01-06 16:19:36.485811] Starting analysis for uploads\078e97cc_squat.mp4
-[2026-01-06 16:19:36.699396] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 16:19:37.774485] Entering frame loop
-[2026-01-06 16:23:59.756792] Starting analysis for uploads\e5974c79_squat.mp4
-[2026-01-06 16:24:00.092951] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 16:24:02.030301] Entering frame loop
-[2026-01-06 16:41:21.184481] Starting analysis for uploads\2b5d487d_squat.mp4
-[2026-01-06 16:41:21.578888] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 16:41:23.395072] Entering frame loop
-[2026-01-06 16:58:57.354746] Starting analysis for uploads\fbcd0d38_squat.mp4
-[2026-01-06 16:58:57.449476] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 16:58:57.829353] Entering frame loop
-[2026-01-06 17:04:30.906341] Starting analysis for uploads\4a66805a_squat.mp4
-[2026-01-06 17:04:30.923348] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 17:04:31.036115] Entering frame loop
-[2026-01-06 17:07:01.364741] Starting analysis for uploads\18db5bce_squat.mp4
-[2026-01-06 17:07:01.415739] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-01-06 17:07:01.772760] Entering frame loop
-[2026-04-04 23:05:16.733207] Starting analysis for uploads\717bba05_sample_squat.mp4
-[2026-04-04 23:05:17.440509] Video Info: 1280x720 @ 24.0fps, 361 frames
-[2026-04-04 23:05:17.576506] Entering frame loop
-[2026-04-04 23:07:14.065664] Starting analysis for c:\Users\Dillu\Desktop\EL\Vision47\VISION-47-PoseCorrect\sample_squat.mp4
-[2026-04-04 23:07:14.271035] Video Info: 1280x720 @ 24.0fps, 361 frames
-[2026-04-04 23:07:14.305886] Entering frame loop
-[2026-04-04 23:10:28.162240] Starting analysis for c:\Users\Dillu\Desktop\EL\Vision47\VISION-47-PoseCorrect\sample_squat.mp4
-[2026-04-04 23:10:28.329255] Video Info: 1280x720 @ 24.0fps, 361 frames
-[2026-04-04 23:10:28.382458] Entering frame loop
-[2026-04-04 23:12:00.840145] Starting analysis for c:\Users\Dillu\Desktop\EL\Vision47\VISION-47-PoseCorrect\test_squat_video.mp4
-[2026-04-04 23:12:00.856701] Video Info: 640x480 @ 30.0fps, 300 frames
-[2026-04-04 23:12:00.884366] Entering frame loop
-[2026-04-04 23:19:32.020167] Starting analysis for C:\Users\Dillu\Desktop\EL\Vision47\VISION-47-PoseCorrect\uploads\2d27cce7_squat.mp4
-[2026-04-04 23:19:32.223107] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-04-04 23:19:32.281606] Entering frame loop
-[2026-04-05 00:00:13.129441] Starting analysis for uploads\3c6d0a3b_recorded_video.webm
-[2026-04-05 00:00:13.370292] Video Info: 640x480 @ 1000.0fps, 6679 frames
-[2026-04-05 00:00:13.497832] Entering frame loop
-[2026-04-05 00:01:19.196551] Starting analysis for uploads\5f0a3f70_f641e11e_squat.mp4
-[2026-04-05 00:01:19.252358] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-04-05 00:01:19.294186] Entering frame loop
-[2026-04-05 00:07:28.481019] Starting analysis for uploads\e418401e_f641e11e_squat.mp4
-[2026-04-05 00:07:28.530870] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-04-05 00:07:28.567843] Entering frame loop
-[2026-04-05 00:11:17.577165] Starting analysis for uploads\bb231b11_f641e11e_squat.mp4
-[2026-04-05 00:11:17.603706] Video Info: 480x848 @ 30.0fps, 491 frames
-[2026-04-05 00:11:17.654134] Entering frame loop
+[2026-04-18 15:24:27.927029] Starting analysis for uploads\98bc4bb3_squat.mp4
+[2026-04-18 15:24:28.431736] Video Info: 480x848 @ 30.0fps, 491 frames
+[2026-04-18 15:24:28.613307] Entering frame loop
+[2026-04-18 15:28:20.506295] Starting analysis for uploads\15138e02_recorded_video.webm
+[2026-04-18 15:28:20.652877] Video Info: 640x480 @ 1000.0fps, 6368 frames
+[2026-04-18 15:28:20.747957] Entering frame loop
+[2026-04-18 15:34:08.274278] Starting analysis for uploads\bc9f0386_recorded_video.webm
+[2026-04-18 15:34:08.638030] Video Info: 640x480 @ 1000.0fps, 5183 frames
+[2026-04-18 15:34:09.776076] Entering frame loop

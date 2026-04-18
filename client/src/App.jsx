@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { SignedIn, SignedOut, RedirectToSignIn, SignIn, SignUp } from '@clerk/clerk-react';
 import { AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
-import MusicFlow from './components/MusicFlow'; // Import MusicFlow
+import MusicFlow from './components/MusicFlow';
 import { AudioProvider, useAudio } from './context/AudioContext';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
@@ -13,15 +14,33 @@ import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import Help from './pages/Help';
 import Navbar from './components/Navbar';
-import Auth from './pages/Auth';
 import History from './pages/History';
 import Profile from './pages/Profile';
-import Leaderboard from './pages/Leaderboard';
 import Schedule from './pages/Schedule';
-import Onboarding from './pages/Onboarding';
 import Settings from './pages/Settings';
-import Academy from './pages/Academy';
 import { AuthProvider } from './context/AuthContext';
+
+const ProtectedRoute = ({ children }) => {
+  return (
+    <>
+      <SignedIn>
+        {children}
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
+  );
+};
+
+const ProtectedLayout = ({ children, hideNavbar = false }) => {
+  return (
+    <ProtectedRoute>
+      {!hideNavbar && <Navbar />}
+      {children}
+    </ProtectedRoute>
+  );
+}
 
 const AppContent = () => {
   const { play, toggleMute, isMuted, isLoading } = useAudio();
@@ -33,24 +52,27 @@ const AppContent = () => {
 
   return (
     <>
-      <MusicFlow /> {/* Persistent Music Control */}
+      <MusicFlow />
       <Routes>
         <Route path="/" element={<><Navbar /><LandingPage onStart={handleStart} /></>} />
         <Route path="/about" element={<><Navbar /><About /></>} />
         <Route path="/contact" element={<><Navbar /><Contact /></>} />
         <Route path="/privacy" element={<><Navbar /><Privacy /></>} />
         <Route path="/help" element={<><Navbar /><Help /></>} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/coach" element={<RealTimeCoach />} />
-        <Route path="/upload" element={<VideoAnalysis />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/history" element={<><Navbar /><History /></>} />
-        <Route path="/profile" element={<><Navbar /><Profile /></>} />
-        <Route path="/leaderboard" element={<><Navbar /><Leaderboard /></>} />
-        <Route path="/schedule" element={<Schedule />} />
-        <Route path="/academy" element={<><Navbar /><Academy /></>} />
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/settings" element={<Settings />} />
+        
+        {/* Auth routes */}
+        <Route path="/sign-in/*" element={<div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#000'}}><SignIn routing="path" path="/sign-in" /></div>} />
+        <Route path="/sign-up/*" element={<div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#000'}}><SignUp routing="path" path="/sign-up" /></div>} />
+        <Route path="/auth" element={<div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#000'}}><SignIn routing="path" path="/auth" signUpUrl="/sign-up" /></div>} />
+
+        {/* Protected routes */}
+        <Route path="/dashboard" element={<ProtectedLayout hideNavbar><Dashboard /></ProtectedLayout>} />
+        <Route path="/coach" element={<ProtectedLayout hideNavbar><RealTimeCoach /></ProtectedLayout>} />
+        <Route path="/upload" element={<ProtectedLayout hideNavbar><VideoAnalysis /></ProtectedLayout>} />
+        <Route path="/history" element={<ProtectedLayout><History /></ProtectedLayout>} />
+        <Route path="/profile" element={<ProtectedLayout><Profile /></ProtectedLayout>} />
+        <Route path="/schedule" element={<ProtectedLayout hideNavbar><Schedule /></ProtectedLayout>} />
+        <Route path="/settings" element={<ProtectedLayout hideNavbar><Settings /></ProtectedLayout>} />
       </Routes>
     </>
   );

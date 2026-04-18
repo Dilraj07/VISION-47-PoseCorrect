@@ -4,36 +4,58 @@ import { useAuth } from '../context/AuthContext';
 import { useAudio } from '../context/AudioContext';
 import { Dumbbell, X, Activity, Flame, Timer, User, BookOpen, Calendar, Trophy, Settings as SettingsIcon, ChevronRight, HelpCircle, Mail, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../lib/supabaseClient';
+import { getWorkouts } from '../lib/api';
 import StreakFlame from './StreakFlame';
 
 const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];
 const Navbar = () => {
     const navigate = useNavigate();
-    const { user, signOut } = useAuth();
+    const { user, signOut, getToken } = useAuth();
     const { isPlaying, isMuted, toggleMute } = useAudio();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [initials, setInitials] = useState('');
-    const [streak] = useState(12); // Mock Streak
+    const [streak, setStreak] = useState(0);
 
     useEffect(() => {
-        const getProfile = async () => {
-            if (user) {
-                const { data } = await supabase
-                    .from('profiles')
-                    .select('full_name')
-                    .eq('id', user.id)
-                    .single();
-
-                if (data?.full_name) {
-                    setInitials(data.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase());
+        if (user && user.fullName) {
+            setInitials(user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase());
+            
+            // Calculate actual streak based on history
+            getWorkouts(getToken).then(data => {
+                const workouts = data.workouts || [];
+                if (workouts.length === 0) {
+                    setStreak(0);
+                    return;
                 }
-            } else {
-                setInitials('');
-            }
-        };
-        getProfile();
-    }, [user]);
+                
+                const uniqueDates = [...new Set(workouts.map(w => new Date(w.created_at || w.createdAt).toLocaleDateString()))]
+                    .sort((a,b) => new Date(b) - new Date(a));
+                
+                let currentStreak = 0;
+                const today = new Date().toLocaleDateString();
+                const yesterday = new Date(Date.now() - 86400000).toLocaleDateString();
+                
+                if (uniqueDates[0] === today || uniqueDates[0] === yesterday) {
+                    currentStreak = 1;
+                    let lastDateStr = uniqueDates[0];
+                    for (let i = 1; i < uniqueDates.length; i++) {
+                        const expectedPrevDay = new Date(new Date(lastDateStr).getTime() - 86400000).toLocaleDateString();
+                        if (uniqueDates[i] === expectedPrevDay) {
+                            currentStreak++;
+                            lastDateStr = uniqueDates[i];
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                setStreak(currentStreak);
+            }).catch(err => console.error("Streak error:", err));
+            
+        } else {
+            setInitials('');
+            setStreak(0);
+        }
+    }, [user, getToken]);
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMenu = () => setIsMobileMenuOpen(false);

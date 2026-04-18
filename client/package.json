@@ -13,10 +13,10 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.61.5",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@react-three/postprocessing": "^3.0.4",
-    "@supabase/supabase-js": "^2.87.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.25",
     "lucide-react": "^0.556.0",

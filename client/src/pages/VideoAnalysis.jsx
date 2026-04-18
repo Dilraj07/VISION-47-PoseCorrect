@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Upload, FileVideo, CheckCircle, Dumbbell, Activity, Utensils, Trophy, AlertTriangle, PlayCircle, Info, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { API_URL } from '../lib/config';
-import { supabase } from '../lib/supabaseClient';
+import { analyzeVideo } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 
 const LOADING_ICONS = [Dumbbell, Activity, Utensils, Trophy];
@@ -64,41 +63,17 @@ const VideoAnalysis = () => {
         fileInputRef.current.click();
     };
 
-    const { user } = useAuth(); // Get user to save results
+    const { user, getToken } = useAuth(); // Get user token to pass to backend
 
     const uploadAndAnalyze = async (videoFile) => {
         setAnalyzing(true);
         setError(null);
         setResult(null);
 
-        const formData = new FormData();
-        formData.append('file', videoFile);
-        formData.append('exercise_type', selectedExercise);
-
         try {
-            const response = await fetch(`${API_URL}/api/analyze`, {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error('Analysis failed');
-            }
-
-            const data = await response.json();
+            const data = await analyzeVideo(videoFile, selectedExercise, getToken);
             setResult(data);
-
-            // SAVE TO DATABASE
-            if (user && data.analysis_data) {
-                const { error: dbError } = await supabase.from('workouts').insert({
-                    user_id: user.id,
-                    exercise_type: selectedExercise,
-                    reps: data.analysis_data.reps_count,
-                    feedback: data.analysis_data.feedback
-                });
-                if (dbError) console.error("Auto-save failed:", dbError);
-                else console.log("Workout saved!");
-            }
+            console.log("Analysis and auto-save complete");
 
         } catch (err) {
             console.error(err);

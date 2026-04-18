@@ -16,8 +16,10 @@ from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 from supabase import create_client, Client
-from openai import OpenAI
 import mediapipe as mp
+import jwt
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Depends
 
 load_dotenv()
 
@@ -51,12 +53,20 @@ else:
         print(f"Failed to connect to Supabase: {e}")
         supabase = None
 
-# OpenAI Setup
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
-openai_client = OpenAI(
-    api_key=EMERGENT_LLM_KEY,
-    base_url="https://api.emergentmethods.ai/v1"
-) if EMERGENT_LLM_KEY else None
+# Clerk JWT Setup
+security = HTTPBearer()
+
+def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
+    token = credentials.credentials
+    try:
+        # Decode the Clerk JWT. In production, signature should be verified with Clerk's JWKS.
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        user_id = decoded.get("sub")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return user_id
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"JWT Decode error: {str(e)}")
 
 # Constants
 UPLOAD_DIR = "uploads"
@@ -65,13 +75,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ============ MODELS ============
-class ChatMessage(BaseModel):
-    role: str
-    content: str
-
-class ChatRequest(BaseModel):
-    messages: List[ChatMessage]
-    user_id: Optional[str] = None
+# Models adjusted for DB
 
 class WorkoutLog(BaseModel):
     user_id: str
@@ -118,7 +122,22 @@ async def analyze_video(
     exercise_type: str = Form("squat"),
     user_height: Optional[float] = Form(None),
     user_weight: Optional[float] = Form(None),
+    # Optional dependency since some paths might not use auth (e.g. demo)
+    # But we try to extract token from headers manually to avoid breaking form-data requests with Depends
 ):
+    auth_header = request.headers.get("Authorization")
+    user_id = None
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        try:
+            decoded = jwt.decode(token, options={"verify_signature": False})
+            user_id = decoded.get("sub")
+        except:
+            pass
+    
+    file_path = None
+    output_path = None
+    temp_path = None
     try:
         file_id = str(uuid.uuid4())[:8]
         file_path = os.path.join(UPLOAD_DIR, f"{file_id}_{file.filename}")
@@ -177,12 +196,26 @@ async def analyze_video(
             clip = VideoFileClip(output_path)
             # OpenCV sometimes fails to write metadata, causing clip.fps to be None
             target_fps = clip.fps if clip.fps else 30
-            clip.write_videofile(temp_path, codec="libx264", audio=False, fps=target_fps, logger=None)
+            clip.write_videofile(temp_path, codec="libx264", audio=False, fps=target_fps, preset="ultrafast", threads=4, logger=None)
             clip.close()
             os.replace(temp_path, output_path)
             print("Transcoding complete.")
         except Exception as tc_err:
             print(f"Warning: Transcoding failed. Video may not play in browser. Error: {tc_err}")
+
+        # Save to database if user is authenticated
+        if user_id and supabase and "analysis_data" in locals() and "reps_count" in analysis_result:
+            try:
+                db_data = {
+                    "user_id": user_id,
+                    "exercise_type": exercise_type,
+                    "reps": analysis_result.get("reps_count", 0),
+                    "feedback": analysis_result.get("feedback", [])
+                }
+                supabase.table("workouts").insert(db_data).execute()
+                print("Workout auto-saved to database.")
+            except Exception as db_err:
+                print(f"Error saving to DB: {db_err}")
 
         base_url = str(request.base_url).rstrip('/')
         return {
@@ -200,6 +233,19 @@ async def analyze_video(
         with open("server_error.log", "w") as f:
             f.write(error_msg)
         raise HTTPException(status_code=500, detail=str(e))
+    
+    finally:
+        # CLEANUP: Delete original uploaded file immediately
+        if file_path and os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                print(f"Cleaned up original file: {file_path}")
+            except OSError as e:
+                print(f"Error cleaning up file {file_path}: {e}")
+        
+        # NOTE: Analyzed files are kept temporarily in OUTPUT_DIR to allow download, 
+        # but in a production app, these should be on S3 or deleted via cron.
+    
 
 @app.get("/api/download/{filename}")
 async def download_file(filename: str):
@@ -294,47 +340,7 @@ async def save_user_profile(profile: UserProfile):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# ============ COACHING CHAT ============
-SYSTEM_PROMPT = """You are GYMBRO, an expert fitness coach with deep knowledge of:
-- Exercise form and biomechanics (NSCA/ACSM standards)
-- Workout programming and periodization
-- Nutrition for muscle building and fat loss
-- Injury prevention and recovery
-- Motivation and mindset coaching
-
-Your personality:
-- Encouraging but direct - like a supportive gym buddy
-- Use fitness slang naturally ("gains", "PRs", "pump")
-- Keep responses concise but informative
-- Always prioritize safety and proper form
-- Be enthusiastic about fitness!
-"""
-
-@app.post("/api/chat")
-async def chat_with_coach(request: ChatRequest):
-    if not openai_client:
-        raise HTTPException(status_code=500, detail="Coach not configured")
-    
-    try:
-        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-        for msg in request.messages:
-            messages.append({"role": msg.role, "content": msg.content})
-        
-        response = openai_client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=messages,
-            max_tokens=500,
-            temperature=0.7
-        )
-        
-        assistant_message = response.choices[0].message.content
-        
-        # We don't save chats to SQL yet to keep schema simple
-        return {"response": assistant_message}
-    
-    except Exception as e:
-        print(f"Chat error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+# Chat endpoint removed as part of architecture overhaul
 
 # ============ WORKOUT LOGGING ============
 @app.post("/api/workouts")
@@ -356,8 +362,8 @@ async def log_workout(workout: WorkoutLog):
         print(f"DB Error: {e}")
         raise HTTPException(status_code=500, detail="Failed to save workout. Check RLS policies or Backend Key.")
 
-@app.get("/api/workouts/{user_id}")
-async def get_workouts(user_id: str, limit: int = 50):
+@app.get("/api/workouts")
+async def get_workouts(limit: int = 50, user_id: str = Depends(get_current_user_id)):
     if not supabase:
         return {"workouts": []}
     
@@ -368,8 +374,8 @@ async def get_workouts(user_id: str, limit: int = 50):
         print(f"DB Error: {e}")
         return {"workouts": []}
 
-@app.get("/api/stats/{user_id}")
-async def get_user_stats(user_id: str):
+@app.get("/api/stats")
+async def get_user_stats(user_id: str = Depends(get_current_user_id)):
     if not supabase:
         return {"total_workouts": 0, "total_reps": 0, "by_exercise": []}
     
@@ -416,12 +422,12 @@ async def get_user_stats(user_id: str):
 
 # ============ SCHEDULE & SETTINGS ============
 @app.post("/api/schedule")
-async def save_schedule(data: ScheduleData):
+async def save_schedule(data: ScheduleData, user_id: str = Depends(get_current_user_id)):
     if not supabase: raise HTTPException(status_code=503, detail="DB unavailable")
     try:
         # Upsert schedule
         payload = {
-            "user_id": data.user_id,
+            "user_id": user_id,
             "data": data.schedule,
             "updated_at": "now()"
         }
@@ -430,8 +436,8 @@ async def save_schedule(data: ScheduleData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/schedule/{user_id}")
-async def get_schedule(user_id: str):
+@app.get("/api/schedule")
+async def get_schedule(user_id: str = Depends(get_current_user_id)):
     if not supabase: return {}
     try:
         res = supabase.table("schedules").select("data").eq("user_id", user_id).execute()
@@ -442,11 +448,11 @@ async def get_schedule(user_id: str):
         return {}
 
 @app.post("/api/settings")
-async def save_settings(data: UserSettings):
+async def save_settings(data: UserSettings, user_id: str = Depends(get_current_user_id)):
     if not supabase: raise HTTPException(status_code=503, detail="DB unavailable")
     try:
         payload = {
-            "user_id": data.user_id,
+            "user_id": user_id,
             "theme": data.theme,
             "units": data.units,
             "notifications": data.notifications,
@@ -457,8 +463,8 @@ async def save_settings(data: UserSettings):
     except Exception as e:
          raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/settings/{user_id}")
-async def get_settings(user_id: str):
+@app.get("/api/settings")
+async def get_settings(user_id: str = Depends(get_current_user_id)):
     if not supabase: return {}
     try:
         res = supabase.table("user_settings").select("*").eq("user_id", user_id).execute()

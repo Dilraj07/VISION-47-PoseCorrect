@@ -281,18 +281,33 @@ const CTASection = ({ onStart }) => {
 };
 
 const Footer = ({ navigate }) => (
-    <footer style={{ padding: '4rem 2rem', borderTop: '1px solid #222', backgroundColor: '#000' }}>
+    <footer style={{ padding: '4rem 2rem 0rem 2rem', borderTop: '1px solid #222', backgroundColor: '#000', overflow: 'hidden' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '2rem' }}>
             <div>
                 <h2 style={{ margin: 0, fontSize: '1.5rem' }}>GYMBRO</h2>
                 <p style={{ color: '#666', marginTop: '0.5rem' }}>BETA v1.6</p>
                 <p style={{ color: '#666', fontSize: '0.8rem', marginTop: '0.5rem' }}>aryawadhwa2@gmail.com</p>
+                <p style={{ color: '#666', fontSize: '0.8rem', marginTop: '0.2rem' }}>cosdilraj07@gmail.com</p>
             </div>
             <div style={{ display: 'flex', gap: '2rem' }}>
                 <a onClick={() => navigate('/about')} style={{ color: '#888', cursor: 'pointer' }}>About</a>
                 <a onClick={() => navigate('/privacy')} style={{ color: '#888', cursor: 'pointer' }}>Privacy</a>
                 <a onClick={() => navigate('/contact')} style={{ color: '#888', cursor: 'pointer' }}>Contact</a>
             </div>
+        </div>
+        
+        <div style={{ textAlign: 'center', marginTop: '4rem', marginBottom: '-2%' }}>
+            <h1 style={{
+                margin: 0,
+                fontSize: 'clamp(4rem, 21vw, 20rem)',
+                fontFamily: 'var(--font-display)',
+                color: 'transparent',
+                lineHeight: 0.8,
+                WebkitTextStroke: '2px #222',
+                textTransform: 'uppercase'
+            }}>
+                GYMBRO
+            </h1>
         </div>
     </footer>
 );

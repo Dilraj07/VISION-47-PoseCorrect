@@ -23,7 +23,7 @@ import {
   Timer,
   Zap
 } from 'lucide-react';
-import { supabase } from '../lib/supabaseClient';
+import { getWorkouts } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 
 const WORKOUT_TYPES = [
@@ -105,7 +105,7 @@ const SelectionModal = ({ isOpen, onClose, onSelect, currentType }) => {
 
 const Schedule = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, getToken } = useAuth();
   const [schedule, setSchedule] = useState({});
   const [activityData, setActivityData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,13 +131,11 @@ const Schedule = () => {
     const fetchHistory = async () => {
       if (!user) return;
       try {
-        const { data, error } = await supabase
-          .from('workouts')
-          .select('created_at, reps')
-          .eq('user_id', user.id)
-          .gte('created_at', subDays(new Date(), 7).toISOString());
-
-        if (error) throw error;
+        const data = await getWorkouts(getToken);
+        const allWorkouts = data.workouts || [];
+        
+        // Filter for last 7 days
+        const sevenDaysAgo = subDays(new Date(), 7).getTime();
 
         // Initialize last 7 days with 0
         const last7Days = Array.from({ length: 7 }, (_, i) => {
@@ -150,11 +148,14 @@ const Schedule = () => {
         });
 
         // Fill with actual data
-        data.forEach(workout => {
-          const wDate = workout.created_at.split('T')[0];
-          const dayEntry = last7Days.find(d => d.dateStr === wDate);
-          if (dayEntry) {
-            dayEntry.workouts += 1;
+        allWorkouts.forEach(workout => {
+          const wDate = new Date(workout.created_at || workout.createdAt); // Handle potential casing diff
+          if (wDate.getTime() >= sevenDaysAgo) {
+            const dateStr = format(wDate, 'yyyy-MM-dd');
+            const dayEntry = last7Days.find(d => d.dateStr === dateStr);
+            if (dayEntry) {
+              dayEntry.workouts += 1;
+            }
           }
         });
 

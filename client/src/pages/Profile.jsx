@@ -3,10 +3,28 @@ import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { User, Trophy, Calendar, Zap, ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
+import { getStats } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 import MuscleHeatmap from '../components/MuscleHeatmap';
+
+const EXERCISE_MUSCLES = {
+    'squat': ['Quads', 'Glutes', 'Hamstrings'],
+    'pushup': ['Chest', 'Triceps', 'Shoulders'],
+    'pullup': ['Back', 'Biceps', 'Lats'],
+    'deadlift': ['Back', 'Glutes', 'Hamstrings'],
+    'benchpress': ['Chest', 'Triceps', 'Shoulders'],
+    'shoulder_press': ['Shoulders', 'Triceps'],
+    'dips': ['Triceps', 'Chest'],
+    'bicep_curl': ['Biceps', 'Forearms'],
+    'barbell_row': ['Back', 'Lats'],
+    'lunge': ['Quads', 'Glutes', 'Hamstrings'],
+    'leg_press': ['Quads', 'Glutes'],
+    'plank': ['Core', 'Abs'],
+    'crunches': ['Abs'],
+    'running': ['Cardio'],
+    'hiit': ['Cardio']
+};
 
 
 
@@ -42,12 +60,12 @@ const StatCard = ({ icon: Icon, label, value, color }) => (
 
 const Profile = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
-    const [profile, setProfile] = useState(null);
+    const { user, getToken } = useAuth();
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({
         totalReps: 0,
         totalWorkouts: 0,
+        muscleMap: {},
         chartData: [
             { name: 'Mon', score: 0, reps: 0 },
             { name: 'Tue', score: 0, reps: 0 },
@@ -60,31 +78,44 @@ const Profile = () => {
     });
 
     useEffect(() => {
-        const fetchProfile = async () => {
+        const fetchRemoteStats = async () => {
             if (!user) return;
             try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', user.id)
-                    .single();
+                const data = await getStats(getToken);
+                if (data) {
+                    const muscleMap = {};
+                    if (data.by_exercise) {
+                        data.by_exercise.forEach(ex => {
+                            const muscles = EXERCISE_MUSCLES[ex._id] || [];
+                            muscles.forEach(m => {
+                                // Scale heatmap intensity by reps
+                                muscleMap[m] = (muscleMap[m] || 0) + (ex.total_reps / 10);
+                            });
+                        });
+                    }
 
-                if (error) throw error;
-                setProfile(data);
+                    setStats(prev => ({
+                        ...prev,
+                        totalReps: data.total_reps || 0,
+                        totalWorkouts: data.total_workouts || 0,
+                        muscleMap: muscleMap,
+                        chartData: data.chartData || prev.chartData
+                    }));
+                }
             } catch (error) {
-                console.error("Error fetching profile:", error);
+                console.error("Error fetching stats:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchProfile();
-    }, [user]);
+        fetchRemoteStats();
+    }, [user, getToken]);
 
     if (loading) return <div style={{ color: '#fff', padding: '2rem' }}>Loading profile...</div>;
 
-    const joinedDate = profile ? format(new Date(profile.created_at), 'MMM yyyy') : '...';
-    const initials = profile?.full_name
-        ? profile.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+    const joinedDate = user?.createdAt ? format(new Date(user.createdAt), 'MMM yyyy') : '...';
+    const initials = user?.fullName
+        ? user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
         : 'GB';
 
     return (
@@ -179,14 +210,14 @@ const Profile = () => {
                     </motion.div>
                     <div style={{ textAlign: 'center' }}>
                         <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: '1rem 0 0.5rem 0', textTransform: 'uppercase', letterSpacing: '-1px' }}>
-                            {profile?.full_name || 'GYM BRO'}
+                            {user?.fullName || 'GYM BRO'}
                         </h1>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem' }}>
                             <span style={{
                                 background: 'rgba(255, 215, 0, 0.15)', color: '#FFD700',
                                 padding: '0.2rem 0.8rem', borderRadius: '1rem', fontSize: '0.75rem', fontWeight: '800', letterSpacing: '1px', border: '1px solid rgba(255, 215, 0, 0.3)'
                             }}>
-                                {profile?.experience_level?.toUpperCase() || 'MEMBER'}
+                                {user?.publicMetadata?.experience_level?.toUpperCase() || 'MEMBER'}
                             </span>
                             <span style={{ color: '#666', fontSize: '0.85rem' }}>Joined {joinedDate}</span>
                         </div>
@@ -198,7 +229,7 @@ const Profile = () => {
                     <motion.div className="stat-card-inner" whileHover={{ y: -5 }}>
                         <Zap size={20} color="#FFD700" style={{ marginBottom: '0.5rem' }} />
                         <div style={{ color: '#888', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Goal</div>
-                        <div style={{ color: '#fff', fontSize: '1rem', fontWeight: '700' }}>{profile?.primary_goal?.toUpperCase() || "FITNESS"}</div>
+                        <div style={{ color: '#fff', fontSize: '1rem', fontWeight: '700' }}>{user?.publicMetadata?.primary_goal?.toUpperCase() || "FITNESS"}</div>
                     </motion.div>
                     <motion.div className="stat-card-inner" whileHover={{ y: -5 }}>
                         <Trophy size={20} color="#00ffcc" style={{ marginBottom: '0.5rem' }} />
@@ -224,10 +255,7 @@ const Profile = () => {
                     </div>
 
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                        <MuscleHeatmap muscles={{
-                            'Chest': 8, 'Triceps': 5, 'Shoulders': 6, 'Back': 4,
-                            'Biceps': 3, 'Quads': 7, 'Glutes': 5, 'Hamstrings': 4, 'Core': 2
-                        }} />
+                        <MuscleHeatmap muscles={stats.muscleMap} />
                     </div>
 
                     {/* Background glow for heatmap */}

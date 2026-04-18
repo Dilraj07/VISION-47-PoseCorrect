@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Activity, CheckCircle, Video, Loader } from 'lucide-react';
+import { ArrowLeft, Activity, CheckCircle, Video, Loader, User, AlertTriangle, PlayCircle, FileVideo, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useReactMediaRecorder } from "react-media-recorder";
-import { API_URL } from '../lib/config';
-import { supabase } from '../lib/supabaseClient';
+import { analyzeVideo } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 
 // Component to render the preview stream
@@ -78,6 +77,23 @@ const CornerReticles = () => (
     </div>
 );
 
+const SilhouetteOverlay = ({ exercise }) => (
+    <div style={{
+        position: 'absolute', top: '15%', bottom: '15%', left: '50%', transform: 'translateX(-50%)',
+        width: 'min(50%, 400px)', border: '4px dashed rgba(255, 255, 255, 0.3)', borderRadius: '2rem',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+        pointerEvents: 'none', zIndex: 6
+    }}>
+        <User size="40%" color="rgba(255, 255, 255, 0.3)" strokeWidth={1} style={{ marginBottom: '2rem' }} />
+        <div style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.6)', padding: '0.5rem 1rem', borderRadius: '1rem',
+            color: 'var(--color-neon-green)', fontFamily: "'Outfit', sans-serif", fontWeight: 'bold', letterSpacing: '1px'
+        }}>
+            ALIGN {exercise?.toUpperCase()} PROFILE
+        </div>
+    </div>
+);
+
 const RealTimeCoach = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -91,6 +107,7 @@ const RealTimeCoach = () => {
     const [error, setError] = useState(null);
     const [localStream, setLocalStream] = useState(null);
     const [streamError, setStreamError] = useState(null);
+    const [notesExpanded, setNotesExpanded] = useState(true);
 
     // Secure context check
     const isSecureContext = window.isSecureContext || navigator.mediaDevices !== undefined;
@@ -182,40 +199,16 @@ const RealTimeCoach = () => {
         analyzeVideo();
     }, [step, mediaBlobUrl]);
 
-    const { user } = useAuth(); // Get user to save results
+    const { user, getToken } = useAuth(); // Get user token to pass to backend
 
     const uploadAndAnalyze = async (videoFile) => {
         setError(null);
         setResult(null);
 
-        const formData = new FormData();
-        formData.append('file', videoFile);
-        formData.append('exercise_type', selectedExercise);
-
         try {
-            const response = await fetch(`${API_URL}/api/analyze`, {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error('Analysis failed');
-            }
-
-            const data = await response.json();
+            const data = await analyzeVideo(videoFile, selectedExercise, getToken);
             setResult(data);
-
-            // SAVE TO DATABASE
-            if (user && !user.isDemo && data.analysis_data) {
-                const { error: dbError } = await supabase.from('workouts').insert({
-                    user_id: user.id,
-                    exercise_type: selectedExercise,
-                    reps: data.analysis_data.reps_count,
-                    feedback: data.analysis_data.feedback
-                });
-                if (dbError) console.error("Auto-save failed:", dbError);
-                else console.log("Workout saved!");
-            }
+            console.log("Analysis and auto-save complete");
 
         } catch (err) {
             console.error(err);
@@ -236,6 +229,18 @@ const RealTimeCoach = () => {
     const handleManualStop = () => {
         stopRecording();
         setStep('analyzing');
+    };
+
+    
+    const getFeedbackStatus = (text) => {
+        const lowerText = text.toLowerCase();
+        if (lowerText.includes('good') || lowerText.includes('stable') || lowerText.includes('great') || lowerText.includes('upright')) {
+            return { color: 'var(--color-neon-green)', icon: CheckCircle };
+        }
+        if (lowerText.includes('warning') || lowerText.includes('check') || lowerText.includes('improve')) {
+            return { color: '#FFBF00', icon: AlertTriangle };
+        }
+        return { color: 'var(--color-neon-blue)', icon: Info };
     };
 
     const handleCancel = () => {
@@ -302,7 +307,37 @@ const RealTimeCoach = () => {
                         font-size: 1.1rem !important;
                     }
                 }
-            `}</style>
+            `}
+                /* Glassmorphism Utilities */
+                .glass-panel {
+                    background: rgba(255, 255, 255, 0.03);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+                }
+                
+                .glass-card {
+                     background: rgba(20, 20, 23, 0.6);
+                     backdrop-filter: blur(12px);
+                     border: 1px solid rgba(255, 255, 255, 0.08);
+                     box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+                     transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                .shimmer-effect {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+                    animation: shimmer 2s infinite;
+                }
+                @keyframes shimmer {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+</style>
 
             {/* Header */}
             <header className="coach-header" style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333' }}>
@@ -342,93 +377,448 @@ const RealTimeCoach = () => {
 
                 {/* Result View */}
                 {step === 'result' ? (
-                    <div className="report-container" style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
-                        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', flexDirection: 'row', flexWrap: 'wrap', gap: '1rem' }}>
-                                <h2 className="report-title" style={{ fontSize: '3rem', color: '#fff', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', margin: 0 }}>SESSION REPORT</h2>
-                                <button
-                                    onClick={handleRetry}
-                                    className="analysis-button"
-                                    style={{
-                                        padding: '1rem 2rem', backgroundColor: 'transparent', color: 'var(--color-neon-green)',
-                                        border: '1px solid var(--color-neon-green)', fontWeight: 'bold', cursor: 'pointer',
-                                        fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', letterSpacing: '1px', fontSize: '1.1rem'
-                                    }}
-                                >
-                                    EVALUATE AGAIN
-                                </button>
+                    <div className="report-container page-container" style={{ flex: 1, overflowY: 'auto' }}>
+                        {error && (
+                            <div style={{ padding: '1rem', backgroundColor: 'rgba(255, 0, 0, 0.1)', color: 'red', border: '1px solid red', marginBottom: '2rem' }}>
+                                {error}
+                            </div>
+                        )}
+                        {result && (
+                    <>
+                        <style>{`
+                    .analysis-grid {
+                        display: grid;
+                        grid-template-columns: 1fr;
+                        gap: 2rem;
+                        align-items: start;
+                    }
+                    .video-column {
+                        position: static;
+                        top: 2rem;
+                        z-index: 10;
+                    }
+                    .stats-grid {
+                         display: grid;
+                         grid-template-columns: 1fr;
+                         gap: 1.5rem;
+                         auto-rows: minmax(160px, auto);
+                    }
+                    .button-grid {
+                         display: grid;
+                         grid-template-columns: 1fr;
+                         gap: 1rem;
+                    }
+                    .main-card {
+                        padding: 2rem !important;
+                    }
+                    .coach-card, .improve-card {
+                        grid-column: span 1 !important;
+                        padding: 2rem !important;
+                    }
+                    
+                    @media (min-width: 768px) {
+                         .stats-grid {
+                             grid-template-columns: 1fr 1fr;
+                             gap: 2rem;
+                         }
+                         .button-grid {
+                             grid-template-columns: 1fr 1fr;
+                         }
+                         .main-card {
+                            padding: 4rem !important;
+                        }
+                         .coach-card, .improve-card {
+                            grid-column: span 2 !important;
+                         }
+                         .analysis-grid {
+                             gap: 4rem;
+                         }
+                    }
+                    @media (min-width: 1024px) {
+                        .analysis-grid {
+                            grid-template-columns: 0.9fr 1.1fr;
+                        }
+                        .video-column {
+                            position: sticky;
+                        }
+                    }
+                `}
+                /* Glassmorphism Utilities */
+                .glass-panel {
+                    background: rgba(255, 255, 255, 0.03);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+                }
+                
+                .glass-card {
+                     background: rgba(20, 20, 23, 0.6);
+                     backdrop-filter: blur(12px);
+                     border: 1px solid rgba(255, 255, 255, 0.08);
+                     box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+                     transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                .shimmer-effect {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+                    animation: shimmer 2s infinite;
+                }
+                @keyframes shimmer {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+</style>
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                            className="main-card glass-panel"
+                            style={{
+                                borderRadius: '2.5rem',
+                                maxWidth: '100%',
+                                width: '100%',
+                                margin: '0 auto',
+                            }}
+                        >
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3rem', paddingLeft: '0.5rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                                    <div style={{
+                                        width: '56px', height: '56px',
+                                        borderRadius: '16px',
+                                        backgroundColor: 'rgba(57, 255, 20, 0.1)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        border: '1px solid rgba(57, 255, 20, 0.3)',
+                                        boxShadow: '0 0 20px rgba(57, 255, 20, 0.1)'
+                                    }}>
+                                        <CheckCircle size={28} color="var(--color-neon-green)" />
+                                    </div>
+                                    <div>
+                                        <h3 style={{ fontSize: '1.5rem', color: '#fff', fontWeight: '800', letterSpacing: '-0.02em', margin: 0 }}>SESSION REPORT</h3>
+                                        <p style={{ color: '#888', margin: 0, fontSize: '0.95rem', marginTop: '0.2rem', fontWeight: '500' }}>{result.original_file}</p>
+                                    </div>
+                                </div>
                             </div>
 
-                            {error && (
-                                <div style={{ padding: '1rem', backgroundColor: 'rgba(255, 0, 0, 0.1)', color: 'red', border: '1px solid red', marginBottom: '2rem' }}>
-                                    {error}
-                                </div>
-                            )}
-
-                            {result && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                >
-                                    {/* Video Result Player */}
-                                    {result.download_url && (
-                                        <div style={{ backgroundColor: '#111', border: '1px solid #333', marginBottom: '3rem' }}>
-                                            <video controls src={result.download_url} style={{ width: '100%', display: 'block' }} />
+                            <div className="analysis-grid">
+                                {/* LEFT COLUMN: Video Player */}
+                                <div className="video-column">
+                                    <div style={{
+                                        borderRadius: '2rem',
+                                        overflow: 'hidden',
+                                        marginBottom: '2rem',
+                                        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        position: 'relative',
+                                        backgroundColor: '#000'
+                                    }}>
+                                        <video
+                                            controls
+                                            src={result.download_url}
+                                            style={{ width: '100%', display: 'block' }}
+                                        />
+                                        <div style={{
+                                            position: 'absolute', top: '1.5rem', left: '1.5rem',
+                                            padding: '0.5rem 1rem', backgroundColor: 'rgba(0,0,0,0.6)',
+                                            backdropFilter: 'blur(12px)', borderRadius: '100px',
+                                            color: '#fff', fontSize: '0.85rem', fontWeight: '600',
+                                            display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                            border: '1px solid rgba(255,255,255,0.1)'
+                                        }}>
+                                            <PlayCircle size={14} fill="#fff" stroke="none" /> REPLAY ANALYSIS
                                         </div>
-                                    )}
+                                    </div>
 
+                                    <div className="button-grid">
+                                        <motion.a
+                                            whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
+                                            whileTap={{ scale: 0.98 }}
+                                            href={result.download_url}
+                                            download
+                                            style={{
+                                                padding: '1.25rem',
+                                                backgroundColor: 'rgba(255,255,255,0.03)',
+                                                color: '#fff',
+                                                borderRadius: '1.25rem',
+                                                fontWeight: '600',
+                                                textAlign: 'center',
+                                                textDecoration: 'none',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                gap: '0.6rem',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                transition: 'all 0.2s',
+                                                fontSize: '1rem'
+                                            }}
+                                        >
+                                            <FileVideo size={20} color="var(--color-neon-blue)" />
+                                            <span>Download</span>
+                                        </motion.a>
+                                        <motion.button
+                                            whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(255, 0, 153, 0.4)' }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={handleRetry}
+                                            style={{
+                                                padding: '1.25rem',
+                                                background: 'linear-gradient(135deg, var(--color-neon-pink) 0%, #b3006b 100%)',
+                                                color: '#fff',
+                                                borderRadius: '1.25rem',
+                                                fontWeight: '700',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                boxShadow: '0 10px 20px -5px rgba(255, 0, 153, 0.3)',
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.05em',
+                                                fontSize: '1rem'
+                                            }}
+                                        >
+                                            Evaluate Again
+                                        </motion.button>
+                                    </div>
+                                </div>
+
+                                {/* RIGHT COLUMN: Bento Grid Stats & Feedback */}
+                                <div>
                                     {/* Analysis Feedback Section */}
                                     {result.analysis_data && (
-                                        <div>
-                                            <div className="report-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
-                                                <div className="stat-card" style={{ border: '1px solid #333', padding: '2rem', textAlign: 'center' }}>
-                                                    <h4 style={{ color: '#888', marginBottom: '0.5rem', fontFamily: "'Outfit', sans-serif", fontSize: '0.9rem', letterSpacing: '1px' }}>TOTAL REPS</h4>
-                                                    <p className="big-stat" style={{ fontSize: '5rem', fontWeight: 'bold', color: '#fff', fontFamily: "'Anton', sans-serif", margin: 0, lineHeight: 1 }}>{result.analysis_data.reps_count}</p>
+                                        <div className="stats-grid">
+                                            {/* Card 1: Primary Stat (Reps) */}
+                                            <motion.div
+                                                className="glass-card"
+                                                initial={{ opacity: 0, x: 20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: 0.1 }}
+                                                style={{
+                                                    padding: '2rem',
+                                                    borderRadius: '2rem',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'space-between',
+                                                    position: 'relative',
+                                                    overflow: 'hidden'
+                                                }}
+                                            >
+                                                <h4 style={{ color: '#888', margin: 0, fontSize: '0.9rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                                                    {selectedExercise === 'plank' ? 'HOLD TIME' : 'TOTAL REPS'}
+                                                </h4>
+                                                <div>
+                                                    <span style={{
+                                                        fontSize: '5rem', // Larger size
+                                                        fontWeight: '800',
+                                                        color: '#fff',
+                                                        lineHeight: 1,
+                                                        letterSpacing: '-0.04em',
+                                                        textShadow: '0 0 40px rgba(255,255,255,0.1)'
+                                                    }}>
+                                                        {selectedExercise === 'plank'
+                                                            ? (result.analysis_data.hold_time ? parseFloat(result.analysis_data.hold_time).toFixed(1) : '0')
+                                                            : result.analysis_data.reps_count}
+                                                    </span>
+                                                    {selectedExercise === 'plank' && <span style={{ fontSize: '1.5rem', color: '#666', marginLeft: '0.5rem', fontWeight: '600' }}>s</span>}
                                                 </div>
-                                                {result.analysis_data.avg_depth > 0 && (
-                                                    <div className="stat-card" style={{ border: '1px solid #333', padding: '2rem', textAlign: 'center' }}>
-                                                        <h4 style={{ color: '#888', marginBottom: '0.5rem', fontFamily: "'Outfit', sans-serif", fontSize: '0.9rem', letterSpacing: '1px' }}>
-                                                            {selectedExercise === 'pullup' ? 'AVG EXTENSION' : selectedExercise === 'deadlift' ? 'HIP EXTENSION' : 'AVG DEPTH'}
+                                                <div style={{ height: '6px', width: '100%', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '100px', marginTop: '0.5rem', overflow: 'hidden', position: 'relative' }}>
+                                                    <div style={{ height: '100%', width: '100%', backgroundColor: 'var(--color-neon-green)', borderRadius: '100px' }} />
+                                                    <div className="shimmer-effect"></div>
+                                                </div>
+                                            </motion.div>
+
+                                            {/* Card 2: Secondary Stat (Depth/Angle) */}
+                                            <motion.div
+                                                className="glass-card"
+                                                initial={{ opacity: 0, x: 20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: 0.2 }}
+                                                style={{
+                                                    padding: '2rem',
+                                                    borderRadius: '2rem',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'space-between',
+                                                    position: 'relative',
+                                                    overflow: 'hidden'
+                                                }}
+                                            >
+                                                <h4 style={{ color: '#888', margin: 0, fontSize: '0.9rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                                                    {selectedExercise === 'pullup' || selectedExercise === 'shoulder_press' || selectedExercise === 'bicep_curl' ? 'AVG EXTENSION' :
+                                                        selectedExercise === 'deadlift' ? 'HIP EXTENSION' :
+                                                            selectedExercise === 'plank' ? 'AVG ALIGNMENT' :
+                                                                'AVG DEPTH'}
+                                                </h4>
+                                                <div>
+                                                    <span style={{
+                                                        fontSize: '5rem',
+                                                        fontWeight: '800',
+                                                        lineHeight: 1,
+                                                        letterSpacing: '-0.04em',
+                                                        textShadow: '0 0 40px rgba(0, 240, 255, 0.15)',
+                                                        color: (() => {
+                                                            const val = result.analysis_data.avg_depth;
+                                                            // Higher is Better
+                                                            if (['pullup', 'deadlift', 'shoulder_press', 'bicep_curl'].includes(selectedExercise)) {
+                                                                return val >= 150 ? 'var(--color-neon-blue)' : 'var(--color-neon-pink)';
+                                                            }
+                                                            // Plank
+                                                            if (selectedExercise === 'plank') {
+                                                                return (val >= 165 && val <= 195) ? 'var(--color-neon-blue)' : 'var(--color-neon-pink)';
+                                                            }
+                                                            // Lower is Better
+                                                            if (['squat', 'pushup', 'benchpress', 'lunge'].includes(selectedExercise)) {
+                                                                return val <= 100 ? 'var(--color-neon-blue)' : 'var(--color-neon-pink)';
+                                                            }
+                                                            return '#fff';
+                                                        })()
+                                                    }}>
+                                                        {result.analysis_data.avg_depth}°
+                                                    </span>
+                                                </div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.5rem' }}>
+                                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-neon-blue)', boxShadow: '0 0 10px var(--color-neon-blue)' }} />
+                                                    <span style={{ color: '#aaa', fontSize: '0.85rem', fontWeight: '500' }}>Biomechanics Score</span>
+                                                </div>
+                                            </motion.div>
+
+                                            {/* Card 3: Coach Feedback (Full Width, Expandable) */}
+                                            <motion.div
+                                                className="coach-card glass-card"
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: 0.3 }}
+                                                style={{
+                                                    borderRadius: '2rem',
+                                                    position: 'relative',
+                                                    overflow: 'hidden'
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                                                    <div
+                                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', cursor: 'pointer' }}
+                                                        onClick={() => setNotesExpanded(!notesExpanded)}
+                                                    >
+                                                        <h4 style={{ color: '#fff', fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: '800', margin: 0 }}>
+                                                            <span style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(0, 204, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0, 204, 255, 0.2)' }}>
+                                                                <Activity size={20} color="var(--color-neon-blue)" />
+                                                            </span>
+                                                            COACH NOTES
                                                         </h4>
-                                                        <p className="big-stat" style={{
-                                                            fontSize: '5rem', fontWeight: 'bold', fontFamily: "'Anton', sans-serif", margin: 0, lineHeight: 1,
-                                                            color: result.analysis_data.avg_depth <= 135 ? 'var(--color-neon-green)' : 'var(--color-neon-pink)'
-                                                        }}>
-                                                            {result.analysis_data.avg_depth}°
-                                                        </p>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            <div style={{ marginBottom: '3rem' }}>
-                                                <h4 style={{ color: 'var(--color-neon-green)', marginBottom: '1.5rem', fontSize: '1.5rem', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase' }}>COACH FEEDBACK</h4>
-                                                <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
-                                                    {result.analysis_data.feedback.map((item, index) => (
-                                                        <div key={index} style={{ backgroundColor: '#111', padding: '1.5rem', borderLeft: '4px solid var(--color-neon-blue)' }}>
-                                                            <p style={{ color: '#fff', margin: 0, fontSize: '1.1rem' }}>"{item}"</p>
+                                                        <div style={{ padding: '0.5rem', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}>
+                                                            {notesExpanded ? <ChevronUp size={20} color="#888" /> : <ChevronDown size={20} color="#888" />}
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            </div>
+                                                    </div>
 
-                                            {result.analysis_data.corrections.length > 0 && (
-                                                <div style={{ border: '1px solid var(--color-neon-pink)', padding: '2rem' }}>
-                                                    <h4 style={{ color: 'var(--color-neon-pink)', marginBottom: '1.5rem', fontSize: '1.5rem', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase' }}>CORRECTIONS NEEDED</h4>
-                                                    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                                                        {result.analysis_data.corrections.map((item, index) => (
-                                                            <li key={index} style={{ marginBottom: '1rem', color: '#ccc', display: 'flex', gap: '1rem', fontSize: '1.1rem' }}>
-                                                                <span style={{ color: 'var(--color-neon-pink)' }}>⚠</span>
-                                                                {item}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                                                    <AnimatePresence>
+                                                        {notesExpanded && (
+                                                            <motion.div
+                                                                initial={{ height: 0, opacity: 0 }}
+                                                                animate={{ height: 'auto', opacity: 1 }}
+                                                                exit={{ height: 0, opacity: 0 }}
+                                                                style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflow: 'hidden' }}
+                                                            >
+                                                                {result.analysis_data.feedback.map((item, index) => {
+                                                                    const parts = item.split(":");
+                                                                    const label = parts[0];
+                                                                    const value = parts[1] || "";
+                                                                    const status = getFeedbackStatus(item);
+                                                                    const StatusIcon = status.icon;
+
+                                                                    return (
+                                                                        <div key={index} style={{
+                                                                            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                                                                            padding: '1rem 1.25rem',
+                                                                            borderRadius: '1rem',
+                                                                            border: '1px solid rgba(255,255,255,0.05)',
+                                                                            display: 'flex',
+                                                                            alignItems: 'center',
+                                                                            justifyContent: 'space-between'
+                                                                        }}>
+                                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                                                {/* Status Indicator Ring */}
+                                                                                <div style={{
+                                                                                    width: '32px', height: '32px', borderRadius: '50%',
+                                                                                    border: `2px solid ${status.color}`,
+                                                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                                    boxShadow: `0 0 10px ${status.color}40`
+                                                                                }}>
+                                                                                    <StatusIcon size={16} color={status.color} />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <span style={{ color: '#888', fontSize: '0.85rem', display: 'block', marginBottom: '0.2rem', fontWeight: '600', textTransform: 'uppercase' }}>{label}</span>
+                                                                                    <span style={{ color: '#fff', fontSize: '1rem', fontWeight: '700' }}>{value.replace(/\(.*\)/g, '').trim()}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
                                                 </div>
+                                            </motion.div>
+
+                                            {/* Card 4: Corrections (Full Width, Amber Theme) */}
+                                            {result.analysis_data.corrections.length > 0 && (
+                                                <motion.div
+                                                    className="improve-card glass-card"
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: 0.4 }}
+                                                    style={{
+                                                        borderRadius: '2rem',
+                                                        border: '1px solid rgba(255, 191, 0, 0.2)', // Amber border
+                                                        backgroundColor: 'rgba(255, 191, 0, 0.03)' // Subtle Amber tint
+                                                    }}
+                                                >
+                                                    <h4 style={{ color: '#FFBF00', marginBottom: '1.5rem', fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: '800' }}>
+                                                        <span style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(255, 191, 0, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255, 191, 0, 0.2)' }}>
+                                                            <AlertTriangle size={20} color="#FFBF00" />
+                                                        </span>
+                                                        PRIORITY IMPROVEMENTS
+                                                    </h4>
+                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                                                        {result.analysis_data.corrections.map((item, index) => (
+                                                            <div key={index} style={{
+                                                                backgroundColor: 'rgba(20, 20, 20, 0.6)',
+                                                                padding: '1.25rem',
+                                                                borderRadius: '1.2rem',
+                                                                display: 'flex',
+                                                                alignItems: 'start',
+                                                                gap: '1rem',
+                                                                border: '1px solid rgba(255, 191, 0, 0.1)'
+                                                            }}>
+                                                                <span style={{
+                                                                    color: '#000',
+                                                                    backgroundColor: '#FFBF00',
+                                                                    fontSize: '0.8rem', fontWeight: 'bold',
+                                                                    width: '24px', height: '24px', borderRadius: '50%',
+                                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                    marginTop: '2px', flexShrink: 0
+                                                                }}>{index + 1}</span>
+                                                                <div>
+                                                                    <p style={{ color: '#eee', margin: 0, lineHeight: '1.5', fontWeight: '500', fontSize: '1.05rem' }}>{item}</p>
+                                                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.8rem' }}>
+                                                                        <button style={{
+                                                                            background: 'none', border: '1px solid #444',
+                                                                            color: '#aaa', padding: '0.4rem 0.8rem', borderRadius: '0.5rem',
+                                                                            fontSize: '0.8rem', cursor: 'pointer', fontWeight: '600'
+                                                                        }}>
+                                                                            View Tutorial
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </motion.div>
                                             )}
                                         </div>
                                     )}
-                                </motion.div>
-                            )}
-                        </div>
+                                </div>
+                            </div>
+                        </motion.div>
                     </div>
                 ) : (
                     /* Webcam Area */
@@ -446,6 +836,7 @@ const RealTimeCoach = () => {
                             <div style={{ width: '100%', height: '100%', position: 'relative' }}>
                                 <VideoPreview stream={localStream} streamError={streamError} />
                                 {step === 'recording' && <ScanLine />}
+                                {(step === 'countdown' || step === 'recording') && <SilhouetteOverlay exercise={selectedExercise} />}
                                 <CornerReticles />
 
                                 {/* Overlay UI */}
