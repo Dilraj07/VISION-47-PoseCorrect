@@ -2,7 +2,7 @@ services:
   - type: web
     name: gymbro-api
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: chmod +x render-build.sh && ./render-build.sh
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION

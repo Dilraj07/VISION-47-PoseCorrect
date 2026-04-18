@@ -56,17 +56,68 @@ else:
 # Clerk JWT Setup
 security = HTTPBearer()
 
-def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
+CLERK_JWKS_URL = os.environ.get("CLERK_JWKS_URL")
+
+# Cache for public keys
+_jwks_cache = None
+_jwks_last_fetch = 0
+
+async def get_clerk_public_key(kid: str):
+    global _jwks_cache, _jwks_last_fetch
+    now = time.time()
+    
+    # Refresh cache every hour
+    if not _jwks_cache or (now - _jwks_last_fetch > 3600):
+        if not CLERK_JWKS_URL:
+             # Fallback to a warning if URL is missing
+             print("CRITICAL: CLERK_JWKS_URL missing. Authentication will fail.")
+             return None
+             
+        import httpx
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(CLERK_JWKS_URL)
+                _jwks_cache = response.json()
+                _jwks_last_fetch = now
+        except Exception as e:
+            print(f"Failed to fetch JWKS: {e}")
+            return None
+
+    for key_data in _jwks_cache.get("keys", []):
+        if key_data.get("kid") == kid:
+            return jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(key_data))
+    return None
+
+async def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
     token = credentials.credentials
     try:
-        # Decode the Clerk JWT. In production, signature should be verified with Clerk's JWKS.
-        decoded = jwt.decode(token, options={"verify_signature": False})
+        # Get the unverified header to find the 'kid'
+        header = jwt.get_unverified_header(token)
+        kid = header.get("kid")
+        if not kid:
+            raise HTTPException(status_code=401, detail="Missing kid in JWT header")
+            
+        public_key = await get_clerk_public_key(kid)
+        if not public_key:
+            raise HTTPException(status_code=401, detail="Could not verify token: public key not found")
+
+        # Verify segments and signature
+        decoded = jwt.decode(
+            token, 
+            public_key, 
+            algorithms=["RS256"],
+            options={"verify_exp": True, "verify_aud": False} # Browser sends azp, not aud sometimes
+        )
+        
         user_id = decoded.get("sub")
         if not user_id:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise HTTPException(status_code=401, detail="Invalid token: missing sub")
         return user_id
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
     except Exception as e:
-        raise HTTPException(status_code=401, detail=f"JWT Decode error: {str(e)}")
+        print(f"Auth error: {str(e)}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
 
 # Constants
 UPLOAD_DIR = "uploads"
