@@ -166,6 +166,7 @@ const MusicFlow = () => {
                             {/* Controls */}
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                                 <button
+                                    aria-label={isPlaying ? "Pause" : "Play"}
                                     onClick={(e) => { e.stopPropagation(); isPlaying ? stop() : play(); }}
                                     style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
                                     title={isPlaying ? "Pause" : "Play"}
@@ -174,6 +175,7 @@ const MusicFlow = () => {
                                 </button>
 
                                 <button
+                                    aria-label="Next Song"
                                     onClick={(e) => { e.stopPropagation(); nextSong(); }}
                                     style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
                                     title="Next Song"
@@ -182,6 +184,7 @@ const MusicFlow = () => {
                                 </button>
 
                                 <button
+                                    aria-label={isMuted ? "Unmute" : "Mute"}
                                     onClick={(e) => { e.stopPropagation(); toggleMute(); }}
                                     style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', display: 'flex' }}
                                     title={isMuted ? "Unmute" : "Mute"}
