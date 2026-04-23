@@ -167,6 +167,7 @@ const Navbar = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 {/* Profile Icon */}
                 <button
+                    aria-label="Profile"
                     onClick={() => user ? navigate('/profile') : navigate('/auth', { state: { isSignup: true } })}
                     style={{
                         background: user ? 'var(--color-neon-blue)' : 'none',
@@ -189,6 +190,7 @@ const Navbar = () => {
 
                 {/* Academy Icon - Desktop Only */}
                 <button
+                    aria-label="Academy"
                     className="desktop-only"
                     onClick={() => navigate('/academy')}
                     style={{
@@ -206,7 +208,15 @@ const Navbar = () => {
                 </button>
 
                 {/* Menu Toggle (Visible on all screens) */}
-                <div className="mobile-toggle" onClick={toggleMenu} style={{ display: 'block' }}>
+                <div
+                    aria-label="Toggle Menu"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMenu(); } }}
+                    className="mobile-toggle"
+                    onClick={toggleMenu}
+                    style={{ display: 'block', cursor: 'pointer' }}
+                >
                     <Dumbbell
                         size={32}
                         color="var(--color-neon-green)"
@@ -261,7 +271,7 @@ const Navbar = () => {
                                 padding: '0 1rem'
                             }}>
                                 <h2 style={{ color: 'var(--color-neon-green)', margin: 0, fontSize: '2.5rem', fontFamily: 'var(--font-display)', letterSpacing: '2px' }}>MENU</h2>
-                                <button onClick={closeMenu} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                                <button aria-label="Close Menu" onClick={closeMenu} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
                                     <X size={36} color="#fff" strokeWidth={3} style={{ transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-neon-green)'} onMouseLeave={(e) => e.currentTarget.style.color = '#fff'} />
                                 </button>
                             </div>
