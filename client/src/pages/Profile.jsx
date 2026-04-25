@@ -186,7 +186,7 @@ const Profile = () => {
             <div className="profile-container">
                 {/* Header Actions */}
                 <header style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1rem' }}>
-                    <button aria-label="Settings" onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>
+                    <button aria-label="Settings" title="Settings" onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>
                         <Settings size={20} />
                     </button>
                 </header>
