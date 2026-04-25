@@ -95,8 +95,7 @@ const Settings = () => {
                 marginBottom: '2rem'
             }}>
                 <button
-                    aria-label="Go back"
-                    title="Go back"
+                    aria-label="Go Back"
                     onClick={() => navigate('/')}
                     style={{
                         background: 'none',

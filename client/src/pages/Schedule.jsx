@@ -202,7 +202,7 @@ const Schedule = () => {
         }
       `}</style>
       <header className="schedule-header" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid #333' }}>
-        <button aria-label="Go back" title="Go back" onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>
+        <button aria-label="Go Back" onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>
           <ArrowLeft size={24} />
         </button>
         <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '900', letterSpacing: '0.1em' }}>SCHEDULE & ACTIVITY</h1>
