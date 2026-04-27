@@ -443,6 +443,7 @@ const Dashboard = () => {
 
                 {/* Search Bar */}
                 <input
+                    aria-label="Search exercises"
                     type="text"
                     placeholder="Search exercises..."
                     value={searchTerm}
@@ -504,9 +505,21 @@ const Dashboard = () => {
                             </React.Fragment>
                         ))}
 
-                        {displayData.length === 0 || (displayData.length === 1 && displayData[0].exercises.length === 0) && (
-                            <div style={{ padding: '4rem', textAlign: 'center', color: '#666' }}>
-                                No exercises found matching "{searchTerm}"
+                        {(displayData.length === 0 || (displayData.length === 1 && displayData[0].exercises.length === 0)) && (
+                            <div style={{ padding: '4rem', textAlign: 'center', color: '#666', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                                <span>No exercises found matching "{searchTerm}"</span>
+                                <button
+                                    onClick={() => setSearchTerm('')}
+                                    className="button-51"
+                                    style={{
+                                        marginTop: '1rem',
+                                        padding: '0.5rem 2rem',
+                                        fontSize: '1rem',
+                                        width: 'auto'
+                                    }}
+                                >
+                                    Clear Search
+                                </button>
                             </div>
                         )}
                     </>
