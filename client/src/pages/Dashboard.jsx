@@ -444,6 +444,7 @@ const Dashboard = () => {
                 {/* Search Bar */}
                 <input
                     type="text"
+                    aria-label="Search exercises"
                     placeholder="Search exercises..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
