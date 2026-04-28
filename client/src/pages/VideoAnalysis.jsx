@@ -228,6 +228,7 @@ const VideoAnalysis = () => {
                     >
                         <input
                             type="file"
+                            aria-label="Upload video file"
                             ref={fileInputRef}
                             onChange={handleFileSelect}
                             accept="video/*"

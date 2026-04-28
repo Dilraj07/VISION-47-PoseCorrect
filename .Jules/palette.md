@@ -1,3 +1,4 @@
 ## 2025-04-22 - Missing ARIA Labels on Icon-only Buttons
 **Learning:** Found multiple instances where icon-only buttons like those for 'Play', 'Next Song', 'Mute', 'Close Menu', and user profile do not have ARIA labels or standard accessible name attributes, which degrades screen reader compatibility.
 **Action:** Always add explicit `aria-label` attributes to buttons that contain only icons to ensure semantic context.
+## 2026-04-28 - Added ARIA labels to search and upload inputs **Learning:** Icon-only inputs and hidden file inputs are common accessibility gaps in this application. Screen readers require explicit `aria-label` attributes to describe the purpose of these inputs. **Action:** Always audit form inputs, especially those without visible text labels, and ensure they have descriptive `aria-label` attributes to improve keyboard navigation and screen reader support.
