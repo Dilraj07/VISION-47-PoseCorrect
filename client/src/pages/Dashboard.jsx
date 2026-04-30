@@ -444,6 +444,7 @@ const Dashboard = () => {
                 {/* Search Bar */}
                 <input
                     type="text"
+                    aria-label="Search exercises"
                     placeholder="Search exercises..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -455,9 +456,10 @@ const Dashboard = () => {
                         borderRadius: '0.5rem',
                         color: '#fff',
                         fontSize: '1rem',
-                        outline: 'none'
+                        outline: 'none',
+                        transition: 'border-color 0.2s ease-in-out'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = '#666'}
+                    onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-blue)'}
                     onBlur={(e) => e.target.style.borderColor = '#333'}
                 />
 
