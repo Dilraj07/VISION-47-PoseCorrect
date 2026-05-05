@@ -63,7 +63,7 @@ const VideoAnalysis = () => {
         fileInputRef.current.click();
     };
 
-    const { user, getToken } = useAuth(); // Get user token to pass to backend
+    const { getToken } = useAuth(); // Get user token to pass to backend
 
     const uploadAndAnalyze = async (videoFile) => {
         setAnalyzing(true);
@@ -118,6 +118,10 @@ const VideoAnalysis = () => {
                 }
                 .upload-area {
                     padding: 3rem 1.5rem !important;
+                }
+                .upload-area:focus-visible {
+                    outline: 2px solid var(--color-neon-pink);
+                    outline-offset: 4px;
                 }
                 
                 /* Glassmorphism Utilities */
@@ -225,6 +229,15 @@ const VideoAnalysis = () => {
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
                         onClick={triggerFileInput}
+                        role="button"
+                        tabIndex={0}
+                        aria-label="Upload video file"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                triggerFileInput();
+                            }
+                        }}
                     >
                         <input
                             type="file"
