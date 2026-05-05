@@ -178,6 +178,7 @@ const VideoAnalysis = () => {
                 }
             `}</style>
             <button
+                aria-label="Back to home"
                 onClick={() => navigate('/')}
                 className="back-button"
                 style={{

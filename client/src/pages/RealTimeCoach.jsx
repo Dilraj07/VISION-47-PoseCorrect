@@ -318,6 +318,7 @@ const RealTimeCoach = () => {
             {/* Header */}
             <header className="coach-header" style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333' }}>
                 <button
+                    aria-label="Exit real-time coach"
                     onClick={() => navigate('/')}
                     style={{
                         display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',
