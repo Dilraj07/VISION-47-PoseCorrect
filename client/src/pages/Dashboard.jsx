@@ -163,6 +163,15 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
             onMouseEnter={() => !isInProgress && setHovered(exercise.id)}
             onMouseLeave={() => setHovered(null)}
             onClick={() => !isInProgress && onSelect(exercise)}
+            role="button"
+            tabIndex={isInProgress ? -1 : 0}
+            aria-disabled={isInProgress}
+            onKeyDown={(e) => {
+                if (!isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onSelect(exercise);
+                }
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
@@ -564,6 +573,14 @@ const Dashboard = () => {
                             {/* Real-Time Coach Card */}
                             <div
                                 onClick={() => handleModeSelect('coach')}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -607,6 +624,14 @@ const Dashboard = () => {
                             {/* Video Upload Card */}
                             <div
                                 onClick={() => handleModeSelect('upload')}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
