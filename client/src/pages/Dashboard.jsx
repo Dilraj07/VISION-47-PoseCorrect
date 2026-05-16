@@ -160,9 +160,19 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
     return (
         <motion.div
             layout
+            role="button"
+            tabIndex={isInProgress ? -1 : 0}
             onMouseEnter={() => !isInProgress && setHovered(exercise.id)}
             onMouseLeave={() => setHovered(null)}
+            onFocus={() => !isInProgress && setHovered(exercise.id)}
+            onBlur={() => setHovered(null)}
             onClick={() => !isInProgress && onSelect(exercise)}
+            onKeyDown={(e) => {
+                if (!isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onSelect(exercise);
+                }
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
@@ -563,7 +573,15 @@ const Dashboard = () => {
 
                             {/* Real-Time Coach Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => handleModeSelect('coach')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -606,7 +624,15 @@ const Dashboard = () => {
 
                             {/* Video Upload Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => handleModeSelect('upload')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
