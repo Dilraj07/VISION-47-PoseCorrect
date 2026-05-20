@@ -142,10 +142,11 @@ const Contact = () => {
                             <div style={{ marginTop: '4rem' }}>
                                 <h3 style={{ marginBottom: '1rem', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#666' }}>Follow Us</h3>
                                 <div style={{ display: 'flex', gap: '1rem' }}>
-                                    {[Instagram, Twitter, Linkedin].map((Icon, index) => (
+                                    {[ { Icon: Instagram, name: 'Instagram' }, { Icon: Twitter, name: 'Twitter' }, { Icon: Linkedin, name: 'LinkedIn' } ].map(({ Icon, name }, index) => (
                                         <motion.a
                                             key={index}
                                             href="#"
+                                            aria-label={name}
                                             whileHover={{ y: -5, color: 'var(--color-neon-pink)' }}
                                             style={{
                                                 color: '#aaa',
