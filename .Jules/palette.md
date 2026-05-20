@@ -10,3 +10,7 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2026-05-20 - Missing Keyboard Accessibility on Custom List Items
+**Learning:** Found custom `div`-based list items (like settings options) acting as interactive elements but lacking `role`, `tabIndex`, and keyboard event handlers. Screen reader and keyboard users cannot interact with these items.
+**Action:** Always add `role="button"`, `tabIndex={0}`, and `onKeyDown` (for Enter and Space keys) to custom `div` elements intended to be interactive.
