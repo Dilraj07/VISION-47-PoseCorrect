@@ -7,3 +7,7 @@
 **Action:** Always provide an explicit label (using `<label>`) or an `aria-label` attribute for inputs, especially when using placeholders for visual hints, to ensure consistent screen reader support.
 ## 2026-05-02 - [Upload Dropzone Accessibility] **Learning:** [Interactive div-based dropzones must have keyboard support (tabIndex, onKeyDown) and ARIA roles to be usable by everyone, not just mouse users] **Action:** [Always ensure that any div acting as a clickable area includes role="button", tabIndex={0}, and an onKeyDown handler for Enter/Space]
 ## 2025-05-20 - [Keyboard Accessibility for Interactive Cards] **Learning:** [Interactive cards used for mode selection (e.g., Real-Time Coach vs Video Upload) are often div-based and miss keyboard navigation support, preventing screen reader and keyboard users from making selections.] **Action:** [Always add role="button", tabIndex={0}, and an onKeyDown handler (Enter/Space) to interactive div cards acting as buttons.]
+
+## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
+**Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
+**Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
