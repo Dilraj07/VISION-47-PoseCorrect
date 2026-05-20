@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
+import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getStats } from '../lib/api';
 
@@ -442,26 +442,53 @@ const Dashboard = () => {
                 </div>
 
                 {/* Search Bar */}
-                <input
-                    type="text"
-                    aria-label="Search exercises"
-                    placeholder="Search exercises..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                        width: '100%',
-                        padding: '1rem',
-                        backgroundColor: '#111',
-                        border: '1px solid #333',
-                        borderRadius: '0.5rem',
-                        color: '#fff',
-                        fontSize: '1rem',
-                        outline: 'none',
-                        transition: 'border-color 0.2s ease-in-out'
-                    }}
-                    onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-blue)'}
-                    onBlur={(e) => e.target.style.borderColor = '#333'}
-                />
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <input
+                        type="text"
+                        aria-label="Search exercises"
+                        placeholder="Search exercises..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '1rem',
+                            paddingRight: '3rem',
+                            backgroundColor: '#111',
+                            border: '1px solid #333',
+                            borderRadius: '0.5rem',
+                            color: '#fff',
+                            fontSize: '1rem',
+                            outline: 'none',
+                            transition: 'border-color 0.2s ease-in-out'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-blue)'}
+                        onBlur={(e) => e.target.style.borderColor = '#333'}
+                    />
+                    {searchTerm && (
+                        <button
+                            aria-label="Clear search"
+                            onClick={() => setSearchTerm('')}
+                            style={{
+                                position: 'absolute',
+                                right: '1rem',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                color: '#666',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: '0.25rem',
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = '#666'}
+                        >
+                            <X size={18} />
+                        </button>
+                    )}
+                </div>
 
                 {/* Muscle Heatmap Moved to Profile */}
             </header>
