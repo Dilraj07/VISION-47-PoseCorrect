@@ -182,6 +182,7 @@ const VideoAnalysis = () => {
                 }
             `}</style>
             <button
+                aria-label="Back to Home"
                 onClick={() => navigate('/')}
                 className="back-button"
                 style={{
@@ -676,7 +677,9 @@ const VideoAnalysis = () => {
                                                                 <div>
                                                                     <p style={{ color: '#eee', margin: 0, lineHeight: '1.5', fontWeight: '500', fontSize: '1.05rem' }}>{item}</p>
                                                                     <div style={{ display: 'flex', gap: '1rem', marginTop: '0.8rem' }}>
-                                                                        <button style={{
+                                                                        <button
+                                                                            aria-label={`View Tutorial for ${item}`}
+                                                                            style={{
                                                                             background: 'none', border: '1px solid #444',
                                                                             color: '#aaa', padding: '0.4rem 0.8rem', borderRadius: '0.5rem',
                                                                             fontSize: '0.8rem', cursor: 'pointer', fontWeight: '600'

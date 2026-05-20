@@ -414,6 +414,7 @@ const Dashboard = () => {
             <header className="dashboard-header" style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid #222' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                     <button
+                        aria-label="Exit to Home"
                         onClick={() => navigate('/')}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',
@@ -424,6 +425,7 @@ const Dashboard = () => {
                     </button>
 
                     <button
+                        aria-label="Go to Schedule"
                         onClick={() => navigate('/schedule')}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',

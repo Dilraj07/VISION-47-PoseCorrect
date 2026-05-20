@@ -318,6 +318,7 @@ const RealTimeCoach = () => {
             {/* Header */}
             <header className="coach-header" style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333' }}>
                 <button
+                    aria-label="Exit to Dashboard"
                     onClick={() => navigate('/')}
                     style={{
                         display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff',
@@ -494,7 +495,7 @@ const RealTimeCoach = () => {
                                         <div style={{ position: 'absolute', bottom: '10%', width: '100%', textAlign: 'center' }}>
                                             <div style={{ fontSize: '8rem', fontWeight: '900', color: 'var(--color-neon-green)', fontFamily: "'Anton', sans-serif" }}>{recordTime}s</div>
                                             <div style={{ marginTop: '2rem', pointerEvents: 'auto' }}>
-                                                <button onClick={handleManualStop} className="action-button" style={{ padding: '1.5rem 3rem', backgroundColor: 'var(--color-neon-pink)', color: '#fff', border: '4px solid #fff', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '1rem', boxShadow: '0 8px 30px rgba(255, 0, 153, 0.5)' }}>
+                                                <button aria-label="STOP & ANALYZE recording" onClick={handleManualStop} className="action-button" style={{ padding: '1.5rem 3rem', backgroundColor: 'var(--color-neon-pink)', color: '#fff', border: '4px solid #fff', fontFamily: "'Anton', sans-serif", textTransform: 'uppercase', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '1rem', boxShadow: '0 8px 30px rgba(255, 0, 153, 0.5)' }}>
                                                     <div style={{ width: '16px', height: '16px', backgroundColor: '#fff' }}></div> STOP & ANALYZE
                                                 </button>
                                             </div>

@@ -38,6 +38,15 @@ button {
     background: none;
 }
 
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid var(--color-neon-pink);
+    outline-offset: 2px;
+}
+
 * {
     box-sizing: border-box;
 }

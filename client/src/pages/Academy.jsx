@@ -172,6 +172,7 @@ const TutorialView = ({ exercise, onBack, onPractice }) => (
         style={{ paddingTop: '2rem' }}
     >
         <button
+            aria-label="Back to Academy"
             onClick={onBack}
             style={{
                 background: 'transparent',
