@@ -563,6 +563,14 @@ const Dashboard = () => {
 
                             {/* Real-Time Coach Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
                                 onClick={() => handleModeSelect('coach')}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
@@ -606,6 +614,14 @@ const Dashboard = () => {
 
                             {/* Video Upload Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
                                 onClick={() => handleModeSelect('upload')}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
