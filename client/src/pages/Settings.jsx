@@ -28,7 +28,15 @@ const SettingsSection = ({ title, children }) => (
 
 const SettingsItem = ({ icon: Icon, label, value, type = 'arrow', onClick, danger = false }) => (
     <div
+        role={onClick ? "button" : undefined}
+        tabIndex={onClick ? 0 : undefined}
         onClick={onClick}
+        onKeyDown={onClick ? (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick(e);
+            }
+        } : undefined}
         style={{
             display: 'flex',
             alignItems: 'center',
