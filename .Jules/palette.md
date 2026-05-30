@@ -10,3 +10,4 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+## 2026-05-29 - [Clear Button for Search Inputs] **Learning:** Adding a clear button directly in a search input (especially for real-time filtering) significantly improves usability. It saves users from having to repeatedly press backspace when making new searches, making the interaction feel snappier. **Action:** Include a clear button component inside all search or filter text inputs across the design system to ensure consistent and frictionless reset experiences.

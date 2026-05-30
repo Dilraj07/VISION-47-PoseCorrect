@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
+import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getStats } from '../lib/api';
 
@@ -280,6 +280,7 @@ const Dashboard = () => {
     const [selectedExercise, setSelectedExercise] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [userStats, setUserStats] = useState({});
+    const searchInputRef = useRef(null);
 
     // Simulate load and fetch stats
     useEffect(() => {
@@ -442,26 +443,68 @@ const Dashboard = () => {
                 </div>
 
                 {/* Search Bar */}
-                <input
-                    type="text"
-                    aria-label="Search exercises"
-                    placeholder="Search exercises..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                        width: '100%',
-                        padding: '1rem',
-                        backgroundColor: '#111',
-                        border: '1px solid #333',
-                        borderRadius: '0.5rem',
-                        color: '#fff',
-                        fontSize: '1rem',
-                        outline: 'none',
-                        transition: 'border-color 0.2s ease-in-out'
-                    }}
-                    onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-blue)'}
-                    onBlur={(e) => e.target.style.borderColor = '#333'}
-                />
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <input
+                        type="text"
+                        ref={searchInputRef}
+                        aria-label="Search exercises"
+                        placeholder="Search exercises..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '1rem',
+                            paddingRight: '3rem',
+                            backgroundColor: '#111',
+                            border: '1px solid #333',
+                            borderRadius: '0.5rem',
+                            color: '#fff',
+                            fontSize: '1rem',
+                            outline: 'none',
+                            transition: 'border-color 0.2s ease-in-out'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-blue)'}
+                        onBlur={(e) => e.target.style.borderColor = '#333'}
+                    />
+                    <AnimatePresence>
+                        {searchTerm && (
+                            <div style={{
+                                position: 'absolute',
+                                right: '1rem',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                zIndex: 10
+                            }}>
+                                <motion.button
+                                    type="button"
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    onClick={() => {
+                                        setSearchTerm('');
+                                        searchInputRef.current?.focus();
+                                    }}
+                                    aria-label="Clear search"
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: '#888',
+                                        cursor: 'pointer',
+                                        padding: 0,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <X size={20} />
+                                </motion.button>
+                            </div>
+                        )}
+                    </AnimatePresence>
+                </div>
 
                 {/* Muscle Heatmap Moved to Profile */}
             </header>
