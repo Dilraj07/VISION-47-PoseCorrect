@@ -183,7 +183,7 @@ const Navbar = () => {
                         fontWeight: 'bold',
                         fontSize: '0.8rem'
                     }}
-                    title={user ? "Profile" : "Join Gymbro"}
+                    title={user ? `Profile (${user.fullName || initials})` : "Join Gymbro"}
                 >
                     {initials || <User size={20} />}
                 </button>
@@ -210,6 +210,7 @@ const Navbar = () => {
                 {/* Menu Toggle (Visible on all screens) */}
                 <div
                     aria-label="Toggle Menu"
+                    title="Toggle Menu"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMenu(); } }}
@@ -271,7 +272,7 @@ const Navbar = () => {
                                 padding: '0 1rem'
                             }}>
                                 <h2 style={{ color: 'var(--color-neon-green)', margin: 0, fontSize: '2.5rem', fontFamily: 'var(--font-display)', letterSpacing: '2px' }}>MENU</h2>
-                                <button aria-label="Close Menu" onClick={closeMenu} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                                <button aria-label="Close Menu" title="Close Menu" onClick={closeMenu} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
                                     <X size={36} color="#fff" strokeWidth={3} style={{ transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-neon-green)'} onMouseLeave={(e) => e.currentTarget.style.color = '#fff'} />
                                 </button>
                             </div>
