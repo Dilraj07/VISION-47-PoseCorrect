@@ -10,3 +10,7 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2026-05-02 - Keyboard Inaccessibility in Interactive Lists and Cards
+**Learning:** Found that custom `div` elements used for core flows (like the `ExerciseStrip` selection list and mode selection cards in `Dashboard.jsx`) lacked keyboard navigation support. When building interactive list items or cards from non-button elements, failing to add `role="button"`, `tabIndex`, `onKeyDown`, and clear `:focus-visible` styles completely excludes keyboard and screen reader users from primary app functions.
+**Action:** Always ensure that custom interactive `div` elements include `role="button"`, an appropriate `tabIndex` (handling disabled states if necessary), an `onKeyDown` handler for `Enter`/`Space`, and a distinct `:focus-visible` state.
