@@ -10,3 +10,7 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2026-06-04 - Search Bar Clarity and Empty States
+**Learning:** Search inputs often lack clear feedback mechanisms like visible search icons to denote functionality, accessible clear buttons to reset the state, and clear, informative empty states when queries return no results. These omissions reduce usability for both visual and screen reader users.
+**Action:** Enhance search experiences by including intuitive icons, accessible clear buttons with 'aria-label', and meaningful empty states that inform the user when no results exist.
