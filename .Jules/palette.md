@@ -10,3 +10,7 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2026-06-09 - Missing Focus States on Custom Card Buttons
+**Learning:** Found instances where custom styled `div` elements functioning as buttons (like mode selection cards) relied solely on `onMouseEnter` and `onMouseLeave` for visual feedback, excluding keyboard users from seeing which item was focused.
+**Action:** Always replicate hover styles in `onFocus` and `onBlur` handlers, and include `role="button"`, `tabIndex`, and `onKeyDown` handlers when turning generic elements into interactive buttons.

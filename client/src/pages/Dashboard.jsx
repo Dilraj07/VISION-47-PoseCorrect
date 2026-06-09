@@ -563,6 +563,14 @@ const Dashboard = () => {
 
                             {/* Real-Time Coach Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
                                 onClick={() => handleModeSelect('coach')}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
@@ -587,6 +595,19 @@ const Dashboard = () => {
                                     e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
                                     e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
                                 }}
+                                onFocus={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.boxShadow = `0 10px 30px ${selectedExercise.accentColor}40`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                    e.currentTarget.style.outline = `2px solid ${selectedExercise.accentColor}`;
+                                    e.currentTarget.style.outlineOffset = '2px';
+                                }}
+                                onBlur={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                    e.currentTarget.style.outline = 'none';
+                                }}
                             >
                                 <div style={{
                                     padding: '1rem',
@@ -606,6 +627,14 @@ const Dashboard = () => {
 
                             {/* Video Upload Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
                                 onClick={() => handleModeSelect('upload')}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
@@ -628,6 +657,19 @@ const Dashboard = () => {
                                     e.currentTarget.style.transform = 'translateY(0)';
                                     e.currentTarget.style.borderColor = '#333';
                                     e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                }}
+                                onFocus={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.borderColor = '#666';
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                    e.currentTarget.style.outline = '2px solid #fff';
+                                    e.currentTarget.style.outlineOffset = '2px';
+                                }}
+                                onBlur={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.borderColor = '#333';
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                    e.currentTarget.style.outline = 'none';
                                 }}
                             >
                                 <div style={{
