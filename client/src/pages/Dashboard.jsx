@@ -563,7 +563,16 @@ const Dashboard = () => {
 
                             {/* Real-Time Coach Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
+                                aria-label="Real-Time Coach Mode"
                                 onClick={() => handleModeSelect('coach')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -575,7 +584,8 @@ const Dashboard = () => {
                                     gap: '1.5rem',
                                     backdropFilter: 'blur(10px)',
                                     transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                                    boxShadow: `0 0 20px ${selectedExercise.accentColor}20`
+                                    boxShadow: `0 0 20px ${selectedExercise.accentColor}20`,
+                                    outline: 'none'
                                 }}
                                 onMouseEnter={e => {
                                     e.currentTarget.style.transform = 'translateY(-4px)';
@@ -586,6 +596,18 @@ const Dashboard = () => {
                                     e.currentTarget.style.transform = 'translateY(0)';
                                     e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
                                     e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                }}
+                                onFocus={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.boxShadow = `0 10px 30px ${selectedExercise.accentColor}40`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                    e.currentTarget.style.border = `2px solid ${selectedExercise.accentColor}`;
+                                }}
+                                onBlur={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                    e.currentTarget.style.border = `1px solid ${selectedExercise.accentColor}`;
                                 }}
                             >
                                 <div style={{
@@ -606,7 +628,16 @@ const Dashboard = () => {
 
                             {/* Video Upload Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
+                                aria-label="Video Upload Mode"
                                 onClick={() => handleModeSelect('upload')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -617,7 +648,8 @@ const Dashboard = () => {
                                     alignItems: 'center',
                                     gap: '1.5rem',
                                     backdropFilter: 'blur(10px)',
-                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                                    outline: 'none'
                                 }}
                                 onMouseEnter={e => {
                                     e.currentTarget.style.transform = 'translateY(-4px)';
@@ -628,6 +660,18 @@ const Dashboard = () => {
                                     e.currentTarget.style.transform = 'translateY(0)';
                                     e.currentTarget.style.borderColor = '#333';
                                     e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                }}
+                                onFocus={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.borderColor = '#888';
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                    e.currentTarget.style.borderWidth = '2px';
+                                }}
+                                onBlur={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.borderColor = '#333';
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                    e.currentTarget.style.borderWidth = '1px';
                                 }}
                             >
                                 <div style={{
