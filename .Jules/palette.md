@@ -10,3 +10,7 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2026-05-03 - [Interactive Card Accessibility]
+**Learning:** Found instances in the dashboard where interactive div-based cards were used for selecting modes. While visually clear, they lacked keyboard operability and focus states. Interactive elements must be accessible via keyboard to ensure all users can navigate the application.
+**Action:** Ensure that any `div` acting as a clickable element, such as selection cards, includes `role="button"`, `tabIndex={0}`, an `onKeyDown` handler (for Enter/Space), and visual focus indicators (`onFocus`/`onBlur`).
