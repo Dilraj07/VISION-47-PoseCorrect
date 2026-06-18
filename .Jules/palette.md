@@ -10,3 +10,7 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2024-06-18 - Keyboard Accessibility on Interactive Divs
+**Learning:** When making `div` elements act like buttons or cards, relying solely on hover states excludes keyboard-only users. `onFocus` and `onBlur` events are essential for expanding cards or showing hover effects when navigating via the `Tab` key.
+**Action:** Always pair `onMouseEnter`/`onMouseLeave` with `onFocus`/`onBlur` for interactive components, and ensure `role="button"`, a proper `tabIndex`, and an `onKeyDown` handler (listening for `Enter` or `Space`) are implemented.
