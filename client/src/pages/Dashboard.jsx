@@ -160,9 +160,21 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
     return (
         <motion.div
             layout
+            role="button"
+            tabIndex={isInProgress ? -1 : 0}
+            aria-disabled={isInProgress}
+            aria-label={`Select ${exercise.name}`}
             onMouseEnter={() => !isInProgress && setHovered(exercise.id)}
             onMouseLeave={() => setHovered(null)}
+            onFocus={() => !isInProgress && setHovered(exercise.id)}
+            onBlur={() => setHovered(null)}
             onClick={() => !isInProgress && onSelect(exercise)}
+            onKeyDown={(e) => {
+                if (!isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onSelect(exercise);
+                }
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
@@ -177,7 +189,8 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
                 position: 'relative',
                 overflow: 'hidden',
                 transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                opacity: isInProgress ? 0.6 : 1
+                opacity: isInProgress ? 0.6 : 1,
+                outline: 'none'
             }}
             className={`exercise-strip ${isHovered && !isInProgress ? 'expanded' : ''}`}
         >
@@ -339,6 +352,10 @@ const Dashboard = () => {
                 }
                 .exercise-strip.expanded {
                     height: 180px !important;
+                }
+                .exercise-strip:focus-visible {
+                    outline: 2px solid var(--color-neon-blue) !important;
+                    outline-offset: -2px;
                 }
                 .exercise-title {
                     font-size: 1.5rem !important;
