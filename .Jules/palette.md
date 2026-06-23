@@ -10,3 +10,5 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2025-05-15 - [Interactive Divs and Keyboard Support] **Learning:** [Interactive div-based elements (like cards or strips) that act as buttons need complete keyboard support, including `tabIndex={0}`, `role="button"`, and `onKeyDown` handlers for Enter/Space to be fully usable by keyboard navigators.] **Action:** [Always ensure that any div acting as a clickable area includes these attributes to guarantee keyboard accessibility.]
