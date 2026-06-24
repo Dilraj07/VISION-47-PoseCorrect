@@ -10,3 +10,7 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2025-06-24 - Interactive Div Accessibility
+**Learning:** Found that interactive `div`-based cards (like the exercise strips and selection cards in the dashboard) lacked explicit keyboard support and focus state replication, making them completely inaccessible to keyboard users. Just adding `onClick` isn't enough.
+**Action:** Always ensure that any `div` acting as an interactive element includes `role="button"`, `tabIndex`, an `onKeyDown` handler for Enter/Space keys to trigger the action, and `onFocus`/`onBlur` handlers to replicate visual hover states.

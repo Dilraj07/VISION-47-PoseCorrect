@@ -160,9 +160,19 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
     return (
         <motion.div
             layout
+            role="button"
+            tabIndex={isInProgress ? -1 : 0}
             onMouseEnter={() => !isInProgress && setHovered(exercise.id)}
             onMouseLeave={() => setHovered(null)}
+            onFocus={() => !isInProgress && setHovered(exercise.id)}
+            onBlur={() => setHovered(null)}
             onClick={() => !isInProgress && onSelect(exercise)}
+            onKeyDown={(e) => {
+                if (!isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onSelect(exercise);
+                }
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
@@ -337,6 +347,10 @@ const Dashboard = () => {
                     padding: 0 1rem !important;
                     height: 80px !important;
                 }
+                .exercise-strip:focus-visible {
+                    outline: 2px solid var(--color-neon-blue);
+                    outline-offset: -2px;
+                }
                 .exercise-strip.expanded {
                     height: 180px !important;
                 }
@@ -394,6 +408,10 @@ const Dashboard = () => {
                     .modal-card {
                         padding: 3rem !important;
                     }
+                .modal-card:focus-visible {
+                    outline: 2px solid var(--color-neon-blue);
+                    outline-offset: 4px;
+                }
                     .dashboard-header {
                         padding: 2rem 3rem !important;
                     }
@@ -563,7 +581,16 @@ const Dashboard = () => {
 
                             {/* Real-Time Coach Card */}
                             <div
+                                className="modal-card"
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => handleModeSelect('coach')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -587,6 +614,16 @@ const Dashboard = () => {
                                     e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
                                     e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
                                 }}
+                                onFocus={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.boxShadow = `0 10px 30px ${selectedExercise.accentColor}40`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                }}
+                                onBlur={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                }}
                             >
                                 <div style={{
                                     padding: '1rem',
@@ -606,7 +643,16 @@ const Dashboard = () => {
 
                             {/* Video Upload Card */}
                             <div
+                                className="modal-card"
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => handleModeSelect('upload')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -625,6 +671,16 @@ const Dashboard = () => {
                                     e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
                                 }}
                                 onMouseLeave={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.borderColor = '#333';
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                }}
+                                onFocus={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.borderColor = '#666';
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                }}
+                                onBlur={e => {
                                     e.currentTarget.style.transform = 'translateY(0)';
                                     e.currentTarget.style.borderColor = '#333';
                                     e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
