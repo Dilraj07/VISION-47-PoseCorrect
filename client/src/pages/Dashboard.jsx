@@ -160,9 +160,19 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
     return (
         <motion.div
             layout
+            role="button"
+            tabIndex={isInProgress ? -1 : 0}
             onMouseEnter={() => !isInProgress && setHovered(exercise.id)}
             onMouseLeave={() => setHovered(null)}
+            onFocus={() => !isInProgress && setHovered(exercise.id)}
+            onBlur={() => setHovered(null)}
             onClick={() => !isInProgress && onSelect(exercise)}
+            onKeyDown={(e) => {
+                if (!isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onSelect(exercise);
+                }
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
@@ -563,7 +573,16 @@ const Dashboard = () => {
 
                             {/* Real-Time Coach Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
+                                aria-label="Select Real-Time Coach Mode"
                                 onClick={() => handleModeSelect('coach')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -587,6 +606,16 @@ const Dashboard = () => {
                                     e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
                                     e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
                                 }}
+                                onFocus={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.boxShadow = `0 10px 30px ${selectedExercise.accentColor}40`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                }}
+                                onBlur={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                }}
                             >
                                 <div style={{
                                     padding: '1rem',
@@ -606,7 +635,16 @@ const Dashboard = () => {
 
                             {/* Video Upload Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
+                                aria-label="Select Video Upload Mode"
                                 onClick={() => handleModeSelect('upload')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -625,6 +663,16 @@ const Dashboard = () => {
                                     e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
                                 }}
                                 onMouseLeave={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.borderColor = '#333';
+                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                }}
+                                onFocus={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.borderColor = '#666';
+                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+                                }}
+                                onBlur={e => {
                                     e.currentTarget.style.transform = 'translateY(0)';
                                     e.currentTarget.style.borderColor = '#333';
                                     e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
