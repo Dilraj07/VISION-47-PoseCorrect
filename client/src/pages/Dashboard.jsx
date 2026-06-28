@@ -160,9 +160,19 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
     return (
         <motion.div
             layout
+            role="button"
+            tabIndex={isInProgress ? -1 : 0}
             onMouseEnter={() => !isInProgress && setHovered(exercise.id)}
             onMouseLeave={() => setHovered(null)}
+            onFocus={() => !isInProgress && setHovered(exercise.id)}
+            onBlur={() => setHovered(null)}
             onClick={() => !isInProgress && onSelect(exercise)}
+            onKeyDown={(e) => {
+                if (!isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onSelect(exercise);
+                }
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
@@ -280,6 +290,7 @@ const Dashboard = () => {
     const [selectedExercise, setSelectedExercise] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [userStats, setUserStats] = useState({});
+    const [focusedMode, setFocusedMode] = useState(null);
 
     // Simulate load and fetch stats
     useEffect(() => {
@@ -563,9 +574,21 @@ const Dashboard = () => {
 
                             {/* Real-Time Coach Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => handleModeSelect('coach')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
+                                onFocus={() => setFocusedMode('coach')}
+                                onBlur={() => setFocusedMode(null)}
+                                onMouseEnter={() => setFocusedMode('coach')}
+                                onMouseLeave={() => setFocusedMode(null)}
                                 style={{
-                                    backgroundColor: 'rgba(20, 20, 20, 0.6)',
+                                    backgroundColor: focusedMode === 'coach' ? 'rgba(30, 30, 30, 0.8)' : 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
                                     padding: '2rem',
                                     border: `1px solid ${selectedExercise.accentColor}`,
@@ -575,17 +598,8 @@ const Dashboard = () => {
                                     gap: '1.5rem',
                                     backdropFilter: 'blur(10px)',
                                     transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                                    boxShadow: `0 0 20px ${selectedExercise.accentColor}20`
-                                }}
-                                onMouseEnter={e => {
-                                    e.currentTarget.style.transform = 'translateY(-4px)';
-                                    e.currentTarget.style.boxShadow = `0 10px 30px ${selectedExercise.accentColor}40`;
-                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
-                                }}
-                                onMouseLeave={e => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
-                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                    boxShadow: focusedMode === 'coach' ? `0 10px 30px ${selectedExercise.accentColor}40` : `0 0 20px ${selectedExercise.accentColor}20`,
+                                    transform: focusedMode === 'coach' ? 'translateY(-4px)' : 'translateY(0)'
                                 }}
                             >
                                 <div style={{
@@ -606,28 +620,31 @@ const Dashboard = () => {
 
                             {/* Video Upload Card */}
                             <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => handleModeSelect('upload')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
+                                onFocus={() => setFocusedMode('upload')}
+                                onBlur={() => setFocusedMode(null)}
+                                onMouseEnter={() => setFocusedMode('upload')}
+                                onMouseLeave={() => setFocusedMode(null)}
                                 style={{
-                                    backgroundColor: 'rgba(20, 20, 20, 0.6)',
+                                    backgroundColor: focusedMode === 'upload' ? 'rgba(30, 30, 30, 0.8)' : 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
                                     padding: '2rem',
-                                    border: '1px solid #333',
+                                    border: focusedMode === 'upload' ? '1px solid #666' : '1px solid #333',
                                     cursor: 'pointer',
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '1.5rem',
                                     backdropFilter: 'blur(10px)',
-                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-                                }}
-                                onMouseEnter={e => {
-                                    e.currentTarget.style.transform = 'translateY(-4px)';
-                                    e.currentTarget.style.borderColor = '#666';
-                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
-                                }}
-                                onMouseLeave={e => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.borderColor = '#333';
-                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                                    transform: focusedMode === 'upload' ? 'translateY(-4px)' : 'translateY(0)'
                                 }}
                             >
                                 <div style={{
