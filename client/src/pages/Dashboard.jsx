@@ -160,9 +160,19 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
     return (
         <motion.div
             layout
+            role="button"
+            tabIndex={isInProgress ? -1 : 0}
             onMouseEnter={() => !isInProgress && setHovered(exercise.id)}
             onMouseLeave={() => setHovered(null)}
+            onFocus={() => !isInProgress && setHovered(exercise.id)}
+            onBlur={() => setHovered(null)}
             onClick={() => !isInProgress && onSelect(exercise)}
+            onKeyDown={(e) => {
+                if (!isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onSelect(exercise);
+                }
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
@@ -562,8 +572,26 @@ const Dashboard = () => {
                             </h2>
 
                             {/* Real-Time Coach Card */}
-                            <div
+                            <motion.div
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => handleModeSelect('coach')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('coach');
+                                    }
+                                }}
+                                whileHover={{
+                                    y: -4,
+                                    boxShadow: `0 10px 30px ${selectedExercise.accentColor}40`,
+                                    backgroundColor: 'rgba(30, 30, 30, 0.8)'
+                                }}
+                                whileFocus={{
+                                    y: -4,
+                                    boxShadow: `0 10px 30px ${selectedExercise.accentColor}40`,
+                                    backgroundColor: 'rgba(30, 30, 30, 0.8)'
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -574,18 +602,7 @@ const Dashboard = () => {
                                     alignItems: 'center',
                                     gap: '1.5rem',
                                     backdropFilter: 'blur(10px)',
-                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                                     boxShadow: `0 0 20px ${selectedExercise.accentColor}20`
-                                }}
-                                onMouseEnter={e => {
-                                    e.currentTarget.style.transform = 'translateY(-4px)';
-                                    e.currentTarget.style.boxShadow = `0 10px 30px ${selectedExercise.accentColor}40`;
-                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
-                                }}
-                                onMouseLeave={e => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = `0 0 20px ${selectedExercise.accentColor}20`;
-                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
                                 }}
                             >
                                 <div style={{
@@ -602,11 +619,29 @@ const Dashboard = () => {
                                     <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700' }}>Real-Time Coach</h3>
                                     <p style={{ margin: '0.3rem 0 0', color: '#888', fontSize: '0.9rem' }}>Live feedback via webcam</p>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Video Upload Card */}
-                            <div
+                            <motion.div
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => handleModeSelect('upload')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleModeSelect('upload');
+                                    }
+                                }}
+                                whileHover={{
+                                    y: -4,
+                                    borderColor: '#666',
+                                    backgroundColor: 'rgba(30, 30, 30, 0.8)'
+                                }}
+                                whileFocus={{
+                                    y: -4,
+                                    borderColor: '#666',
+                                    backgroundColor: 'rgba(30, 30, 30, 0.8)'
+                                }}
                                 style={{
                                     backgroundColor: 'rgba(20, 20, 20, 0.6)',
                                     borderRadius: '1.5rem',
@@ -616,18 +651,7 @@ const Dashboard = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '1.5rem',
-                                    backdropFilter: 'blur(10px)',
-                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-                                }}
-                                onMouseEnter={e => {
-                                    e.currentTarget.style.transform = 'translateY(-4px)';
-                                    e.currentTarget.style.borderColor = '#666';
-                                    e.currentTarget.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
-                                }}
-                                onMouseLeave={e => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.borderColor = '#333';
-                                    e.currentTarget.style.backgroundColor = 'rgba(20, 20, 20, 0.6)';
+                                    backdropFilter: 'blur(10px)'
                                 }}
                             >
                                 <div style={{
@@ -644,7 +668,7 @@ const Dashboard = () => {
                                     <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700' }}>Video Upload</h3>
                                     <p style={{ margin: '0.3rem 0 0', color: '#888', fontSize: '0.9rem' }}>Analyze pre-recorded videos</p>
                                 </div>
-                            </div>
+                            </motion.div>
                         </motion.div>
                     </motion.div>
                 )}
