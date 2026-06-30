@@ -10,3 +10,7 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+
+## 2024-05-14 - Keyboard Accessibility and State Management for Interactive Divs
+**Learning:** Interactive div elements functioning as buttons (like mode selection cards) often lack proper accessibility (role, tabIndex, keyboard handlers) and rely on direct DOM manipulation for hover states, which breaks keyboard focus indication and React paradigms.
+**Action:** Replace standard interactive divs with Framer Motion's `<motion.div>`, apply `whileHover` and `whileFocus` for visual states, and ensure `role="button"`, `tabIndex={0}`, and `onKeyDown` are present for full keyboard accessibility.
