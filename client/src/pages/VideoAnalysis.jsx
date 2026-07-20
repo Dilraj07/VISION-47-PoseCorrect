@@ -572,8 +572,17 @@ const VideoAnalysis = () => {
                                             >
                                                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                                                     <div
+                                                        role="button"
+                                                        tabIndex={0}
+                                                        aria-expanded={notesExpanded}
                                                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', cursor: 'pointer' }}
                                                         onClick={() => setNotesExpanded(!notesExpanded)}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                                e.preventDefault();
+                                                                setNotesExpanded(!notesExpanded);
+                                                            }
+                                                        }}
                                                     >
                                                         <h4 style={{ color: '#fff', fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: '800', margin: 0 }}>
                                                             <span style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(0, 204, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0, 204, 255, 0.2)' }}>

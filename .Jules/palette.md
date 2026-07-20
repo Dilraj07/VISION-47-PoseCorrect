@@ -10,3 +10,4 @@
 ## 2026-05-02 - Missing ARIA Labels on Icon-Only Social Links
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
+## 2026-07-20 - [Keyboard Accessible Accordions] **Learning:** Clickable `div` elements acting as accordion toggles fail basic accessibility tests when they lack keyboard support and state attributes. **Action:** Always add `role="button"`, `tabIndex={0}`, `aria-expanded`, and an `onKeyDown` handler for Enter and Space keys to custom interactive elements.
