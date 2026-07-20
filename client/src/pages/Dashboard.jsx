@@ -594,7 +594,6 @@ const Dashboard = () => {
                                     alignItems: 'center',
                                     gap: '1.5rem',
                                     backdropFilter: 'blur(10px)',
-                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                                     boxShadow: `0 0 20px ${selectedExercise.accentColor}20`
                                 }}
                             >
@@ -646,8 +645,7 @@ const Dashboard = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '1.5rem',
-                                    backdropFilter: 'blur(10px)',
-                                    transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                                    backdropFilter: 'blur(10px)'
                                 }}
                             >
                                 <div style={{

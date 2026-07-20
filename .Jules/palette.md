@@ -11,6 +11,6 @@
 **Learning:** Social media link buttons typically use only icons without text. Leaving them without an `aria-label` attribute makes them inaccessible and confusing to screen reader users, who will just hear "link" without any context.
 **Action:** Always add an explicit `aria-label` attribute describing the destination (e.g., "Instagram", "Twitter") for any icon-only social links or `a` tags.
 
-## 2024-05-14 - Keyboard Accessibility and State Management for Interactive Divs
-**Learning:** Interactive div elements functioning as buttons (like mode selection cards) often lack proper accessibility (role, tabIndex, keyboard handlers) and rely on direct DOM manipulation for hover states, which breaks keyboard focus indication and React paradigms.
-**Action:** Replace standard interactive divs with Framer Motion's `<motion.div>`, apply `whileHover` and `whileFocus` for visual states, and ensure `role="button"`, `tabIndex={0}`, and `onKeyDown` are present for full keyboard accessibility.
+## 2025-07-05 - Missing Keyboard Support on Interactive Div Elements
+**Learning:** Using `div` elements as clickable cards without adding keyboard support and semantic ARIA roles prevents keyboard-only and screen reader users from accessing interactive functionality. Direct DOM manipulation in React event handlers (like `onMouseEnter`) for visual state changes is also a fragile anti-pattern compared to declarative animation.
+**Action:** Always ensure that interactive `div` elements include `role="button"`, `tabIndex={0}`, and `onKeyDown` handlers for Enter/Space keys. Use libraries like Framer Motion (`<motion.div>` with `whileHover` and `whileFocus`) or basic React state for visual interactivity instead of raw DOM manipulation.
