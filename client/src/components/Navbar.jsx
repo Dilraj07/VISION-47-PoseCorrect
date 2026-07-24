@@ -8,6 +8,41 @@ import { getWorkouts } from '../lib/api';
 import StreakFlame from './StreakFlame';
 
 const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];
+// Icon mapping
+const NavItem = ({ to, icon: Icon, label, onClick }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    return (
+        <Link
+            to={to}
+            onClick={onClick}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onFocus={() => setIsHovered(true)}
+            onBlur={() => setIsHovered(false)}
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0.8rem 0',
+                color: isHovered ? 'var(--color-neon-green)' : '#fff',
+                textDecoration: 'none',
+                fontFamily: 'var(--font-display, Outfit, sans-serif)',
+                fontWeight: '900',
+                fontSize: '1.4rem',
+                textTransform: 'uppercase',
+                transition: 'color 0.2s',
+                width: '100%'
+            }}
+        >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <Icon size={24} color={isHovered ? 'var(--color-neon-green)' : '#888'} strokeWidth={2.5} style={{ transition: 'color 0.2s' }} />
+                <span>{label}</span>
+            </div>
+            <ChevronRight size={20} color={isHovered ? 'var(--color-neon-green)' : '#444'} strokeWidth={3} style={{ transition: 'color 0.2s' }} />
+        </Link>
+    );
+};
+
 const Navbar = () => {
     const navigate = useNavigate();
     const { user, signOut, getToken } = useAuth();
@@ -59,44 +94,6 @@ const Navbar = () => {
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMenu = () => setIsMobileMenuOpen(false);
-
-    // Icon mapping
-    const NavItem = ({ to, icon: Icon, label, onClick }) => (
-        <Link
-            to={to}
-            onClick={onClick}
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.8rem 0',
-                color: '#fff',
-                textDecoration: 'none',
-                fontFamily: 'var(--font-display, Outfit, sans-serif)',
-                fontWeight: '900',
-                fontSize: '1.4rem',
-                textTransform: 'uppercase',
-                transition: 'color 0.2s',
-                width: '100%'
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.color = 'var(--color-neon-green)';
-                e.currentTarget.children[0].children[0].style.color = 'var(--color-neon-green)';
-                e.currentTarget.children[1].style.color = 'var(--color-neon-green)';
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#fff';
-                e.currentTarget.children[0].children[0].style.color = '#888';
-                e.currentTarget.children[1].style.color = '#444';
-            }}
-        >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <Icon size={24} color="#888" strokeWidth={2.5} style={{ transition: 'color 0.2s' }} />
-                <span>{label}</span>
-            </div>
-            <ChevronRight size={20} color="#444" strokeWidth={3} style={{ transition: 'color 0.2s' }} />
-        </Link>
-    );
 
     const NavLinks = () => (
         <div style={{ 
@@ -271,9 +268,15 @@ const Navbar = () => {
                                 padding: '0 1rem'
                             }}>
                                 <h2 style={{ color: 'var(--color-neon-green)', margin: 0, fontSize: '2.5rem', fontFamily: 'var(--font-display)', letterSpacing: '2px' }}>MENU</h2>
-                                <button aria-label="Close Menu" onClick={closeMenu} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                                    <X size={36} color="#fff" strokeWidth={3} style={{ transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-neon-green)'} onMouseLeave={(e) => e.currentTarget.style.color = '#fff'} />
-                                </button>
+                                <motion.button
+                                    aria-label="Close Menu"
+                                    onClick={closeMenu}
+                                    whileHover={{ color: 'var(--color-neon-green)' }}
+                                    whileFocus={{ color: 'var(--color-neon-green)' }}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#fff' }}
+                                >
+                                    <X size={36} strokeWidth={3} />
+                                </motion.button>
                             </div>
                             
                             <div className="mobile-menu-content" style={{ overflowY: 'auto', flex: 1, paddingBottom: '2rem' }}>
