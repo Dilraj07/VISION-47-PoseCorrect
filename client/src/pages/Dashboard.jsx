@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
+import { Camera, Video, ArrowLeft, ChevronDown, ChevronRight, Calendar, Search, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getStats } from '../lib/api';
 
@@ -442,26 +442,54 @@ const Dashboard = () => {
                 </div>
 
                 {/* Search Bar */}
-                <input
-                    type="text"
-                    aria-label="Search exercises"
-                    placeholder="Search exercises..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                        width: '100%',
-                        padding: '1rem',
-                        backgroundColor: '#111',
-                        border: '1px solid #333',
-                        borderRadius: '0.5rem',
-                        color: '#fff',
-                        fontSize: '1rem',
-                        outline: 'none',
-                        transition: 'border-color 0.2s ease-in-out'
-                    }}
-                    onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-blue)'}
-                    onBlur={(e) => e.target.style.borderColor = '#333'}
-                />
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#666', display: 'flex', alignItems: 'center' }}>
+                        <Search size={20} />
+                    </div>
+                    <input
+                        type="text"
+                        aria-label="Search exercises"
+                        placeholder="Search exercises..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '1rem 3rem 1rem 3rem',
+                            backgroundColor: '#111',
+                            border: '1px solid #333',
+                            borderRadius: '0.5rem',
+                            color: '#fff',
+                            fontSize: '1rem',
+                            outline: 'none',
+                            transition: 'border-color 0.2s ease-in-out'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-blue)'}
+                        onBlur={(e) => e.target.style.borderColor = '#333'}
+                    />
+                    {searchTerm && (
+                        <button
+                            aria-label="Clear search"
+                            onClick={() => setSearchTerm('')}
+                            style={{
+                                position: 'absolute',
+                                right: '1rem',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                color: '#888',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                padding: '0.2rem'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = '#888'}
+                        >
+                            <X size={20} />
+                        </button>
+                    )}
+                </div>
 
                 {/* Muscle Heatmap Moved to Profile */}
             </header>
@@ -506,9 +534,27 @@ const Dashboard = () => {
                             </React.Fragment>
                         ))}
 
-                        {displayData.length === 0 || (displayData.length === 1 && displayData[0].exercises.length === 0) && (
-                            <div style={{ padding: '4rem', textAlign: 'center', color: '#666' }}>
-                                No exercises found matching "{searchTerm}"
+                        {(displayData.length === 0 || (displayData.length === 1 && displayData[0].exercises.length === 0)) && (
+                            <div style={{ padding: '4rem', textAlign: 'center', color: '#666', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                                <span>No exercises found matching "{searchTerm}"</span>
+                                <button
+                                    onClick={() => setSearchTerm('')}
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        backgroundColor: 'var(--color-neon-blue)',
+                                        color: '#000',
+                                        border: 'none',
+                                        borderRadius: '2rem',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        fontSize: '0.9rem'
+                                    }}
+                                >
+                                    <X size={16} /> CLEAR SEARCH
+                                </button>
                             </div>
                         )}
                     </>
