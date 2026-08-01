@@ -163,6 +163,16 @@ const ExerciseStrip = ({ exercise, onSelect, isHovered, setHovered }) => {
             onMouseEnter={() => !isInProgress && setHovered(exercise.id)}
             onMouseLeave={() => setHovered(null)}
             onClick={() => !isInProgress && onSelect(exercise)}
+            role="button"
+            tabIndex={isInProgress ? -1 : 0}
+            onKeyDown={(e) => {
+                if (!isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onSelect(exercise);
+                }
+            }}
+            onFocus={() => !isInProgress && setHovered(exercise.id)}
+            onBlur={() => setHovered(null)}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
