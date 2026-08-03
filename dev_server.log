@@ -1,0 +1,11 @@
+
+> gymbro@0.0.0 dev /app/client
+> vite --host
+
+
+  VITE v7.3.2  ready in 251 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+Killed
+ ELIFECYCLE  Command failed with exit code 137.

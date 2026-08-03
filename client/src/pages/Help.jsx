@@ -82,28 +82,28 @@ const Help = () => {
         >
           <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>Still need help?</h2>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-            <a href="mailto:support@gymbro.ai" style={{
+            <motion.a href="mailto:support@gymbro.ai" style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               color: '#fff', textDecoration: 'none',
               padding: '1rem 2rem', border: '1px solid #333', borderRadius: '2rem',
               transition: 'all 0.3s'
             }}
-              onMouseEnter={(e) => { e.target.style.borderColor = 'var(--color-neon-green)'; e.target.style.color = 'var(--color-neon-green)'; }}
-              onMouseLeave={(e) => { e.target.style.borderColor = '#333'; e.target.style.color = '#fff'; }}
+              whileHover={{ borderColor: 'var(--color-neon-green)', color: 'var(--color-neon-green)' }}
+              whileFocus={{ borderColor: 'var(--color-neon-green)', color: 'var(--color-neon-green)' }}
             >
               <Mail size={20} /> Email Support
-            </a>
-            <a href="/contact" style={{
+            </motion.a>
+            <motion.a href="/contact" style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               color: '#fff', textDecoration: 'none',
               padding: '1rem 2rem', border: '1px solid #333', borderRadius: '2rem',
               transition: 'all 0.3s'
             }}
-              onMouseEnter={(e) => { e.target.style.borderColor = 'var(--color-neon-pink)'; e.target.style.color = 'var(--color-neon-pink)'; }}
-              onMouseLeave={(e) => { e.target.style.borderColor = '#333'; e.target.style.color = '#fff'; }}
+              whileHover={{ borderColor: 'var(--color-neon-pink)', color: 'var(--color-neon-pink)' }}
+              whileFocus={{ borderColor: 'var(--color-neon-pink)', color: 'var(--color-neon-pink)' }}
             >
               <MessageCircle size={20} /> Contact Us
-            </a>
+            </motion.a>
           </div>
         </motion.div>
       </div>
