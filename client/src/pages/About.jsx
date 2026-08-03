@@ -396,7 +396,7 @@ const About = () => {
                                         {member.description}
                                     </p>
 
-                                    <a
+                                    <motion.a
                                         href={member.linkedin}
                                         target="_blank"
                                         rel="noreferrer"
@@ -415,17 +415,17 @@ const About = () => {
                                             transition: 'background-color 0.2s',
                                             position: 'relative'
                                         }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.backgroundColor = member.color;
-                                            e.currentTarget.style.color = '#000';
+                                        whileHover={{
+                                            backgroundColor: member.color,
+                                            color: '#000'
                                         }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
-                                            e.currentTarget.style.color = '#fff';
+                                        whileFocus={{
+                                            backgroundColor: member.color,
+                                            color: '#000'
                                         }}
                                     >
                                         <Linkedin size={16} /> Link Up
-                                    </a>
+                                    </motion.a>
                                 </motion.div>
                             </motion.div>
                         </motion.div>

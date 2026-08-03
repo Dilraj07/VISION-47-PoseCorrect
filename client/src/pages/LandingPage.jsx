@@ -166,7 +166,7 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
                         START TRAINING <ArrowRight size={20} />
                     </GlowButton>
 
-                    <button
+                    <motion.button
                         onClick={handleDemo}
                         className="cta-btn"
                         style={{
@@ -187,19 +187,19 @@ const HeroSection = ({ onStart, handleDemo, scrollProgress }) => {
                             position: 'relative',
                             overflow: 'hidden'
                         }}
-                        onMouseEnter={(e) => {
-                            e.target.style.borderColor = '#fff';
-                            e.target.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.2)';
-                            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+                        whileHover={{
+                            borderColor: '#fff',
+                            boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)'
                         }}
-                        onMouseLeave={(e) => {
-                            e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                            e.target.style.boxShadow = 'none';
-                            e.target.style.background = 'transparent';
+                        whileFocus={{
+                            borderColor: '#fff',
+                            boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)'
                         }}
                     >
                         TRY DEMO
-                    </button>
+                    </motion.button>
                 </div>
             </motion.div>
 
