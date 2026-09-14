@@ -182,11 +182,14 @@ const Contact = () => {
                                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                     <div style={{ display: 'flex', gap: '1rem' }}>
                                         <div style={{ flex: 1 }}>
-                                            <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc', fontSize: '0.9rem' }}>Name</label>
+                                            <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc', fontSize: '0.9rem' }}>
+                                                Name <span style={{ color: 'var(--color-neon-pink)' }} aria-hidden="true">*</span>
+                                            </label>
                                             <input
                                                 type="text"
                                                 id="name"
                                                 required
+                                                placeholder="John Doe"
                                                 style={inputStyle}
                                                 onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-pink)'}
                                                 onBlur={(e) => e.target.style.borderColor = '#333'}
@@ -195,11 +198,14 @@ const Contact = () => {
                                     </div>
 
                                     <div>
-                                        <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc', fontSize: '0.9rem' }}>Email Address</label>
+                                        <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc', fontSize: '0.9rem' }}>
+                                            Email Address <span style={{ color: 'var(--color-neon-pink)' }} aria-hidden="true">*</span>
+                                        </label>
                                         <input
                                             type="email"
                                             id="email"
                                             required
+                                            placeholder="john@example.com"
                                             style={inputStyle}
                                             onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-pink)'}
                                             onBlur={(e) => e.target.style.borderColor = '#333'}
@@ -207,11 +213,14 @@ const Contact = () => {
                                     </div>
 
                                     <div>
-                                        <label htmlFor="message" style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc', fontSize: '0.9rem' }}>Message</label>
+                                        <label htmlFor="message" style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc', fontSize: '0.9rem' }}>
+                                            Message <span style={{ color: 'var(--color-neon-pink)' }} aria-hidden="true">*</span>
+                                        </label>
                                         <textarea
                                             id="message"
                                             rows="5"
                                             required
+                                            placeholder="How can we help you?"
                                             style={{ ...inputStyle, resize: 'vertical' }}
                                             onFocus={(e) => e.target.style.borderColor = 'var(--color-neon-pink)'}
                                             onBlur={(e) => e.target.style.borderColor = '#333'}
