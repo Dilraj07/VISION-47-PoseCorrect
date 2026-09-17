@@ -8,6 +8,96 @@ import { getWorkouts } from '../lib/api';
 import StreakFlame from './StreakFlame';
 
 const MENU_ICONS = [Dumbbell, Activity, Flame, Timer];
+
+// Icon mapping
+const NavItem = ({ to, icon: Icon, label, onClick }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    return (
+        <Link
+            to={to}
+            onClick={onClick}
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0.8rem 0',
+                color: isHovered ? 'var(--color-neon-green)' : '#fff',
+                textDecoration: 'none',
+                fontFamily: 'var(--font-display, Outfit, sans-serif)',
+                fontWeight: '900',
+                fontSize: '1.4rem',
+                textTransform: 'uppercase',
+                transition: 'color 0.2s',
+                width: '100%'
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onFocus={() => setIsHovered(true)}
+            onBlur={() => setIsHovered(false)}
+        >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <Icon size={24} color={isHovered ? 'var(--color-neon-green)' : '#888'} strokeWidth={2.5} style={{ transition: 'color 0.2s' }} />
+                <span>{label}</span>
+            </div>
+            <ChevronRight size={20} color={isHovered ? 'var(--color-neon-green)' : '#444'} strokeWidth={3} style={{ transition: 'color 0.2s' }} />
+        </Link>
+    );
+};
+
+const NavLinks = ({ closeMenu, user, signOut }) => (
+    <div style={{
+        width: '100%',
+        padding: '0 1rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem'
+    }}>
+        <NavItem to="/dashboard" icon={Activity} label="Dashboard" onClick={closeMenu} />
+        <NavItem to="/schedule" icon={Calendar} label="Schedule" onClick={closeMenu} />
+        <NavItem to="/profile" icon={User} label="Profile" onClick={closeMenu} />
+        <NavItem to="/settings" icon={SettingsIcon} label="Settings" onClick={closeMenu} />
+
+        {user ? (
+            <button
+                onClick={() => { signOut(); closeMenu(); }}
+                style={{
+                    width: '100%',
+                    padding: '1rem',
+                    marginTop: '1rem',
+                    backgroundColor: 'transparent',
+                    color: '#ff4444',
+                    border: '2px solid #ff4444',
+                    fontWeight: '900',
+                    fontSize: '1.2rem',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-display, Outfit, sans-serif)',
+                    textTransform: 'uppercase',
+                    borderRadius: 0,
+                    boxShadow: '4px 4px 0px #ff4444'
+                }}
+            >
+                Log Out
+            </button>
+        ) : (
+            <Link
+                to="/auth"
+                onClick={closeMenu}
+                className="button-51"
+                style={{
+                    display: 'block',
+                    width: '100%',
+                    textAlign: 'center',
+                    textDecoration: 'none',
+                    marginTop: '1.5rem',
+                    marginBottom: '1rem'
+                }}
+            >
+                JOIN GYMBRO
+            </Link>
+        )}
+    </div>
+);
+
 const Navbar = () => {
     const navigate = useNavigate();
     const { user, signOut, getToken } = useAuth();
@@ -15,6 +105,7 @@ const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [initials, setInitials] = useState('');
     const [streak, setStreak] = useState(0);
+    const [isCloseHovered, setIsCloseHovered] = useState(false);
 
     useEffect(() => {
         if (user && user.fullName) {
@@ -59,99 +150,6 @@ const Navbar = () => {
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMenu = () => setIsMobileMenuOpen(false);
-
-    // Icon mapping
-    const NavItem = ({ to, icon: Icon, label, onClick }) => (
-        <Link
-            to={to}
-            onClick={onClick}
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.8rem 0',
-                color: '#fff',
-                textDecoration: 'none',
-                fontFamily: 'var(--font-display, Outfit, sans-serif)',
-                fontWeight: '900',
-                fontSize: '1.4rem',
-                textTransform: 'uppercase',
-                transition: 'color 0.2s',
-                width: '100%'
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.color = 'var(--color-neon-green)';
-                e.currentTarget.children[0].children[0].style.color = 'var(--color-neon-green)';
-                e.currentTarget.children[1].style.color = 'var(--color-neon-green)';
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#fff';
-                e.currentTarget.children[0].children[0].style.color = '#888';
-                e.currentTarget.children[1].style.color = '#444';
-            }}
-        >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <Icon size={24} color="#888" strokeWidth={2.5} style={{ transition: 'color 0.2s' }} />
-                <span>{label}</span>
-            </div>
-            <ChevronRight size={20} color="#444" strokeWidth={3} style={{ transition: 'color 0.2s' }} />
-        </Link>
-    );
-
-    const NavLinks = () => (
-        <div style={{ 
-            width: '100%', 
-            padding: '0 1rem', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '0.5rem' 
-        }}>
-            <NavItem to="/dashboard" icon={Activity} label="Dashboard" onClick={closeMenu} />
-            <NavItem to="/schedule" icon={Calendar} label="Schedule" onClick={closeMenu} />
-            <NavItem to="/profile" icon={User} label="Profile" onClick={closeMenu} />
-            <NavItem to="/settings" icon={SettingsIcon} label="Settings" onClick={closeMenu} />
-
-
-            {user ? (
-                <button
-                    onClick={() => { signOut(); closeMenu(); }}
-                    style={{
-                        width: '100%',
-                        padding: '1rem',
-                        marginTop: '1rem',
-                        backgroundColor: 'transparent',
-                        color: '#ff4444',
-                        border: '2px solid #ff4444',
-                        fontWeight: '900',
-                        fontSize: '1.2rem',
-                        cursor: 'pointer',
-                        fontFamily: 'var(--font-display, Outfit, sans-serif)',
-                        textTransform: 'uppercase',
-                        borderRadius: 0,
-                        boxShadow: '4px 4px 0px #ff4444'
-                    }}
-                >
-                    Log Out
-                </button>
-            ) : (
-                <Link
-                    to="/auth"
-                    onClick={closeMenu}
-                    className="button-51"
-                    style={{
-                        display: 'block',
-                        width: '100%',
-                        textAlign: 'center',
-                        textDecoration: 'none',
-                        marginTop: '1.5rem',
-                        marginBottom: '1rem'
-                    }}
-                >
-                    JOIN GYMBRO
-                </Link>
-            )}
-        </div>
-    );
 
     return (
         <nav className="navbar">
@@ -271,13 +269,21 @@ const Navbar = () => {
                                 padding: '0 1rem'
                             }}>
                                 <h2 style={{ color: 'var(--color-neon-green)', margin: 0, fontSize: '2.5rem', fontFamily: 'var(--font-display)', letterSpacing: '2px' }}>MENU</h2>
-                                <button aria-label="Close Menu" onClick={closeMenu} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                                    <X size={36} color="#fff" strokeWidth={3} style={{ transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-neon-green)'} onMouseLeave={(e) => e.currentTarget.style.color = '#fff'} />
+                                <button
+                                    aria-label="Close Menu"
+                                    onClick={closeMenu}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                                    onMouseEnter={() => setIsCloseHovered(true)}
+                                    onMouseLeave={() => setIsCloseHovered(false)}
+                                    onFocus={() => setIsCloseHovered(true)}
+                                    onBlur={() => setIsCloseHovered(false)}
+                                >
+                                    <X size={36} color={isCloseHovered ? "var(--color-neon-green)" : "#fff"} strokeWidth={3} style={{ transition: 'color 0.2s' }} />
                                 </button>
                             </div>
                             
                             <div className="mobile-menu-content" style={{ overflowY: 'auto', flex: 1, paddingBottom: '2rem' }}>
-                                <NavLinks />
+                                <NavLinks closeMenu={closeMenu} user={user} signOut={signOut} />
                             </div>
                         </motion.div>
                     </>
